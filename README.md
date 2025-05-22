@@ -66,6 +66,7 @@ docker run -p 8000:8000 --gpus all got-ocr-service
 | `/process` | POST | Main OCR processing |
 | `/results/{result_id}` | GET | Retrieve HTML results |
 | `/docs` | GET | Interactive API documentation |
+| `/health` | GET | Check health |
 
 ## Structure of the project
 
