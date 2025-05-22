@@ -67,6 +67,41 @@ docker run -p 8000:8000 --gpus all got-ocr-service
 | `/results/{result_id}` | GET | Retrieve HTML results |
 | `/docs` | GET | Interactive API documentation |
 
+## Structure of the project
+
+```
+/
+├── main.py                     # Point d'entrée principal (optimisé)
+├── config.py                   # Configuration centralisée
+├── globe.py                    # Constantes existantes
+├── render.py                   # Fonctions de rendu existantes
+├── requirements.txt            # Dépendances
+├── models/
+│   ├── __init__.py
+│   └── ocr_model.py           # Gestionnaire de modèle
+├── services/
+│   ├── __init__.py
+│   └── ocr_service.py         # Service OCR principal
+├── utils/
+│   ├── __init__.py
+│   ├── logger.py              # Configuration logging
+│   └── validators.py          # Validateurs
+├── frontend/                   # Interface web existante
+├── render_tools/              # Outils de rendu existants
+└── static/                    # Fichiers statiques
+```
+
+### Benefits of this restructuring
+
+1. **Separation of Concerns**: Each class has a clear responsibility
+2. **Centralized Configuration**: All settings in `config.py`
+3. **Better error handling**: Proper logging and validation
+4. **More maintainable code**: Modular structure that's easy to extend
+5. **Comprehensive type hints**: Better code documentation
+6. **Robust validation**: Comprehensive input checking
+7. **Resource management**: Automatic cleanup of temporary files
+8. **Proper logging**: Operation tracking and easier debugging
+
 ## 📋 Example Requests
 
 ### 1. Basic Text Extraction
