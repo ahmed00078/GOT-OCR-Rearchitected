@@ -35,3 +35,8 @@ ls -la /app
 # Testez le runscript manuellement
 cd /app
 python main.py
+
+
+# Lien vers l'image
+
+https://filesender.renater.fr/?s=download&token=53c550f6-dbfd-4364-a286-db15a53b79f5
