@@ -15,9 +15,8 @@ class Config:
     # Application settings
     APP_TITLE: str = "GOT-OCR 2.0 API - Multi-Page Edition"
     APP_DESCRIPTION: str = description
-    APP_VERSION: str = "2.1"  # Version incrémentée pour multi-page
+    APP_VERSION: str = "2.1"
     
-    # Contact and license information
     CONTACT_INFO: Dict[str, str] = {
         "name": "API Support",
         "email": "ahmedsidimohammed78@gmail.com"
@@ -43,32 +42,31 @@ class Config:
     
     # === NOUVEAUX PARAMÈTRES POUR MULTI-PAGE ===
     
-    # File upload settings - Enhanced for PDF
     MAX_FILE_SIZE: int = 50 * 1024 * 1024  # 50MB max pour images
-    MAX_PDF_SIZE: int = 100 * 1024 * 1024  # 100MB max pour PDFs
+    MAX_PDF_SIZE: int = 100 * 1024 * 1024 
     SUPPORTED_FORMATS: List[str] = [
         "image/jpeg", 
         "image/png", 
         "image/tiff",
-        "application/pdf"  # === NOUVEAU FORMAT SUPPORTÉ ===
+        "application/pdf"
     ]
     
     # PDF Processing settings
-    PDF_CONVERSION_DPI: int = 300  # DPI pour conversion PDF->Image
-    PDF_MAX_PAGES: int = 50        # Limite de pages par PDF
-    PDF_OUTPUT_FORMAT: str = "PNG" # Format d'image pour pages converties
+    PDF_CONVERSION_DPI: int = 300
+    PDF_MAX_PAGES: int = 50
+    PDF_OUTPUT_FORMAT: str = "PNG"
     PDF_MEMORY_LIMIT_MB: int = 500 # Limite mémoire pour gros PDFs
     
     # Multi-page specific settings
-    MULTIPAGE_MAX_FILES: int = 20          # Max 20 fichiers par requête
-    MULTIPAGE_BATCH_SIZE: int = 5          # Traitement par batch de 5 pages
+    MULTIPAGE_MAX_FILES: int = 20
+    MULTIPAGE_BATCH_SIZE: int = 5
     MULTIPAGE_CONCAT_SEPARATOR: str = "\n\n--- Page {} ---\n\n"  # Séparateur entre pages
     
     # Performance settings
     LOW_CPU_MEM_USAGE: bool = True
     USE_GPU_IF_AVAILABLE: bool = True
     
-    # Timeout settings - Augmentés pour multi-page
+    # Timeout settings
     UVICORN_TIMEOUT: int = int(os.getenv("UVICORN_TIMEOUT", "600"))  # 10 minutes
     PDF_CONVERSION_TIMEOUT: int = 300  # 5 minutes max pour conversion PDF
     
@@ -124,7 +122,7 @@ class Config:
     ENABLE_PDF_LOGGING: bool = True
     LOG_PDF_CONVERSION_DETAILS: bool = True
     
-    # === PARAMÈTRES DE CACHE (OPTIONNEL) ===
+    # === PARAMÈTRES DE CACHE ===
     ENABLE_PDF_CACHE: bool = False
     PDF_CACHE_DIR: str = "/tmp/got_ocr_pdf_cache"
     PDF_CACHE_EXPIRY_HOURS: int = 24
@@ -172,7 +170,7 @@ class Config:
         if self.PDF_CONVERSION_DPI > 400:
             warnings.append("PDF_CONVERSION_DPI > 400 may be slow")
         
-        if self.MAX_PDF_SIZE > 200 * 1024 * 1024:  # 200MB
+        if self.MAX_PDF_SIZE > 200 * 1024 * 1024:
             warnings.append("MAX_PDF_SIZE > 200MB may cause timeouts")
         
         return warnings

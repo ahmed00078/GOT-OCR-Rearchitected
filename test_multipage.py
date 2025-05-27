@@ -155,21 +155,43 @@ Status: Test Image {i+1}
         except Exception as e:
             print(f"❌ API non accessible: {e}")
             return False
-    
+
     def test_pdf_processing(self, pdf_path: str, task: str = "Multi-page OCR") -> Dict[str, Any]:
-        """Tester le traitement d'un PDF"""
+        """Tester le traitement d'un PDF - Version corrigée"""
         print(f"\n🧪 Test PDF: {os.path.basename(pdf_path)}")
-        
+
         start_time = time.time()
-        
+
         try:
-            # Préparer la requête
-            files = {'images': open(pdf_path, 'rb')}
-            data = {
-                'task': task,
-                'ocr_type': 'format' if task in ['Format Text OCR', 'Multi-page OCR'] else None
+            # SOLUTION : Lire le contenu en mémoire d'abord
+            with open(pdf_path, 'rb') as f:
+                file_content = f.read()
+
+            # Déterminer le content-type
+            if pdf_path.lower().endswith('.pdf'):
+                content_type = 'application/pdf'
+                file_type = 'PDF'
+            else:
+                content_type = 'image/png'
+                file_type = 'Image'
+
+            print(f"📎 Content-Type: {content_type}")
+            print(f"📏 Taille fichier: {len(file_content)} bytes")
+
+            # Préparer les données
+            files = {
+                'images': (os.path.basename(pdf_path), file_content, content_type)
             }
-            
+            data = {
+                'task': task
+            }
+
+            # Ajouter ocr_type si nécessaire
+            if task in ['Format Text OCR', 'Multi-page OCR']:
+                data['ocr_type'] = 'format'
+
+            print(f"📤 Envoi requête...")
+
             # Envoyer la requête
             response = requests.post(
                 f"{self.api_url}/process",
@@ -177,16 +199,15 @@ Status: Test Image {i+1}
                 data=data,
                 timeout=180  # 3 minutes
             )
-            
-            files['images'].close()
-            
+
             processing_time = time.time() - start_time
-            
+            print(f"⏱️  Temps total: {processing_time:.2f}s")
+
             if response.status_code == 200:
                 result = response.json()
-                
+
                 test_result = {
-                    "test_type": "PDF Processing",
+                    "test_type": f"{file_type} Processing",
                     "file": os.path.basename(pdf_path),
                     "task": task,
                     "status": "SUCCESS",
@@ -196,44 +217,53 @@ Status: Test Image {i+1}
                     "multipage_info": result.get('multipage_info', {}),
                     "text_preview": result.get('text', '')[:200] + "..." if len(result.get('text', '')) > 200 else result.get('text', '')
                 }
-                
+
                 print(f"✅ Succès: {processing_time:.2f}s")
                 print(f"   Texte extrait: {len(result.get('text', ''))} caractères")
                 print(f"   HTML disponible: {result.get('html_available', False)}")
-                
+
                 if result.get('multipage_info'):
                     info = result['multipage_info']
                     print(f"   Pages traitées: {info.get('total_pages', 'N/A')}")
                     print(f"   Méthode: {info.get('processing_method', 'N/A')}")
-                
+                    print(f"   PDFs: {info.get('pdf_count', 0)}, Images: {info.get('image_count', 0)}")
+
+                # Afficher un aperçu du texte
+                if result.get('text'):
+                    preview = result['text'][:3000].replace('\n', ' ')
+                    print(f"   Aperçu: {preview}...")
+
                 return test_result
-                
+
             else:
                 error_result = {
-                    "test_type": "PDF Processing",
+                    "test_type": f"{file_type} Processing",
                     "file": os.path.basename(pdf_path),
                     "task": task,
                     "status": "ERROR",
                     "processing_time": round(processing_time, 2),
                     "error": response.text
                 }
-                
-                print(f"❌ Erreur {response.status_code}: {response.text}")
+
+                print(f"❌ Erreur {response.status_code}")
+                print(f"   Message: {response.text}")
                 return error_result
-                
+
         except Exception as e:
             error_result = {
-                "test_type": "PDF Processing",
+                "test_type": "File Processing",
                 "file": os.path.basename(pdf_path),
                 "task": task,
                 "status": "EXCEPTION",
                 "processing_time": round(time.time() - start_time, 2),
                 "error": str(e)
             }
-            
+
             print(f"❌ Exception: {e}")
-            return error_result
-    
+            import traceback
+            traceback.print_exc()
+            return error_result    
+
     def test_mixed_files(self, pdf_path: str, image_paths: List[str]) -> Dict[str, Any]:
         """Tester le traitement de fichiers mixtes (PDF + images)"""
         print(f"\n🧪 Test Mixed Files: 1 PDF + {len(image_paths)} images")
@@ -241,12 +271,19 @@ Status: Test Image {i+1}
         start_time = time.time()
         
         try:
-            # Préparer les fichiers
             files = []
-            files.append(('images', open(pdf_path, 'rb')))
+
+            # PDF avec content-type correct
+            with open(pdf_path, 'rb') as f:
+                pdf_content = f.read()
+            files.append(('images', (os.path.basename(pdf_path), pdf_content, 'application/pdf')))
             
-            for img_path in image_paths[:2]:  # Limiter à 2 images pour le test
-                files.append(('images', open(img_path, 'rb')))
+            # Images avec content-type correct  
+            for img_path in image_paths[:2]:
+                content_type = 'image/png' if img_path.lower().endswith('.png') else 'image/jpeg'
+                with open(img_path, 'rb') as f:
+                    img_content = f.read()
+                files.append(('images', (os.path.basename(img_path), img_content, content_type)))
             
             data = {
                 'task': 'Multi-page OCR',
