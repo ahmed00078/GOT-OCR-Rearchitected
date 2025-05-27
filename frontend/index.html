@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOT-OCR 2.0 - Advanced OCR Service</title>
+    <title>GOT-OCR 2.0 - Multi-Page OCR Service</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
@@ -27,6 +27,8 @@
             --warning: #f59e0b;
             --error: #ef4444;
             --info: #3b82f6;
+            --pdf-color: #dc2626;
+            /* Rouge pour PDFs */
 
             /* Spacing */
             --space-xs: 0.25rem;
@@ -136,6 +138,18 @@
             opacity: 0.9;
             margin-top: var(--space-sm);
             font-weight: 400;
+        }
+
+        /* === NOUVEAU: Badge Multi-Page === */
+        .multipage-badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-left: var(--space-sm);
         }
 
         main {
@@ -280,7 +294,36 @@
             cursor: pointer;
         }
 
-        /* Thumbnail Gallery */
+        /* === NOUVEAU: Statistiques des fichiers === */
+        .file-stats {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+            padding: var(--space-md);
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .stat-icon {
+            font-size: 1.2rem !important;
+        }
+
+        .stat-pdf {
+            color: var(--pdf-color);
+        }
+
+        .stat-image {
+            color: var(--secondary);
+        }
+
+        /* Thumbnail Gallery - Enhanced for PDF */
         .thumbnail-gallery {
             display: flex;
             flex-wrap: wrap;
@@ -307,6 +350,32 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* === NOUVEAU: Thumbnail pour PDF === */
+        .thumbnail.pdf {
+            background: linear-gradient(135deg, var(--pdf-color), #dc2626);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        .pdf-icon {
+            font-size: 2rem !important;
+            margin-bottom: 0.25rem;
+        }
+
+        .pdf-name {
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 0 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
         }
 
         .thumbnail .remove-btn {
@@ -472,6 +541,42 @@
             display: none;
         }
 
+        /* === NOUVEAU: Informations Multi-Page === */
+        .multipage-info {
+            background: var(--light-gray);
+            padding: var(--space-md);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--space-lg);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .multipage-info h4 {
+            color: var(--secondary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-sm);
+            font-size: 0.875rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
         .tabs {
             display: flex;
             border-bottom: 1px solid var(--mid-gray);
@@ -600,6 +705,10 @@
             .card-body {
                 padding: var(--space-lg);
             }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -607,8 +716,8 @@
 <body>
     <header>
         <div class="header-content container">
-            <h1>GOT-OCR 2.0</h1>
-            <p class="subtitle">Advanced OCR Service powered by Transformers</p>
+            <h1>GOT-OCR 2.0 <span class="multipage-badge">Multi-Page</span></h1>
+            <p class="subtitle">Advanced OCR Service with PDF Support</p>
         </div>
     </header>
 
@@ -633,7 +742,7 @@
                                     <option value="Fine-grained OCR (Box)">Fine-grained OCR (Box)</option>
                                     <option value="Fine-grained OCR (Color)">Fine-grained OCR (Color)</option>
                                     <option value="Multi-crop OCR">Multi-crop OCR</option>
-                                    <option value="Multi-page OCR">Multi-page OCR</option>
+                                    <option value="Multi-page OCR">🆕 Multi-page OCR</option>
                                 </select>
                             </div>
 
@@ -666,13 +775,31 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Upload Images</label>
+                                <label>Upload Files</label>
                                 <div class="upload-zone" id="file-drop-area">
                                     <span class="material-icons-round upload-icon">cloud_upload</span>
-                                    <p class="upload-text">Drag & drop images here or click to browse</p>
-                                    <p class="upload-hint">Supported formats: JPEG, PNG, TIFF</p>
-                                    <input type="file" id="images" name="images" accept="image/*" multiple required>
+                                    <p class="upload-text">Drag & drop files here or click to browse</p>
+                                    <p class="upload-hint">Supported: Images (JPEG, PNG, TIFF) and PDF documents</p>
+                                    <input type="file" id="images" name="images" accept="image/*,.pdf" multiple
+                                        required>
                                 </div>
+
+                                <!-- === NOUVEAU: Statistiques des fichiers === -->
+                                <div class="file-stats" id="file-stats" style="display: none;">
+                                    <div class="stat-item">
+                                        <span class="material-icons-round stat-icon stat-image">image</span>
+                                        <span id="image-count">0 images</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="material-icons-round stat-icon stat-pdf">picture_as_pdf</span>
+                                        <span id="pdf-count">0 PDFs</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="material-icons-round stat-icon">assessment</span>
+                                        <span id="estimated-pages">~0 pages</span>
+                                    </div>
+                                </div>
+
                                 <div class="thumbnail-gallery" id="thumbnail-container"></div>
                             </div>
 
@@ -680,7 +807,7 @@
 
                             <button type="submit" id="submit-btn" class="btn btn-primary btn-block" disabled>
                                 <span class="material-icons-round btn-icon">auto_fix_high</span>
-                                <span>Process Images</span>
+                                <span>Process Files</span>
                             </button>
                         </form>
                     </div>
@@ -694,6 +821,31 @@
                         </h2>
                     </div>
                     <div class="card-body">
+                        <!-- === NOUVEAU: Informations Multi-Page === -->
+                        <div class="multipage-info" id="multipage-info" style="display: none;">
+                            <h4><span class="material-icons-round"
+                                    style="vertical-align: middle; margin-right: 0.5rem;">info</span>Processing Summary
+                            </h4>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Total Pages:</span>
+                                    <span class="info-value" id="total-pages">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">PDF Files:</span>
+                                    <span class="info-value" id="result-pdf-count">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Image Files:</span>
+                                    <span class="info-value" id="result-image-count">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Method:</span>
+                                    <span class="info-value" id="processing-method">-</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="tabs">
                             <div class="tab active" data-tab="text">Text Output</div>
                             <div class="tab" data-tab="html">HTML Render</div>
@@ -734,8 +886,8 @@
 
     <footer>
         <div class="container footer-content">
-            <div class="footer-logo">GOT-OCR 2.0</div>
-            <p class="footer-text">Powered by Transformers and FastAPI</p>
+            <div class="footer-logo">GOT-OCR 2.0 Multi-Page</div>
+            <p class="footer-text">Powered by Transformers and FastAPI with PDF Support</p>
             <div class="footer-links">
                 <a href="https://github.com/ahmed00078/GOT-OCR2.0" class="footer-link" target="_blank">
                     <span class="material-icons-round">code</span>
@@ -771,6 +923,13 @@
         const copyTextBtn = document.getElementById('copy-text-btn');
         const downloadTextBtn = document.getElementById('download-text-btn');
         const downloadHtmlBtn = document.getElementById('download-html-btn');
+
+        // === NOUVEAUX ÉLÉMENTS ===
+        const fileStats = document.getElementById('file-stats');
+        const imageCount = document.getElementById('image-count');
+        const pdfCount = document.getElementById('pdf-count');
+        const estimatedPages = document.getElementById('estimated-pages');
+        const multipageInfo = document.getElementById('multipage-info');
 
         // Selected files storage
         let selectedFiles = [];
@@ -844,43 +1003,77 @@
         function handleFiles(files) {
             selectedFiles = Array.from(files);
             updateThumbnails();
+            updateFileStatistics(); // === NOUVEAU ===
             updateSubmitButton();
+        }
+
+        // === NOUVELLE FONCTION: Mise à jour des statistiques ===
+        function updateFileStatistics() {
+            let imageFileCount = 0;
+            let pdfFileCount = 0;
+            let estimatedPageCount = 0;
+
+            selectedFiles.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    imageFileCount++;
+                    estimatedPageCount++; // 1 image = 1 page
+                } else if (file.type === 'application/pdf') {
+                    pdfFileCount++;
+                    estimatedPageCount += 5; // Estimation: 1 PDF = ~5 pages
+                }
+            });
+
+            // Mettre à jour l'affichage
+            imageCount.textContent = `${imageFileCount} image${imageFileCount !== 1 ? 's' : ''}`;
+            pdfCount.textContent = `${pdfFileCount} PDF${pdfFileCount !== 1 ? 's' : ''}`;
+            estimatedPages.textContent = `~${estimatedPageCount} page${estimatedPageCount !== 1 ? 's' : ''}`;
+
+            // Afficher/masquer les statistiques
+            fileStats.style.display = selectedFiles.length > 0 ? 'flex' : 'none';
         }
 
         function updateThumbnails() {
             thumbnailContainer.innerHTML = '';
 
             selectedFiles.forEach((file, index) => {
-                if (!file.type.match('image.*')) {
-                    showAlert('Only image files are supported', 'error');
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'thumbnail';
+
+                if (file.type === 'application/pdf') {
+                    // === NOUVEAU: Thumbnail pour PDF ===
+                    thumbnail.classList.add('pdf');
+                    thumbnail.innerHTML = `
+                        <span class="material-icons-round pdf-icon">picture_as_pdf</span>
+                        <div class="pdf-name">${file.name}</div>
+                    `;
+                } else if (file.type.match('image.*')) {
+                    // Thumbnail pour image
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        thumbnail.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    showAlert('Only image and PDF files are supported', 'error');
                     return;
                 }
 
-                const reader = new FileReader();
+                // Bouton de suppression
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerHTML = '×';
+                removeBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    selectedFiles.splice(index, 1);
+                    updateThumbnails();
+                    updateFileStatistics(); // === NOUVEAU ===
+                    updateSubmitButton();
+                });
 
-                reader.onload = function (e) {
-                    const thumbnail = document.createElement('div');
-                    thumbnail.className = 'thumbnail';
-
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-btn';
-                    removeBtn.innerHTML = '×';
-                    removeBtn.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        selectedFiles.splice(index, 1);
-                        updateThumbnails();
-                        updateSubmitButton();
-                    });
-
-                    thumbnail.appendChild(img);
-                    thumbnail.appendChild(removeBtn);
-                    thumbnailContainer.appendChild(thumbnail);
-                };
-
-                reader.readAsDataURL(file);
+                thumbnail.appendChild(removeBtn);
+                thumbnailContainer.appendChild(thumbnail);
             });
         }
 
@@ -893,7 +1086,7 @@
             e.preventDefault();
 
             if (selectedFiles.length === 0) {
-                showAlert('Please select at least one image', 'warning');
+                showAlert('Please select at least one file', 'warning');
                 return;
             }
 
@@ -932,7 +1125,7 @@
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes
+                const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes pour multi-page
 
                 const response = await fetch(PROCESS_ENDPOINT, {
                     method: 'POST',
@@ -952,24 +1145,33 @@
                 showAlert('Processing completed successfully!', 'success');
             } catch (error) {
                 if (error.name === 'AbortError') {
-                    showAlert('Request timed out. Processing large images may take longer without a GPU.', 'warning');
+                    showAlert('Request timed out. Large PDFs may take longer to process.', 'warning');
                 } else {
                     showAlert(`Error: ${error.message}`, 'error');
                 }
             } finally {
                 // Reset loading state
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span class="material-icons-round btn-icon">auto_fix_high</span><span>Process Images</span>';
+                submitBtn.innerHTML = '<span class="material-icons-round btn-icon">auto_fix_high</span><span>Process Files</span>';
             }
         });
 
-        // Display results
+        // Display results - Enhanced for multi-page
         function displayResults(result) {
             // Show result section
             resultSection.style.display = 'block';
 
             // Display text result
             textResult.textContent = result.text || 'No text extracted';
+
+            // === NOUVEAU: Afficher les informations multi-page ===
+            if (result.multipage_info) {
+                multipageInfo.style.display = 'block';
+                document.getElementById('total-pages').textContent = result.multipage_info.total_pages;
+                document.getElementById('result-pdf-count').textContent = result.multipage_info.pdf_count;
+                document.getElementById('result-image-count').textContent = result.multipage_info.image_count;
+                document.getElementById('processing-method').textContent = result.multipage_info.processing_method;
+            }
 
             // Display HTML result if available
             if (result.html_available && result.html) {
@@ -1023,7 +1225,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ocr-result-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.download = `multipage-ocr-result-${new Date().toISOString().slice(0, 10)}.txt`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1035,7 +1237,7 @@
             const htmlContent = htmlPreview.src;
             const a = document.createElement('a');
             a.href = htmlContent;
-            a.download = `ocr-result-${new Date().toISOString().slice(0, 10)}.html`;
+            a.download = `multipage-ocr-result-${new Date().toISOString().slice(0, 10)}.html`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1069,10 +1271,10 @@
             alertContainer.innerHTML = '';
             alertContainer.appendChild(alert);
 
-            // Auto-dismiss after 5 seconds
+            // Auto-dismiss after 7 seconds (plus long pour multi-page)
             setTimeout(() => {
                 alert.remove();
-            }, 5000);
+            }, 7000);
         }
     </script>
 </body>
