@@ -1,0 +1,339 @@
+{
+  "test_dataset": [
+    {
+      "id": 1,
+      "type": "laptop_simple",
+      "text": "HP EliteBook 840 G9 Specifications\nPower Consumption: 45W typical, 2.1W sleep mode\nCarbon Footprint: 285 kg CO2 equivalent\nRecyclability: 85% by weight\nCertifications: ENERGY STAR 8.0, EPEAT Gold\nWeight: 1.36 kg\nDimensions: 321 x 213 x 19.9 mm",
+      "questions": [
+        {
+          "question": "What is the product name and model?",
+          "expected_answer": {
+            "product_name": "HP EliteBook 840 G9",
+            "brand": "HP",
+            "model": "EliteBook 840 G9"
+          }
+        },
+        {
+          "question": "What are the power consumption values?",
+          "expected_answer": {
+            "typical_consumption": {"value": 45, "unit": "W"},
+            "sleep_consumption": {"value": 2.1, "unit": "W"}
+          }
+        },
+        {
+          "question": "What is the carbon footprint and recyclability?",
+          "expected_answer": {
+            "carbon_footprint": {"value": 285, "unit": "kg CO2 equivalent"},
+            "recyclability": {"value": 85, "unit": "%"}
+          }
+        },
+        {
+          "question": "What certifications does this product have?",
+          "expected_answer": {
+            "certifications": ["ENERGY STAR 8.0", "EPEAT Gold"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "monitor_technical",
+      "text": "Dell UltraSharp U2723QE 27\" Monitor\nEnergy Consumption\n- On Mode: 32W\n- Standby: <0.5W\n- Off Mode: <0.3W\nAnnual Energy Consumption: 47 kWh\nEnvironmental Impact:\n• Total CO2 emissions: 156 kg CO2eq\n• Packaging recyclability: 95%\n• Product recyclability: 78%\nCompliance: RoHS, WEEE, ENERGY STAR 8.0",
+      "questions": [
+        {
+          "question": "Extract all energy consumption modes",
+          "expected_answer": {
+            "on_mode": {"value": 32, "unit": "W"},
+            "standby": {"value": 0.5, "unit": "W", "comparison": "<"},
+            "off_mode": {"value": 0.3, "unit": "W", "comparison": "<"},
+            "annual": {"value": 47, "unit": "kWh"}
+          }
+        },
+        {
+          "question": "What are the environmental metrics?",
+          "expected_answer": {
+            "co2_emissions": {"value": 156, "unit": "kg CO2eq"},
+            "packaging_recyclability": {"value": 95, "unit": "%"},
+            "product_recyclability": {"value": 78, "unit": "%"}
+          }
+        },
+        {
+          "question": "What compliance standards are mentioned?",
+          "expected_answer": {
+            "standards": ["RoHS", "WEEE", "ENERGY STAR 8.0"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "server_complex",
+      "text": "Microsoft Azure Stack HCI Server Node\nPower Specifications (Per Node)\nIdle Power: 180W ± 10W\nPeak Power: 650W (100% CPU + memory load)\nAverage Operational Power: 420W\nPower Supply Efficiency: 94% (80 PLUS Titanium)\nCarbon Impact Assessment:\n- Manufacturing: 1,200 kg CO2\n- Transportation: 45 kg CO2\n- 5-year operational: 8,400 kg CO2 (assuming 0.5 kg CO2/kWh grid)\nTotal lifecycle: 9,645 kg CO2\nEnd-of-life: 92% material recovery rate",
+      "questions": [
+        {
+          "question": "What are the different power consumption scenarios?",
+          "expected_answer": {
+            "idle_power": {"value": 180, "unit": "W", "tolerance": "±10W"},
+            "peak_power": {"value": 650, "unit": "W", "condition": "100% CPU + memory load"},
+            "average_power": {"value": 420, "unit": "W"},
+            "psu_efficiency": {"value": 94, "unit": "%", "certification": "80 PLUS Titanium"}
+          }
+        },
+        {
+          "question": "Break down the carbon impact by lifecycle phase",
+          "expected_answer": {
+            "manufacturing": {"value": 1200, "unit": "kg CO2"},
+            "transportation": {"value": 45, "unit": "kg CO2"},
+            "operational_5_years": {"value": 8400, "unit": "kg CO2", "assumption": "0.5 kg CO2/kWh grid"},
+            "total_lifecycle": {"value": 9645, "unit": "kg CO2"}
+          }
+        },
+        {
+          "question": "What is the end-of-life recovery rate?",
+          "expected_answer": {
+            "material_recovery_rate": {"value": 92, "unit": "%"}
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "smartphone_noisy_ocr",
+      "text": "Apple iPhone 14 Pro Environmental Keport\nCarbon tootprint: 70 kg C02 equivalent\nBattery: 3.200 mAh, charging 5W-20W\nRecyclable materials: Aluminum 1O0%, Rare earth elements 1OO%\nPackaging: 9S% tiber-based materials\nEnergy etticiency: Exceeds ENERGY STAR requirements by 2x\nRepair index: 6.2/10 (iFixit score)\nCertitications: EPEAT Gold, TCO Certified",
+      "questions": [
+        {
+          "question": "Extract the carbon footprint (correct OCR errors)",
+          "expected_answer": {
+            "carbon_footprint": {"value": 70, "unit": "kg CO2 equivalent"}
+          }
+        },
+        {
+          "question": "What are the battery specifications?",
+          "expected_answer": {
+            "battery_capacity": {"value": 3200, "unit": "mAh"},
+            "charging_power": {"min": 5, "max": 20, "unit": "W"}
+          }
+        },
+        {
+          "question": "What materials are mentioned as recyclable?",
+          "expected_answer": {
+            "aluminum": {"value": 100, "unit": "%"},
+            "rare_earth_elements": {"value": 100, "unit": "%"},
+            "packaging_fiber": {"value": 95, "unit": "%"}
+          }
+        },
+        {
+          "question": "What scores and certifications are listed?",
+          "expected_answer": {
+            "energy_efficiency": "Exceeds ENERGY STAR requirements by 2x",
+            "repair_index": {"value": 6.2, "scale": "10", "source": "iFixit"},
+            "certifications": ["EPEAT Gold", "TCO Certified"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "printer_table_format",
+      "text": "Canon PIXMA TS9120 Inkjet Printer Energy Consumption\n\nMode          | Power (W) | Time/Day | kWh/Year\nPrinting      | 15.2      | 0.5h     | 2.8\nReady         | 8.7       | 1.0h     | 3.2\nSleep         | 1.1       | 22.5h    | 9.0\nOff           | 0.1       | 0h       | 0.0\nTotal Annual Energy: 15.0 kWh\n\nEnvironmental Data:\nCarbon emissions: 23 kg CO2/year\nMaterials: 45% recycled plastics\nInk cartridge return program: Yes\nCertifications: Blue Angel, ENERGY STAR",
+      "questions": [
+        {
+          "question": "Parse the energy consumption table",
+          "expected_answer": {
+            "printing": {"power": 15.2, "time_per_day": 0.5, "annual_kwh": 2.8},
+            "ready": {"power": 8.7, "time_per_day": 1.0, "annual_kwh": 3.2},
+            "sleep": {"power": 1.1, "time_per_day": 22.5, "annual_kwh": 9.0},
+            "off": {"power": 0.1, "time_per_day": 0, "annual_kwh": 0.0},
+            "total_annual": {"value": 15.0, "unit": "kWh"}
+          }
+        },
+        {
+          "question": "What are the environmental metrics?",
+          "expected_answer": {
+            "carbon_emissions": {"value": 23, "unit": "kg CO2/year"},
+            "recycled_plastics": {"value": 45, "unit": "%"},
+            "ink_return_program": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "tablet_mixed_units",
+      "text": "Samsung Galaxy Tab S8 Ultra 5G Environmental Profile\nDisplay: 14.6 inch, power consumption 6.8W\nProcessor: Snapdragon 8 Gen 1, TDP 5W\nBattery: 11,200mAh Li-ion, 45W fast charging\nTotal device power: 12-18 watts during active use\nStandby power: 0.8 watts\nCarbon footprint: 95 kg CO2e (cradle-to-gate)\nMaterials: Ocean-bound plastic 20%, recycled aluminum 15%\nPackaging: 90% recyclable cardboard\nWeight: 728g\nRegulatory: FCC, CE, IC, ENERGY STAR qualified",
+      "questions": [
+        {
+          "question": "Extract all power-related measurements",
+          "expected_answer": {
+            "display_power": {"value": 6.8, "unit": "W"},
+            "processor_tdp": {"value": 5, "unit": "W"},
+            "active_use_power": {"min": 12, "max": 18, "unit": "watts"},
+            "standby_power": {"value": 0.8, "unit": "watts"},
+            "charging_power": {"value": 45, "unit": "W"},
+            "battery_capacity": {"value": 11200, "unit": "mAh"}
+          }
+        },
+        {
+          "question": "What sustainable materials are used?",
+          "expected_answer": {
+            "ocean_bound_plastic": {"value": 20, "unit": "%"},
+            "recycled_aluminum": {"value": 15, "unit": "%"},
+            "recyclable_packaging": {"value": 90, "unit": "%", "material": "cardboard"}
+          }
+        },
+        {
+          "question": "What is the carbon footprint methodology?",
+          "expected_answer": {
+            "carbon_footprint": {"value": 95, "unit": "kg CO2e", "scope": "cradle-to-gate"}
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "router_networking",
+      "text": "NETGEAR Nighthawk AX12 WiFi 6 Router (RAX120)\nPower Consumption Analysis\n• Typical operation: 28.5W\n• Peak throughput: 32W\n• Eco mode: 15W (reduced performance)\n• Standby: 2.1W\nAnnual electricity cost: $42 (based on $0.15/kWh, 24/7 operation)\nEnvironmental certifications: None specified\nMaterials: ABS plastic housing, no recycled content mentioned\nPackaging: Mixed cardboard and plastic, recyclability unknown\nProduct lifespan: 5-7 years (manufacturer estimate)\nEnd-of-life: No take-back program mentioned",
+      "questions": [
+        {
+          "question": "What are the power consumption modes?",
+          "expected_answer": {
+            "typical": {"value": 28.5, "unit": "W"},
+            "peak": {"value": 32, "unit": "W", "condition": "peak throughput"},
+            "eco_mode": {"value": 15, "unit": "W", "note": "reduced performance"},
+            "standby": {"value": 2.1, "unit": "W"},
+            "annual_cost": {"value": 42, "unit": "$", "assumption": "$0.15/kWh, 24/7"}
+          }
+        },
+        {
+          "question": "What environmental information is available?",
+          "expected_answer": {
+            "certifications": "None specified",
+            "materials": "ABS plastic housing",
+            "recycled_content": "None mentioned",
+            "packaging_recyclability": "Unknown",
+            "lifespan": {"min": 5, "max": 7, "unit": "years"},
+            "takeback_program": false
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "workstation_detailed",
+      "text": "Dell Precision 7760 Mobile Workstation Environmental Assessment\nPower Management:\n- CPU: Intel Core i9-11950H, Base Power 45W, Turbo 65W\n- GPU: NVIDIA RTX A5000, Max Power 165W\n- System idle: 25W\n- Typical workload: 120W\n- Maximum load: 240W\n- Sleep mode: 1.8W\nPower Supply: 240W adapter, 90% efficiency\n\nCarbon Lifecycle Assessment (LCA):\nManufacturing phase: 850 kg CO2\nUse phase (4 years): 1,200 kg CO2 (500W avg, 8h/day, 250 days/year)\nEnd-of-life: -15 kg CO2 (recycling credit)\nTotal: 2,035 kg CO2\n\nSustainability Features:\n- Chassis: 25% post-consumer recycled plastic\n- Packaging: 90% recyclable\n- Certifications: EPEAT Gold, ENERGY STAR, TCO Certified\n- Repair score: 7/10 (good repairability)",
+      "questions": [
+        {
+          "question": "Break down the power consumption by component",
+          "expected_answer": {
+            "cpu": {"base": 45, "turbo": 65, "unit": "W", "model": "Intel Core i9-11950H"},
+            "gpu": {"max": 165, "unit": "W", "model": "NVIDIA RTX A5000"},
+            "system_idle": {"value": 25, "unit": "W"},
+            "typical_workload": {"value": 120, "unit": "W"},
+            "maximum_load": {"value": 240, "unit": "W"},
+            "sleep_mode": {"value": 1.8, "unit": "W"},
+            "power_adapter": {"capacity": 240, "efficiency": 90, "unit": "W"}
+          }
+        },
+        {
+          "question": "Parse the detailed carbon lifecycle assessment",
+          "expected_answer": {
+            "manufacturing": {"value": 850, "unit": "kg CO2"},
+            "use_phase": {
+              "value": 1200, 
+              "unit": "kg CO2", 
+              "duration": "4 years",
+              "assumptions": "500W avg, 8h/day, 250 days/year"
+            },
+            "end_of_life": {"value": -15, "unit": "kg CO2", "note": "recycling credit"},
+            "total_lifecycle": {"value": 2035, "unit": "kg CO2"}
+          }
+        },
+        {
+          "question": "What sustainability features are mentioned?",
+          "expected_answer": {
+            "recycled_plastic": {"value": 25, "unit": "%", "type": "post-consumer"},
+            "packaging_recyclability": {"value": 90, "unit": "%"},
+            "certifications": ["EPEAT Gold", "ENERGY STAR", "TCO Certified"],
+            "repair_score": {"value": 7, "scale": 10, "rating": "good repairability"}
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "tv_comparison",
+      "text": "LG OLED C2 Series 65\" TV Energy Comparison\n\nSDR Content (Standard Dynamic Range):\n- Brightness 100%: 135W\n- Brightness 50%: 89W\n- Brightness 25%: 64W\n\nHDR Content (High Dynamic Range):\n- Peak brightness: 210W\n- Average HDR: 156W\n\nStandby modes:\n- Network standby: 0.5W\n- Eco standby: 0.3W\n\nAnnual consumption estimate: 175 kWh (4h/day mixed content)\nCO2 impact: 87 kg CO2/year (EU average grid mix)\n\nEnvironmental compliance:\n✓ RoHS compliant\n✓ ENERGY STAR Most Efficient 2023\n✓ EPEAT registered\n\nSustainable design:\n- Packaging: 80% recycled cardboard\n- Plastic components: 10% recycled content\n- Reduced packaging size: 30% vs previous generation",
+      "questions": [
+        {
+          "question": "Compare power usage across different viewing modes",
+          "expected_answer": {
+            "sdr_100_brightness": {"value": 135, "unit": "W"},
+            "sdr_50_brightness": {"value": 89, "unit": "W"},
+            "sdr_25_brightness": {"value": 64, "unit": "W"},
+            "hdr_peak": {"value": 210, "unit": "W"},
+            "hdr_average": {"value": 156, "unit": "W"},
+            "network_standby": {"value": 0.5, "unit": "W"},
+            "eco_standby": {"value": 0.3, "unit": "W"}
+          }
+        },
+        {
+          "question": "What are the environmental impact calculations?",
+          "expected_answer": {
+            "annual_consumption": {"value": 175, "unit": "kWh", "assumption": "4h/day mixed content"},
+            "co2_impact": {"value": 87, "unit": "kg CO2/year", "grid": "EU average"}
+          }
+        },
+        {
+          "question": "List environmental certifications and sustainable features",
+          "expected_answer": {
+            "certifications": ["RoHS compliant", "ENERGY STAR Most Efficient 2023", "EPEAT registered"],
+            "recycled_packaging": {"value": 80, "unit": "%", "material": "cardboard"},
+            "recycled_plastic": {"value": 10, "unit": "%"},
+            "packaging_reduction": {"value": 30, "unit": "%", "comparison": "vs previous generation"}
+          }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "gaming_console_lifecycle",
+      "text": "Sony PlayStation 5 Lifecycle Environmental Analysis\n\nOperational Power Consumption:\nGaming (high performance): 150-165W\nGaming (medium settings): 95-110W\nStreaming 4K video: 55W\nMenu navigation: 45W\nRest mode: 2.5W\nOff mode: 0.5W\n\nLifecycle Carbon Assessment:\nRaw materials extraction: 45 kg CO2\nManufacturing: 125 kg CO2\nDistribution: 8 kg CO2\nUse phase (7 years, 3h/day): 420 kg CO2\nEnd-of-life disposal: 5 kg CO2\nRecycling benefit: -12 kg CO2\nNet lifecycle total: 591 kg CO2\n\nCircular Economy Initiatives:\nConsole housing: 15% recycled plastics\nController: Ocean plastic components\nPackaging: 95% plastic-free, FSC certified\nTake-back program: Available in 15 countries\nRepairability: Modular design, 5/10 iFixit score\n\nRegulatory Compliance:\nCE marking, FCC certified, ENERGY STAR qualified\nRoHS, WEEE, REACH compliant",
+      "questions": [
+        {
+          "question": "Extract all power consumption scenarios",
+          "expected_answer": {
+            "gaming_high": {"min": 150, "max": 165, "unit": "W"},
+            "gaming_medium": {"min": 95, "max": 110, "unit": "W"},
+            "streaming_4k": {"value": 55, "unit": "W"},
+            "menu_navigation": {"value": 45, "unit": "W"},
+            "rest_mode": {"value": 2.5, "unit": "W"},
+            "off_mode": {"value": 0.5, "unit": "W"}
+          }
+        },
+        {
+          "question": "Parse the complete lifecycle carbon assessment",
+          "expected_answer": {
+            "raw_materials": {"value": 45, "unit": "kg CO2"},
+            "manufacturing": {"value": 125, "unit": "kg CO2"},
+            "distribution": {"value": 8, "unit": "kg CO2"},
+            "use_phase": {"value": 420, "unit": "kg CO2", "duration": "7 years", "usage": "3h/day"},
+            "disposal": {"value": 5, "unit": "kg CO2"},
+            "recycling_benefit": {"value": -12, "unit": "kg CO2"},
+            "net_total": {"value": 591, "unit": "kg CO2"}
+          }
+        },
+        {
+          "question": "What circular economy and sustainability initiatives are mentioned?",
+          "expected_answer": {
+            "recycled_plastic_housing": {"value": 15, "unit": "%"},
+            "ocean_plastic_controller": true,
+            "plastic_free_packaging": {"value": 95, "unit": "%", "certification": "FSC certified"},
+            "takeback_program": {"availability": "15 countries"},
+            "repairability": {"score": "5/10", "source": "iFixit", "design": "modular"},
+            "compliance": ["CE marking", "FCC certified", "ENERGY STAR qualified", "RoHS", "WEEE", "REACH compliant"]
+          }
+        }
+      ]
+    }
+  ]
+}
