@@ -5,6 +5,8 @@ env/
 
 HPC/got-ocr-optimized.sif
 
+HPC/got-ocr-multipage.sif
+
 models/__pycache__/
 
 server/__pycache__/

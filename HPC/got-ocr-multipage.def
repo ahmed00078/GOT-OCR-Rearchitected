@@ -1,0 +1,158 @@
+Bootstrap: docker
+From: python:3.9-slim
+
+%labels
+    Author Ahmed
+    Version 2.1
+    Description "GOT-OCR 2.0 Multi-Page Service Container"
+
+%files
+    main.py /app/main.py
+    config.py /app/config.py
+    globe.py /app/globe.py
+    render.py /app/render.py
+    requirements.txt /app/requirements.txt
+    
+    models/__init__.py /app/models/__init__.py
+    models/ocr_model.py /app/models/ocr_model.py
+    
+    services/__init__.py /app/services/__init__.py
+    services/ocr_service.py /app/services/ocr_service.py
+    services/pdf_service.py /app/services/pdf_service.py
+    
+    utils/__init__.py /app/utils/__init__.py
+    utils/logger.py /app/utils/logger.py
+    utils/validators.py /app/utils/validators.py
+    
+    render_tools/ /app/
+    frontend/ /app/
+    static/ /app/
+
+%environment
+    export PYTHONPATH="/app:$PYTHONPATH"
+    export OMP_NUM_THREADS=4
+    export MKL_NUM_THREADS=4
+    export NUMEXPR_NUM_THREADS=4
+    export TOKENIZERS_PARALLELISM=true
+    export UVICORN_TIMEOUT=600
+
+    export NVIDIA_VISIBLE_DEVICES=all
+    export NVIDIA_DRIVER_CAPABILITIES=all
+
+    export PDF_CONVERSION_DPI=300
+    export PDF_MAX_PAGES=50
+    export MULTIPAGE_BATCH_SIZE=5
+    export PDF_CONVERSION_TIMEOUT=300
+
+%post
+    echo "[INFO] Installation des dépendances système"
+    apt-get update && apt-get install -y \
+        git \
+        libgl1 \
+        libglib2.0-0 \
+        libomp5 \
+        libgomp1 \
+        poppler-utils \
+        libpoppler-cpp-dev \
+        pkg-config \
+        && rm -rf /var/lib/apt/lists/*
+    
+    echo "[INFO] === DÉPENDANCES CRITIQUES POUR MULTI-PAGE ==="
+    echo "[INFO] Vérification de poppler-utils..."
+    which pdftoppm || (echo "[ERROR] poppler-utils installation failed" && exit 1)
+    
+    echo "[INFO] Mise à jour de pip"
+    pip install --upgrade pip
+    
+    echo "[INFO] Installation des requirements Python"
+    pip install --no-cache-dir -r /app/requirements.txt
+    
+    echo "[INFO] Installation d'optimum pour optimisation CPU/GPU"
+    pip install --no-cache-dir optimum
+        
+    echo "[INFO] Configuration terminée"
+
+%runscript
+    cd /app
+    echo "[INFO] === Démarrage du conteneur GOT-OCR 2.0 Multi-Page ==="
+    
+    # Vérification de la structure
+    echo "[INFO] Vérification de la structure des fichiers"
+    if [ ! -f "/app/main.py" ]; then
+        echo "[ERREUR] Fichier main.py manquant!"
+        exit 1
+    fi
+    
+    if [ ! -d "/app/models" ]; then
+        echo "[ERREUR] Répertoire models manquant!"
+        exit 1
+    fi
+    
+    if [ ! -d "/app/services" ]; then
+        echo "[ERREUR] Répertoire services manquant!"
+        exit 1
+    fi
+    
+    if [ ! -d "/app/utils" ]; then
+        echo "[ERREUR] Répertoire utils manquant!"
+        exit 1
+    fi
+    
+    # === VÉRIFICATION SPÉCIFIQUE MULTI-PAGE ===
+    if [ ! -f "/app/services/pdf_service.py" ]; then
+        echo "[ERREUR] Service PDF manquant!"
+        exit 1
+    fi
+    
+    echo "[INFO] Structure des fichiers validée"
+    
+    # Affichage des informations système
+    echo "[INFO] === Informations système ==="
+    echo "[INFO] Python version: $(python --version)"
+    echo "[INFO] Working directory: $(pwd)"
+    echo "[INFO] PYTHONPATH: $PYTHONPATH"
+    
+    # === VÉRIFICATION MULTI-PAGE ===
+    echo "[INFO] === Vérification Multi-Page ==="
+    echo "[INFO] poppler-utils: $(which pdftoppm)"
+    echo "[INFO] PDF_CONVERSION_DPI: $PDF_CONVERSION_DPI"
+    echo "[INFO] PDF_MAX_PAGES: $PDF_MAX_PAGES"
+    
+    # Test d'import des modules
+    echo "[INFO] Vérification des imports..."
+    python -c "
+try:
+    import torch
+    import transformers
+    import fastapi
+    import uvicorn
+    import pdf2image
+    import fitz
+    from models.ocr_model import OCRModelManager
+    from services.ocr_service import OCRService
+    from services.pdf_service import PDFService
+    from utils.validators import OCRRequestValidator
+    print('[INFO] Tous les imports sont OK')
+except ImportError as e:
+    print(f'[ERREUR] Import failed: {e}')
+    exit(1)
+"
+    
+    # Vérification CUDA
+    echo "[INFO] Vérification CUDA..."
+    python -c "
+import torch
+print(f'[INFO] CUDA disponible: {torch.cuda.is_available()}')
+print(f'[INFO] Nombre de GPUs: {torch.cuda.device_count()}')
+if torch.cuda.is_available():
+    for i in range(torch.cuda.device_count()):
+        print(f'[INFO] GPU {i}: {torch.cuda.get_device_name(i)}')
+else:
+    print('[INFO] Mode CPU activé')
+"
+    
+    # Démarrage du serveur
+    echo "[INFO] === Démarrage du serveur Uvicorn Multi-Page ==="
+    echo "[INFO] Timeout configuré: $UVICORN_TIMEOUT secondes"
+    echo "[INFO] Support PDF: activé"
+    python main.py
