@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOT-OCR 2.0 - Multi-Page OCR Service</title>
+    <title>GOT-OCR 2.0 + SmolLM2 - AI-Powered OCR Service</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
@@ -17,6 +17,8 @@
             --secondary-dark: #059669;
             --accent: #8b5cf6;
             --accent-light: #c4b5fd;
+            --ai-color: #f59e0b;
+            --ai-color-light: #fbbf24;
             --light: #f9fafb;
             --light-gray: #f3f4f6;
             --mid-gray: #e5e7eb;
@@ -28,17 +30,14 @@
             --error: #ef4444;
             --info: #3b82f6;
             --pdf-color: #dc2626;
-            /* Rouge pour PDFs */
 
-            /* Spacing */
+            /* Spacing and transitions */
             --space-xs: 0.25rem;
             --space-sm: 0.5rem;
             --space-md: 1rem;
             --space-lg: 1.5rem;
             --space-xl: 2rem;
             --space-2xl: 3rem;
-
-            /* UI Elements */
             --border-radius-sm: 0.275rem;
             --border-radius: 0.3rem;
             --border-radius-lg: 0.55rem;
@@ -47,8 +46,6 @@
             --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --box-shadow-md: 0 5px 10px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --box-shadow-lg: 0 10px 15px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-            /* Transitions */
             --transition-fast: 150ms ease;
             --transition: 300ms ease;
             --transition-slow: 500ms ease;
@@ -95,10 +92,6 @@
             color: var(--darker);
         }
 
-        p {
-            margin-bottom: 0.5rem;
-        }
-
         /* Layout */
         .container {
             max-width: 1280px;
@@ -107,7 +100,7 @@
         }
 
         header {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--ai-color));
             color: white;
             padding: var(--space-2xl) 0;
             text-align: center;
@@ -140,16 +133,45 @@
             font-weight: 400;
         }
 
-        /* === NOUVEAU: Badge Multi-Page === */
-        .multipage-badge {
-            display: inline-block;
-            background: var(--secondary);
+        /* === NOUVEAU: Badges de fonctionnalités === */
+        .feature-badges {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
             font-size: 0.875rem;
             font-weight: 500;
-            margin-left: var(--space-sm);
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-badge .material-icons-round {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, var(--ai-color), var(--ai-color-light));
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+            }
+
+            to {
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+            }
         }
 
         main {
@@ -204,6 +226,49 @@
             color: var(--primary);
         }
 
+        .ai-card .card-title .material-icons-round {
+            color: var(--ai-color);
+        }
+
+        /* === NOUVEAU: Toggle de mode === */
+        .mode-toggle {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: var(--border-radius-lg);
+            padding: 0.25rem;
+            margin-bottom: var(--space-lg);
+        }
+
+        .mode-option {
+            flex: 1;
+            padding: var(--space-md);
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+
+        .mode-option:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .mode-option.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--box-shadow-sm);
+        }
+
+        .mode-option.ai-mode.active {
+            background: var(--ai-color);
+        }
+
         /* Form Elements */
         .form-group {
             margin-bottom: var(--space-lg);
@@ -219,7 +284,8 @@
 
         select,
         input[type="text"],
-        input[type="file"] {
+        input[type="file"],
+        textarea {
             width: 100%;
             padding: var(--space-md);
             border: 1px solid var(--mid-gray);
@@ -232,10 +298,18 @@
         }
 
         select:focus,
-        input[type="text"]:focus {
+        input[type="text"]:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .ai-mode select:focus,
+        .ai-mode input[type="text"]:focus,
+        .ai-mode textarea:focus {
+            border-color: var(--ai-color);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
         }
 
         select {
@@ -247,6 +321,39 @@
             padding-right: 2.5rem;
         }
 
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* === NOUVEAU: Champs d'extraction AI === */
+        .ai-extraction-fields {
+            display: none;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.05));
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--border-radius-lg);
+            padding: var(--space-lg);
+            margin-top: var(--space-md);
+        }
+
+        .ai-extraction-fields.show {
+            display: block;
+        }
+
+        .ai-field-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-md);
+            color: var(--ai-color);
+            font-weight: 600;
+        }
+
+        .ai-field-header .material-icons-round {
+            margin-right: var(--space-sm);
+            font-size: 1.5rem;
+        }
+
+        /* Upload zone */
         .upload-zone {
             position: relative;
             display: flex;
@@ -268,10 +375,20 @@
             background-color: rgba(59, 130, 246, 0.05);
         }
 
+        .ai-mode .upload-zone:hover,
+        .ai-mode .upload-zone.active {
+            border-color: var(--ai-color);
+            background-color: rgba(245, 158, 11, 0.05);
+        }
+
         .upload-icon {
             font-size: 3rem !important;
             color: var(--primary);
             margin-bottom: var(--space-md);
+        }
+
+        .ai-mode .upload-icon {
+            color: var(--ai-color);
         }
 
         .upload-text {
@@ -294,7 +411,7 @@
             cursor: pointer;
         }
 
-        /* === NOUVEAU: Statistiques des fichiers === */
+        /* File stats */
         .file-stats {
             display: flex;
             gap: var(--space-md);
@@ -321,88 +438,6 @@
 
         .stat-image {
             color: var(--secondary);
-        }
-
-        /* Thumbnail Gallery - Enhanced for PDF */
-        .thumbnail-gallery {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--space-md);
-            margin-top: var(--space-lg);
-        }
-
-        .thumbnail {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow-sm);
-            transition: var(--transition);
-        }
-
-        .thumbnail:hover {
-            transform: scale(1.05);
-            box-shadow: var(--box-shadow);
-        }
-
-        .thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* === NOUVEAU: Thumbnail pour PDF === */
-        .thumbnail.pdf {
-            background: linear-gradient(135deg, var(--pdf-color), #dc2626);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 500;
-        }
-
-        .pdf-icon {
-            font-size: 2rem !important;
-            margin-bottom: 0.25rem;
-        }
-
-        .pdf-name {
-            font-size: 0.75rem;
-            text-align: center;
-            padding: 0 0.25rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            width: 100%;
-        }
-
-        .thumbnail .remove-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(239, 68, 68, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: var(--transition-fast);
-        }
-
-        .thumbnail:hover .remove-btn {
-            opacity: 1;
-        }
-
-        .thumbnail .remove-btn:hover {
-            background: rgba(220, 38, 38, 1);
         }
 
         /* Buttons */
@@ -452,18 +487,36 @@
             background-color: var(--primary-dark);
         }
 
-        .btn-secondary {
-            background-color: var(--secondary);
+        .btn-ai {
+            background: linear-gradient(135deg, var(--ai-color), var(--ai-color-light));
             color: white;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-secondary:hover {
-            background-color: var(--secondary-dark);
+        .btn-ai:hover {
+            background: linear-gradient(135deg, var(--ai-color-light), var(--ai-color));
         }
 
-        .btn-tertiary {
-            background-color: var(--dark-gray);
-            color: white;
+        .btn-ai::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
         }
 
         .btn-block {
@@ -471,13 +524,18 @@
             width: 100%;
         }
 
-        /* Conditional Fields */
+        /* Conditional fields */
         .conditional-fields {
             margin-top: var(--space-md);
             padding: var(--space-lg);
             background-color: var(--light-gray);
             border-radius: var(--border-radius);
             border-left: 4px solid var(--primary);
+        }
+
+        .ai-mode .conditional-fields {
+            border-left-color: var(--ai-color);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.05));
         }
 
         /* Alerts */
@@ -518,7 +576,14 @@
             border-left: 4px solid var(--info);
         }
 
-        /* Loading Spinner */
+        /* === NOUVEAU: Alertes AI spécifiques === */
+        .alert-ai {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+            color: var(--ai-color);
+            border-left: 4px solid var(--ai-color);
+        }
+
+        /* Loading */
         .spinner {
             display: inline-block;
             width: 20px;
@@ -536,47 +601,69 @@
             }
         }
 
+        .ai-spinner {
+            border-top-color: var(--ai-color);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
         /* Results Section */
         .result-section {
             display: none;
         }
 
-        /* === NOUVEAU: Informations Multi-Page === */
-        .multipage-info {
-            background: var(--light-gray);
-            padding: var(--space-md);
-            border-radius: var(--border-radius);
+        /* === NOUVEAU: Section résultats AI === */
+        .ai-results {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.05));
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--border-radius-lg);
+            padding: var(--space-lg);
             margin-bottom: var(--space-lg);
-            border-left: 4px solid var(--secondary);
         }
 
-        .multipage-info h4 {
-            color: var(--secondary);
-            margin-bottom: var(--space-sm);
-        }
-
-        .info-grid {
+        .extraction-summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: var(--space-sm);
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: var(--space-md);
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow-sm);
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ai-color);
+            display: block;
+        }
+
+        .summary-label {
             font-size: 0.875rem;
-        }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .info-label {
-            font-weight: 500;
             color: var(--dark-gray);
+            margin-top: 0.25rem;
         }
 
-        .info-value {
-            font-weight: 600;
-            color: var(--dark);
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: var(--space-sm) 0;
         }
 
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--error), var(--warning), var(--success));
+            transition: width 1s ease;
+        }
+
+        /* Tabs */
         .tabs {
             display: flex;
             border-bottom: 1px solid var(--mid-gray);
@@ -601,6 +688,15 @@
             border-bottom-color: var(--primary);
         }
 
+        .ai-mode .tab:hover {
+            color: var(--ai-color);
+        }
+
+        .ai-mode .tab.active {
+            color: var(--ai-color);
+            border-bottom-color: var(--ai-color);
+        }
+
         .tab-content {
             display: none;
         }
@@ -609,38 +705,25 @@
             display: block;
         }
 
-        .text-result {
-            white-space: pre-wrap;
-            background-color: var(--light-gray);
-            padding: var(--space-lg);
-            border-radius: var(--border-radius);
-            font-family: 'SF Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: var(--space-lg);
-        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .feature-badges {
+                flex-direction: column;
+                align-items: center;
+            }
 
-        .html-result {
-            border: 1px solid var(--mid-gray);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            height: 500px;
-            background-color: white;
-            margin-bottom: var(--space-lg);
-        }
+            .extraction-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
 
-        .html-result iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+            .mode-toggle {
+                flex-direction: column;
+            }
 
-        .result-actions {
-            display: flex;
-            gap: var(--space-md);
-            flex-wrap: wrap;
+            .card-header,
+            .card-body {
+                padding: var(--space-lg);
+            }
         }
 
         /* Footer */
@@ -672,6 +755,8 @@
         .footer-links {
             display: flex;
             gap: var(--space-lg);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .footer-link {
@@ -690,48 +775,59 @@
             margin-right: var(--space-xs);
             font-size: 1.25rem;
         }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .result-actions {
-                flex-direction: column;
-            }
-
-            .result-actions .btn {
-                width: 100%;
-            }
-
-            .card-header,
-            .card-body {
-                padding: var(--space-lg);
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 
 <body>
     <header>
         <div class="header-content container">
-            <h1>GOT-OCR 2.0 <span class="multipage-badge">Multi-Page</span></h1>
-            <p class="subtitle">Advanced OCR Service with PDF Support</p>
+            <h1>GOT-OCR 2.0 + SmolLM2</h1>
+            <p class="subtitle">Advanced OCR Service with AI-Powered Information Extraction</p>
+            <div class="feature-badges">
+                <div class="feature-badge">
+                    <span class="material-icons-round">document_scanner</span>
+                    Multi-Page OCR
+                </div>
+                <div class="feature-badge">
+                    <span class="material-icons-round">picture_as_pdf</span>
+                    PDF Support
+                </div>
+                <div class="feature-badge ai-badge">
+                    <span class="material-icons-round">psychology</span>
+                    AI Reasoning
+                </div>
+                <div class="feature-badge">
+                    <span class="material-icons-round">analytics</span>
+                    Structured Data
+                </div>
+            </div>
         </div>
     </header>
 
     <main>
         <div class="container">
             <div class="grid">
+                <!-- === CARTE DE CONFIGURATION === -->
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
-                            <span class="material-icons-round">cloud_upload</span>
-                            Upload & Configure
+                            <span class="material-icons-round">settings</span>
+                            Configuration & Upload
                         </h2>
                     </div>
                     <div class="card-body">
+                        <!-- === NOUVEAU: Toggle de mode === -->
+                        <div class="mode-toggle">
+                            <button class="mode-option active" data-mode="standard">
+                                <span class="material-icons-round">document_scanner</span>
+                                Standard OCR
+                            </button>
+                            <button class="mode-option ai-mode" data-mode="smart">
+                                <span class="material-icons-round">psychology</span>
+                                🧠 Smart Extract
+                            </button>
+                        </div>
+
                         <form id="ocr-form">
                             <div class="form-group">
                                 <label for="task">OCR Task Type</label>
@@ -744,6 +840,32 @@
                                     <option value="Multi-crop OCR">Multi-crop OCR</option>
                                     <option value="Multi-page OCR">🆕 Multi-page OCR</option>
                                 </select>
+                            </div>
+
+                            <!-- === NOUVEAU: Champs d'extraction AI === -->
+                            <div class="ai-extraction-fields" id="ai-extraction-fields">
+                                <div class="ai-field-header">
+                                    <span class="material-icons-round">psychology</span>
+                                    AI Information Extraction
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="extraction_type">Extraction Type</label>
+                                    <select id="extraction_type" name="extraction_type">
+                                        <option value="" disabled selected>Select extraction type</option>
+                                        <option value="carbon_footprint">🌱 Carbon Footprint Data</option>
+                                        <option value="technical_specs">⚙️ Technical Specifications</option>
+                                        <option value="financial_data">💰 Financial Information</option>
+                                        <option value="contact_info">📞 Contact Details</option>
+                                        <option value="custom">🎯 Custom Extraction</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="custom-instructions-group" style="display: none;">
+                                    <label for="custom_instructions">Custom Instructions</label>
+                                    <textarea id="custom_instructions" name="custom_instructions"
+                                        placeholder="Describe what specific information you want to extract..."></textarea>
+                                </div>
                             </div>
 
                             <!-- Conditional fields based on task selection -->
@@ -784,7 +906,6 @@
                                         required>
                                 </div>
 
-                                <!-- === NOUVEAU: Statistiques des fichiers === -->
                                 <div class="file-stats" id="file-stats" style="display: none;">
                                     <div class="stat-item">
                                         <span class="material-icons-round stat-icon stat-image">image</span>
@@ -813,41 +934,45 @@
                     </div>
                 </div>
 
+                <!-- === CARTE DE RÉSULTATS === -->
                 <div id="result-section" class="card result-section">
                     <div class="card-header">
                         <h2 class="card-title">
                             <span class="material-icons-round">article</span>
-                            OCR Results
+                            Processing Results
                         </h2>
                     </div>
                     <div class="card-body">
-                        <!-- === NOUVEAU: Informations Multi-Page === -->
-                        <div class="multipage-info" id="multipage-info" style="display: none;">
-                            <h4><span class="material-icons-round"
-                                    style="vertical-align: middle; margin-right: 0.5rem;">info</span>Processing Summary
-                            </h4>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="info-label">Total Pages:</span>
-                                    <span class="info-value" id="total-pages">-</span>
+                        <!-- === NOUVEAU: Résultats AI === -->
+                        <div class="ai-results" id="ai-results" style="display: none;">
+                            <h4>🧠 AI Extraction Results</h4>
+
+                            <div class="extraction-summary">
+                                <div class="summary-item">
+                                    <span class="summary-value" id="confidence-score">-</span>
+                                    <span class="summary-label">Confidence</span>
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill" id="confidence-fill" style="width: 0%"></div>
+                                    </div>
                                 </div>
-                                <div class="info-item">
-                                    <span class="info-label">PDF Files:</span>
-                                    <span class="info-value" id="result-pdf-count">-</span>
+                                <div class="summary-item">
+                                    <span class="summary-value" id="fields-extracted">-</span>
+                                    <span class="summary-label">Fields Found</span>
                                 </div>
-                                <div class="info-item">
-                                    <span class="info-label">Image Files:</span>
-                                    <span class="info-value" id="result-image-count">-</span>
+                                <div class="summary-item">
+                                    <span class="summary-value" id="processing-time">-</span>
+                                    <span class="summary-label">Processing Time</span>
                                 </div>
-                                <div class="info-item">
-                                    <span class="info-label">Method:</span>
-                                    <span class="info-value" id="processing-method">-</span>
+                                <div class="summary-item">
+                                    <span class="summary-value" id="quality-grade">-</span>
+                                    <span class="summary-label">Quality Grade</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="tabs">
                             <div class="tab active" data-tab="text">Text Output</div>
+                            <div class="tab" data-tab="structured" style="display: none;">🧠 Structured Data</div>
                             <div class="tab" data-tab="html">HTML Render</div>
                         </div>
 
@@ -863,6 +988,23 @@
                                 <button id="download-text-btn" class="btn btn-secondary">
                                     <span class="material-icons-round btn-icon">download</span>
                                     Download as TXT
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- === NOUVEAU: Onglet données structurées === -->
+                        <div class="tab-content" id="structured-tab">
+                            <div class="structured-result" id="structured-result">
+                                <!-- Structured data will appear here -->
+                            </div>
+                            <div class="result-actions">
+                                <button id="copy-json-btn" class="btn btn-ai">
+                                    <span class="material-icons-round btn-icon">content_copy</span>
+                                    Copy JSON
+                                </button>
+                                <button id="download-json-btn" class="btn btn-ai">
+                                    <span class="material-icons-round btn-icon">download</span>
+                                    Download as JSON
                                 </button>
                             </div>
                         </div>
@@ -886,8 +1028,9 @@
 
     <footer>
         <div class="container footer-content">
-            <div class="footer-logo">GOT-OCR 2.0 Multi-Page</div>
-            <p class="footer-text">Powered by Transformers and FastAPI with PDF Support</p>
+            <div class="footer-logo">GOT-OCR 2.0 + SmolLM2</div>
+            <p class="footer-text">Powered by Transformers, FastAPI, and SmolLM2:1.7B for intelligent document
+                processing</p>
             <div class="footer-links">
                 <a href="https://github.com/ahmed00078/GOT-OCR2.0" class="footer-link" target="_blank">
                     <span class="material-icons-round">code</span>
@@ -897,6 +1040,10 @@
                     <span class="material-icons-round">description</span>
                     API Documentation
                 </a>
+                <a href="http://localhost:8000/demo" class="footer-link" target="_blank">
+                    <span class="material-icons-round">science</span>
+                    Demo Guide
+                </a>
             </div>
         </div>
     </footer>
@@ -904,11 +1051,17 @@
     <script>
         // API Configuration
         const API_URL = 'http://localhost:8000';
-        const PROCESS_ENDPOINT = `${API_URL}/process`;
+        const STANDARD_ENDPOINT = `${API_URL}/process`;
+        const SMART_ENDPOINT = `${API_URL}/smart-extract`;
 
         // DOM Elements
+        const modeToggle = document.querySelectorAll('.mode-option');
         const form = document.getElementById('ocr-form');
         const taskSelect = document.getElementById('task');
+        const extractionTypeSelect = document.getElementById('extraction_type');
+        const customInstructionsGroup = document.getElementById('custom-instructions-group');
+        const customInstructionsTextarea = document.getElementById('custom_instructions');
+        const aiExtractionFields = document.getElementById('ai-extraction-fields');
         const formatFields = document.getElementById('format-fields');
         const boxFields = document.getElementById('box-fields');
         const colorFields = document.getElementById('color-fields');
@@ -918,23 +1071,67 @@
         const submitBtn = document.getElementById('submit-btn');
         const alertContainer = document.getElementById('alert-container');
         const resultSection = document.getElementById('result-section');
+        const aiResults = document.getElementById('ai-results');
         const textResult = document.getElementById('text-result');
+        const structuredResult = document.getElementById('structured-result');
         const htmlPreview = document.getElementById('html-preview');
-        const copyTextBtn = document.getElementById('copy-text-btn');
-        const downloadTextBtn = document.getElementById('download-text-btn');
-        const downloadHtmlBtn = document.getElementById('download-html-btn');
 
-        // === NOUVEAUX ÉLÉMENTS ===
-        const fileStats = document.getElementById('file-stats');
-        const imageCount = document.getElementById('image-count');
-        const pdfCount = document.getElementById('pdf-count');
-        const estimatedPages = document.getElementById('estimated-pages');
-        const multipageInfo = document.getElementById('multipage-info');
-
-        // Selected files storage
+        // File and mode management
         let selectedFiles = [];
+        let currentMode = 'standard'; // 'standard' or 'smart'
 
-        // Show conditional fields based on task selection
+        // === NOUVEAU: Mode toggle functionality ===
+        modeToggle.forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove active class from all buttons
+                modeToggle.forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                // Update current mode
+                currentMode = this.dataset.mode;
+
+                // Toggle AI fields visibility
+                if (currentMode === 'smart') {
+                    aiExtractionFields.classList.add('show');
+                    document.body.classList.add('ai-mode');
+                    updateSubmitButtonForAI();
+                } else {
+                    aiExtractionFields.classList.remove('show');
+                    document.body.classList.remove('ai-mode');
+                    updateSubmitButtonForStandard();
+                }
+
+                updateSubmitButton();
+            });
+        });
+
+        // === NOUVEAU: Extraction type change handler ===
+        extractionTypeSelect.addEventListener('change', function () {
+            if (this.value === 'custom') {
+                customInstructionsGroup.style.display = 'block';
+                customInstructionsTextarea.required = true;
+            } else {
+                customInstructionsGroup.style.display = 'none';
+                customInstructionsTextarea.required = false;
+            }
+            updateSubmitButton();
+        });
+
+        function updateSubmitButtonForAI() {
+            submitBtn.className = 'btn btn-ai btn-block';
+            submitBtn.querySelector('.btn-icon').textContent = 'psychology';
+            submitBtn.querySelector('span:last-child').textContent = '🧠 Smart Extract';
+        }
+
+        function updateSubmitButtonForStandard() {
+            submitBtn.className = 'btn btn-primary btn-block';
+            submitBtn.querySelector('.btn-icon').textContent = 'auto_fix_high';
+            submitBtn.querySelector('span:last-child').textContent = 'Process Files';
+        }
+
+        // Task selection logic (unchanged but enhanced)
         taskSelect.addEventListener('change', function () {
             // Hide all conditional fields first
             formatFields.style.display = 'none';
@@ -958,11 +1155,10 @@
                 colorFields.style.display = 'block';
             }
 
-            // Enable submit button if files are selected
             updateSubmitButton();
         });
 
-        // File drag and drop handling
+        // File handling (enhanced)
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             fileDropArea.addEventListener(eventName, preventDefaults, false);
         });
@@ -1003,11 +1199,10 @@
         function handleFiles(files) {
             selectedFiles = Array.from(files);
             updateThumbnails();
-            updateFileStatistics(); // === NOUVEAU ===
+            updateFileStatistics();
             updateSubmitButton();
         }
 
-        // === NOUVELLE FONCTION: Mise à jour des statistiques ===
         function updateFileStatistics() {
             let imageFileCount = 0;
             let pdfFileCount = 0;
@@ -1016,20 +1211,18 @@
             selectedFiles.forEach(file => {
                 if (file.type.startsWith('image/')) {
                     imageFileCount++;
-                    estimatedPageCount++; // 1 image = 1 page
+                    estimatedPageCount++;
                 } else if (file.type === 'application/pdf') {
                     pdfFileCount++;
-                    estimatedPageCount += 5; // Estimation: 1 PDF = ~5 pages
+                    estimatedPageCount += 5;
                 }
             });
 
-            // Mettre à jour l'affichage
-            imageCount.textContent = `${imageFileCount} image${imageFileCount !== 1 ? 's' : ''}`;
-            pdfCount.textContent = `${pdfFileCount} PDF${pdfFileCount !== 1 ? 's' : ''}`;
-            estimatedPages.textContent = `~${estimatedPageCount} page${estimatedPageCount !== 1 ? 's' : ''}`;
+            document.getElementById('image-count').textContent = `${imageFileCount} image${imageFileCount !== 1 ? 's' : ''}`;
+            document.getElementById('pdf-count').textContent = `${pdfFileCount} PDF${pdfFileCount !== 1 ? 's' : ''}`;
+            document.getElementById('estimated-pages').textContent = `~${estimatedPageCount} page${estimatedPageCount !== 1 ? 's' : ''}`;
 
-            // Afficher/masquer les statistiques
-            fileStats.style.display = selectedFiles.length > 0 ? 'flex' : 'none';
+            document.getElementById('file-stats').style.display = selectedFiles.length > 0 ? 'flex' : 'none';
         }
 
         function updateThumbnails() {
@@ -1040,14 +1233,12 @@
                 thumbnail.className = 'thumbnail';
 
                 if (file.type === 'application/pdf') {
-                    // === NOUVEAU: Thumbnail pour PDF ===
                     thumbnail.classList.add('pdf');
                     thumbnail.innerHTML = `
                         <span class="material-icons-round pdf-icon">picture_as_pdf</span>
                         <div class="pdf-name">${file.name}</div>
                     `;
                 } else if (file.type.match('image.*')) {
-                    // Thumbnail pour image
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const img = document.createElement('img');
@@ -1055,12 +1246,8 @@
                         thumbnail.appendChild(img);
                     };
                     reader.readAsDataURL(file);
-                } else {
-                    showAlert('Only image and PDF files are supported', 'error');
-                    return;
                 }
 
-                // Bouton de suppression
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'remove-btn';
                 removeBtn.innerHTML = '×';
@@ -1068,7 +1255,7 @@
                     e.preventDefault();
                     selectedFiles.splice(index, 1);
                     updateThumbnails();
-                    updateFileStatistics(); // === NOUVEAU ===
+                    updateFileStatistics();
                     updateSubmitButton();
                 });
 
@@ -1078,10 +1265,15 @@
         }
 
         function updateSubmitButton() {
-            submitBtn.disabled = selectedFiles.length === 0 || !taskSelect.value;
+            const hasFiles = selectedFiles.length > 0;
+            const hasTask = taskSelect.value;
+            const hasExtractionType = currentMode === 'standard' || extractionTypeSelect.value;
+            const hasCustomInstructions = extractionTypeSelect.value !== 'custom' || customInstructionsTextarea.value.trim();
+
+            submitBtn.disabled = !(hasFiles && hasTask && hasExtractionType && hasCustomInstructions);
         }
 
-        // Form submission
+        // === NOUVEAU: Form submission with mode detection ===
         form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
@@ -1092,26 +1284,48 @@
 
             // Create FormData
             const formData = new FormData();
-            formData.append('task', taskSelect.value);
+            formData.append('task', taskSelect.value || 'Multi-page OCR');
 
-            // Add conditional fields based on task
-            if (taskSelect.value === 'Format Text OCR' ||
-                taskSelect.value === 'Multi-crop OCR' ||
-                taskSelect.value === 'Multi-page OCR') {
-                formData.append('ocr_type', document.getElementById('ocr_type').value);
-            }
-
-            if (taskSelect.value === 'Fine-grained OCR (Box)') {
-                const boxValue = document.getElementById('ocr_box').value;
-                if (!boxValue) {
-                    showAlert('Please enter bounding box coordinates', 'warning');
+            // Add mode-specific fields
+            if (currentMode === 'smart') {
+                if (!extractionTypeSelect.value) {
+                    showAlert('Please select an extraction type for Smart Extract', 'warning');
                     return;
                 }
-                formData.append('ocr_box', boxValue);
-            }
 
-            if (taskSelect.value === 'Fine-grained OCR (Color)') {
-                formData.append('ocr_color', document.getElementById('ocr_color').value);
+                formData.append('extraction_type', extractionTypeSelect.value);
+
+                if (extractionTypeSelect.value === 'custom') {
+                    const instructions = customInstructionsTextarea.value.trim();
+                    if (!instructions) {
+                        showAlert('Please provide custom instructions', 'warning');
+                        return;
+                    }
+                    formData.append('custom_instructions', instructions);
+                }
+
+                // Default to format for smart extraction
+                formData.append('ocr_type', 'format');
+            } else {
+                // Standard OCR fields
+                if (taskSelect.value === 'Format Text OCR' ||
+                    taskSelect.value === 'Multi-crop OCR' ||
+                    taskSelect.value === 'Multi-page OCR') {
+                    formData.append('ocr_type', document.getElementById('ocr_type').value);
+                }
+
+                if (taskSelect.value === 'Fine-grained OCR (Box)') {
+                    const boxValue = document.getElementById('ocr_box').value;
+                    if (!boxValue) {
+                        showAlert('Please enter bounding box coordinates', 'warning');
+                        return;
+                    }
+                    formData.append('ocr_box', boxValue);
+                }
+
+                if (taskSelect.value === 'Fine-grained OCR (Color)') {
+                    formData.append('ocr_color', document.getElementById('ocr_color').value);
+                }
             }
 
             // Add all selected files
@@ -1121,13 +1335,18 @@
 
             // Show loading state
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<div class="spinner"></div> Processing...';
+            const originalContent = submitBtn.innerHTML;
+            const spinnerClass = currentMode === 'smart' ? 'spinner ai-spinner' : 'spinner';
+            const loadingText = currentMode === 'smart' ? '🧠 AI Processing...' : 'Processing...';
+            submitBtn.innerHTML = `<div class="${spinnerClass}"></div> ${loadingText}`;
 
             try {
+                const endpoint = currentMode === 'smart' ? SMART_ENDPOINT : STANDARD_ENDPOINT;
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes pour multi-page
+                const timeoutDuration = currentMode === 'smart' ? 180000 : 300000; // 3 min for smart, 5 min for standard
+                const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
-                const response = await fetch(PROCESS_ENDPOINT, {
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     body: formData,
                     signal: controller.signal
@@ -1141,36 +1360,55 @@
                 }
 
                 const result = await response.json();
-                displayResults(result);
+                displayResults(result, currentMode);
                 showAlert('Processing completed successfully!', 'success');
             } catch (error) {
                 if (error.name === 'AbortError') {
-                    showAlert('Request timed out. Large PDFs may take longer to process.', 'warning');
+                    showAlert('Request timed out. Large files may take longer to process.', 'warning');
                 } else {
                     showAlert(`Error: ${error.message}`, 'error');
                 }
             } finally {
                 // Reset loading state
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span class="material-icons-round btn-icon">auto_fix_high</span><span>Process Files</span>';
+                submitBtn.innerHTML = originalContent;
+                updateSubmitButton();
             }
         });
 
-        // Display results - Enhanced for multi-page
-        function displayResults(result) {
+        // === NOUVEAU: Enhanced result display for AI mode ===
+        function displayResults(result, mode) {
             // Show result section
             resultSection.style.display = 'block';
 
             // Display text result
             textResult.textContent = result.text || 'No text extracted';
 
-            // === NOUVEAU: Afficher les informations multi-page ===
-            if (result.multipage_info) {
-                multipageInfo.style.display = 'block';
-                document.getElementById('total-pages').textContent = result.multipage_info.total_pages;
-                document.getElementById('result-pdf-count').textContent = result.multipage_info.pdf_count;
-                document.getElementById('result-image-count').textContent = result.multipage_info.image_count;
-                document.getElementById('processing-method').textContent = result.multipage_info.processing_method;
+            // === NOUVEAU: AI Results display ===
+            if (mode === 'smart' && result.extraction_result) {
+                aiResults.style.display = 'block';
+
+                // Show structured data tab
+                document.querySelector('.tab[data-tab="structured"]').style.display = 'block';
+
+                // Update AI summary
+                const extractionResult = result.extraction_result;
+                const qualityMetrics = result.quality_metrics || {};
+
+                document.getElementById('confidence-score').textContent = (extractionResult.confidence * 100).toFixed(1) + '%';
+                document.getElementById('confidence-fill').style.width = (extractionResult.confidence * 100) + '%';
+                document.getElementById('fields-extracted').textContent = Object.keys(extractionResult.extracted_data || {}).length;
+                document.getElementById('processing-time').textContent = (extractionResult.processing_time || 0).toFixed(1) + 's';
+                document.getElementById('quality-grade').textContent = qualityMetrics.quality_grade || 'N/A';
+
+                // Display structured data
+                structuredResult.innerHTML = `<pre><code>${JSON.stringify(extractionResult.extracted_data, null, 2)}</code></pre>`;
+
+                // Show AI-specific alert
+                showAlert(`🧠 AI extraction completed with ${(extractionResult.confidence * 100).toFixed(1)}% confidence`, 'ai');
+            } else {
+                aiResults.style.display = 'none';
+                document.querySelector('.tab[data-tab="structured"]').style.display = 'none';
             }
 
             // Display HTML result if available
@@ -1180,70 +1418,31 @@
                 const url = URL.createObjectURL(blob);
                 htmlPreview.src = url;
 
-                // Enable HTML tab
                 document.querySelector('.tab[data-tab="html"]').style.display = 'block';
-                downloadHtmlBtn.style.display = 'inline-flex';
+                document.getElementById('download-html-btn').style.display = 'inline-flex';
             } else {
-                // Hide HTML tab if not available
                 document.querySelector('.tab[data-tab="html"]').style.display = 'none';
-                downloadHtmlBtn.style.display = 'none';
+                document.getElementById('download-html-btn').style.display = 'none';
             }
 
             // Scroll to results
             resultSection.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Tab switching
+        // === NOUVEAU: Enhanced tab switching ===
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function () {
-                // Remove active class from all tabs
+                if (this.style.display === 'none') return;
+
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-                // Add active class to clicked tab
                 this.classList.add('active');
                 document.getElementById(`${this.dataset.tab}-tab`).classList.add('active');
             });
         });
 
-        // Copy text button
-        copyTextBtn.addEventListener('click', function () {
-            const text = textResult.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = this.innerHTML;
-                this.innerHTML = '<span class="material-icons-round btn-icon">check</span> Copied!';
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                }, 2000);
-            });
-        });
-
-        // Download text button
-        downloadTextBtn.addEventListener('click', function () {
-            const text = textResult.textContent;
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `multipage-ocr-result-${new Date().toISOString().slice(0, 10)}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-
-        // Download HTML button
-        downloadHtmlBtn.addEventListener('click', function () {
-            const htmlContent = htmlPreview.src;
-            const a = document.createElement('a');
-            a.href = htmlContent;
-            a.download = `multipage-ocr-result-${new Date().toISOString().slice(0, 10)}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        });
-
-        // Alert handling
+        // === NOUVEAU: Enhanced alert system ===
         function showAlert(message, type) {
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
@@ -1259,6 +1458,9 @@
                 case 'warning':
                     icon = 'warning';
                     break;
+                case 'ai':
+                    icon = 'psychology';
+                    break;
                 default:
                     icon = 'info';
             }
@@ -1271,11 +1473,73 @@
             alertContainer.innerHTML = '';
             alertContainer.appendChild(alert);
 
-            // Auto-dismiss after 7 seconds (plus long pour multi-page)
             setTimeout(() => {
                 alert.remove();
-            }, 7000);
+            }, type === 'ai' ? 8000 : 7000);
         }
+
+        // === NOUVEAU: Copy and download functions for structured data ===
+        document.getElementById('copy-json-btn')?.addEventListener('click', function () {
+            const jsonContent = structuredResult.textContent;
+            navigator.clipboard.writeText(jsonContent).then(() => {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="material-icons-round btn-icon">check</span> Copied!';
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+
+        document.getElementById('download-json-btn')?.addEventListener('click', function () {
+            const jsonContent = structuredResult.textContent;
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-extraction-result-${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // Existing copy/download functions (unchanged)
+        document.getElementById('copy-text-btn').addEventListener('click', function () {
+            const text = textResult.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="material-icons-round btn-icon">check</span> Copied!';
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+
+        document.getElementById('download-text-btn').addEventListener('click', function () {
+            const text = textResult.textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ocr-result-${new Date().toISOString().slice(0, 10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('download-html-btn').addEventListener('click', function () {
+            const htmlContent = htmlPreview.src;
+            const a = document.createElement('a');
+            a.href = htmlContent;
+            a.download = `ocr-result-${new Date().toISOString().slice(0, 10)}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+        // Initialize the interface
+        updateSubmitButton();
     </script>
 </body>
 

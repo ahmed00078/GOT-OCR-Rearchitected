@@ -1,6 +1,6 @@
-# File: config.py - Version Multi-Page Enhanced
+# File: config.py - Updated with SmolLM2 integration
 """
-Configuration settings for GOT-OCR 2.0 API - Multi-Page Support
+Configuration settings for GOT-OCR 2.0 API + SmolLM2 Reasoning
 """
 
 import os
@@ -10,12 +10,12 @@ import torch
 
 
 class Config:
-    """Configuration class for GOT-OCR 2.0 API - Enhanced for Multi-Page"""
+    """Configuration class for GOT-OCR 2.0 + SmolLM2 API"""
     
     # Application settings
-    APP_TITLE: str = "GOT-OCR 2.0 API - Multi-Page Edition"
-    APP_DESCRIPTION: str = description
-    APP_VERSION: str = "2.1"
+    APP_TITLE: str = "GOT-OCR 2.0 + SmolLM2 API"
+    APP_DESCRIPTION: str = description + "\n\n🧠 **Enhanced with SmolLM2:1.7B** for intelligent information extraction!"
+    APP_VERSION: str = "2.2"
     
     CONTACT_INFO: Dict[str, str] = {
         "name": "API Support",
@@ -30,19 +30,38 @@ class Config:
     # CORS settings
     CORS_ORIGINS: List[str] = ["*"]
     
-    # Model settings
+    # === OCR MODEL SETTINGS ===
     MODEL_NAME: str = "stepfun-ai/GOT-OCR-2.0-hf"
     MAX_NEW_TOKENS: int = 4096
     STOP_STRINGS: str = "<|im_end|>"
+    
+    # === NOUVEAU: SMOLLM2 SETTINGS ===
+    REASONING_MODEL_NAME: str = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
+    REASONING_MAX_TOKENS: int = 512
+    REASONING_TEMPERATURE: float = 0.1  # Très déterministe
+    REASONING_BATCH_SIZE: int = 3       # Petit batch pour efficacité
+    
+    # Enable/disable reasoning features
+    ENABLE_REASONING: bool = True
+    ENABLE_QUANTIZATION: bool = True    # 8-bit quantization pour SmolLM2
+    REASONING_TIMEOUT: int = 30         # Timeout en secondes
     
     # Processing settings
     SUPPORTED_TASKS: List[str] = tasks
     SUPPORTED_OCR_TYPES: List[str] = ocr_types
     SUPPORTED_OCR_COLORS: List[str] = ocr_colors
     
-    # === NOUVEAUX PARAMÈTRES POUR MULTI-PAGE ===
+    # === NOUVEAUX TYPES D'EXTRACTION ===
+    SUPPORTED_EXTRACTION_TYPES: List[str] = [
+        "carbon_footprint",
+        "technical_specs", 
+        "financial_data",
+        "contact_info",
+        "custom"
+    ]
     
-    MAX_FILE_SIZE: int = 50 * 1024 * 1024  # 50MB max pour images
+    # PDF Processing settings (inchangé)
+    MAX_FILE_SIZE: int = 50 * 1024 * 1024
     MAX_PDF_SIZE: int = 100 * 1024 * 1024 
     SUPPORTED_FORMATS: List[str] = [
         "image/jpeg", 
@@ -51,24 +70,23 @@ class Config:
         "application/pdf"
     ]
     
-    # PDF Processing settings
     PDF_CONVERSION_DPI: int = 300
     PDF_MAX_PAGES: int = 50
     PDF_OUTPUT_FORMAT: str = "PNG"
-    PDF_MEMORY_LIMIT_MB: int = 500 # Limite mémoire pour gros PDFs
+    PDF_MEMORY_LIMIT_MB: int = 500
     
     # Multi-page specific settings
     MULTIPAGE_MAX_FILES: int = 20
     MULTIPAGE_BATCH_SIZE: int = 5
-    MULTIPAGE_CONCAT_SEPARATOR: str = "\n\n--- Page {} ---\n\n"  # Séparateur entre pages
+    MULTIPAGE_CONCAT_SEPARATOR: str = "\n\n--- Page {} ---\n\n"
     
     # Performance settings
     LOW_CPU_MEM_USAGE: bool = True
     USE_GPU_IF_AVAILABLE: bool = True
     
     # Timeout settings
-    UVICORN_TIMEOUT: int = int(os.getenv("UVICORN_TIMEOUT", "600"))  # 10 minutes
-    PDF_CONVERSION_TIMEOUT: int = 300  # 5 minutes max pour conversion PDF
+    UVICORN_TIMEOUT: int = int(os.getenv("UVICORN_TIMEOUT", "600"))
+    PDF_CONVERSION_TIMEOUT: int = 300
     
     # Environment optimization
     OMP_NUM_THREADS: int = int(os.getenv("OMP_NUM_THREADS", "4"))
@@ -76,7 +94,7 @@ class Config:
     NUMEXPR_NUM_THREADS: int = int(os.getenv("NUMEXPR_NUM_THREADS", "4"))
     TOKENIZERS_PARALLELISM: bool = os.getenv("TOKENIZERS_PARALLELISM", "true").lower() == "true"
     
-    # === DESCRIPTIONS MISES À JOUR POUR L'API ===
+    # === NOUVELLES DESCRIPTIONS POUR L'API ===
     TASK_DESCRIPTIONS: Dict[str, str] = {
         "task": (
             "Select the type of OCR processing to perform. Available options:\n\n"
@@ -85,7 +103,22 @@ class Config:
             "- **Fine-grained OCR (Box)**: Extract text from specific regions using coordinates\n"
             "- **Fine-grained OCR (Color)**: Extract text from color-highlighted regions\n"
             "- **Multi-crop OCR**: Process multiple image regions automatically\n"
-            "- **Multi-page OCR**: 🆕 Process multi-page documents (PDFs or image sequences)"
+            "- **Multi-page OCR**: 🆕 Process multi-page documents (PDFs or image sequences)\n"
+            "- **🧠 Smart Extract**: OCR + AI reasoning for structured data extraction"
+        ),
+        "extraction_type": (
+            "🧠 **AI-Powered Information Extraction** (requires SmolLM2):\n\n"
+            "- **carbon_footprint**: Extract environmental data (CO2, energy consumption)\n"
+            "- **technical_specs**: Extract product specifications and technical details\n"
+            "- **financial_data**: Extract prices, costs, financial metrics\n"
+            "- **contact_info**: Extract names, emails, phones, addresses\n"
+            "- **custom**: Custom extraction with your own instructions\n\n"
+            "💡 Combines OCR with intelligent reasoning for structured output!"
+        ),
+        "custom_instructions": (
+            "For 'custom' extraction type, provide specific instructions:\n\n"
+            "Example: 'Extract all product names, prices, and warranty information'\n"
+            "Be specific about what data you want and in what format."
         ),
         "ocr_type": (
             "Required for formatted outputs. Use 'format' to enable structured text output.\n\n"
@@ -111,21 +144,22 @@ class Config:
             "- TIFF (max 50MB)\n\n"
             "**Documents:** 🆕\n"
             "- PDF (max 100MB, up to 50 pages)\n\n"
-            "**Multi-page tips:**\n"
-            "- Upload ONE PDF for automatic page extraction\n"
-            "- Or upload multiple images in correct order\n"
-            "- Mix of PDFs and images supported but not recommended"
+            "**🧠 Smart Processing:**\n"
+            "- Automatic OCR + AI reasoning\n"
+            "- Structured data extraction\n"
+            "- High confidence scoring"
         )
     }
     
-    # === NOUVEAUX PARAMÈTRES DE LOGGING ===
-    ENABLE_PDF_LOGGING: bool = True
-    LOG_PDF_CONVERSION_DETAILS: bool = True
-    
-    # === PARAMÈTRES DE CACHE ===
-    ENABLE_PDF_CACHE: bool = False
-    PDF_CACHE_DIR: str = "/tmp/got_ocr_pdf_cache"
-    PDF_CACHE_EXPIRY_HOURS: int = 24
+    # === PARAMÈTRES SPÉCIFIQUES RAISONNEMENT ===
+    REASONING_CONFIG: Dict[str, Any] = {
+        "enable_caching": True,           # Cache des résultats pour performance
+        "max_context_length": 2000,      # Limite du contexte pour SmolLM2
+        "confidence_threshold": 0.5,     # Seuil de confiance minimum
+        "fallback_to_regex": True,       # Fallback regex si AI échoue
+        "parallel_processing": False,    # Désactivé pour SmolLM2:1.7B
+        "memory_optimization": True      # Optimisations mémoire
+    }
     
     @property
     def device_preference(self) -> str:
@@ -134,43 +168,63 @@ class Config:
             return "cuda" if torch.cuda.is_available() else "cpu"
         return "cpu"
     
+    @property
+    def reasoning_enabled(self) -> bool:
+        """Check if reasoning features are enabled"""
+        return self.ENABLE_REASONING
+    
     # === NOUVELLES MÉTHODES UTILITAIRES ===
     
-    def get_pdf_settings(self) -> Dict[str, Any]:
-        """Get all PDF-related settings in one dictionary"""
+    def get_reasoning_settings(self) -> Dict[str, Any]:
+        """Get all reasoning-related settings"""
         return {
-            "max_size_mb": self.MAX_PDF_SIZE / (1024 * 1024),
-            "max_pages": self.PDF_MAX_PAGES,
-            "conversion_dpi": self.PDF_CONVERSION_DPI,
-            "output_format": self.PDF_OUTPUT_FORMAT,
-            "timeout_seconds": self.PDF_CONVERSION_TIMEOUT,
-            "memory_limit_mb": self.PDF_MEMORY_LIMIT_MB
+            "model_name": self.REASONING_MODEL_NAME,
+            "max_tokens": self.REASONING_MAX_TOKENS,
+            "temperature": self.REASONING_TEMPERATURE,
+            "batch_size": self.REASONING_BATCH_SIZE,
+            "enable_quantization": self.ENABLE_QUANTIZATION,
+            "timeout": self.REASONING_TIMEOUT,
+            "config": self.REASONING_CONFIG
         }
     
-    def get_multipage_settings(self) -> Dict[str, Any]:
-        """Get all multi-page related settings"""
+    def get_memory_settings(self) -> Dict[str, Any]:
+        """Get memory optimization settings"""
         return {
-            "max_files": self.MULTIPAGE_MAX_FILES,
-            "batch_size": self.MULTIPAGE_BATCH_SIZE,
-            "page_separator": self.MULTIPAGE_CONCAT_SEPARATOR,
-            "supported_formats": self.SUPPORTED_FORMATS
+            "low_cpu_mem_usage": self.LOW_CPU_MEM_USAGE,
+            "enable_quantization": self.ENABLE_QUANTIZATION,
+            "use_gpu": self.USE_GPU_IF_AVAILABLE,
+            "pdf_memory_limit_mb": self.PDF_MEMORY_LIMIT_MB,
+            "reasoning_max_context": self.REASONING_CONFIG["max_context_length"]
         }
     
-    def is_pdf_supported(self) -> bool:
-        """Check if PDF support is enabled"""
-        return "application/pdf" in self.SUPPORTED_FORMATS
+    def validate_extraction_type(self, extraction_type: str) -> bool:
+        """Validate extraction type"""
+        return extraction_type in self.SUPPORTED_EXTRACTION_TYPES
     
-    def validate_config(self) -> List[str]:
-        """Validate configuration and return any warnings"""
-        warnings = []
-        
-        if self.PDF_MAX_PAGES > 100:
-            warnings.append("PDF_MAX_PAGES > 100 may cause memory issues")
-        
-        if self.PDF_CONVERSION_DPI > 400:
-            warnings.append("PDF_CONVERSION_DPI > 400 may be slow")
-        
-        if self.MAX_PDF_SIZE > 200 * 1024 * 1024:
-            warnings.append("MAX_PDF_SIZE > 200MB may cause timeouts")
-        
-        return warnings
+    def get_performance_config(self) -> Dict[str, Any]:
+        """Get performance configuration for both OCR and reasoning"""
+        return {
+            "ocr_config": {
+                "max_new_tokens": self.MAX_NEW_TOKENS,
+                "low_cpu_mem_usage": self.LOW_CPU_MEM_USAGE,
+                "multipage_batch_size": self.MULTIPAGE_BATCH_SIZE
+            },
+            "reasoning_config": {
+                "max_tokens": self.REASONING_MAX_TOKENS,
+                "temperature": self.REASONING_TEMPERATURE,
+                "batch_size": self.REASONING_BATCH_SIZE,
+                "enable_quantization": self.ENABLE_QUANTIZATION
+            },
+            "system_config": {
+                "omp_threads": self.OMP_NUM_THREADS,
+                "mkl_threads": self.MKL_NUM_THREADS,
+                "device": self.device_preference
+            }
+        }
+    
+    def get_enhanced_task_list(self) -> List[str]:
+        """Get task list including new AI-powered tasks"""
+        enhanced_tasks = self.SUPPORTED_TASKS.copy()
+        if self.reasoning_enabled:
+            enhanced_tasks.append("Smart Extract (OCR + AI)")
+        return enhanced_tasks
