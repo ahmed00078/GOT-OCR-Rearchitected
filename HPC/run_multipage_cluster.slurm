@@ -6,7 +6,7 @@
 #SBATCH --output=got-ocr-v2-multipage-%j.out
 #SBATCH --error=got-ocr-v2-multipage-%j.err
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=64G
+#SBATCH --mem=32G
 
 echo "=================================================="
 echo "GOT-OCR 2.0 Multi-Page - Job ID: $SLURM_JOB_ID"

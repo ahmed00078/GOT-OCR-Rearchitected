@@ -7,6 +7,8 @@ HPC/got-ocr-optimized.sif
 
 HPC/got-ocr-multipage.sif
 
+HPC/got-ocr-reasoning.sif
+
 models/__pycache__/
 
 server/__pycache__/

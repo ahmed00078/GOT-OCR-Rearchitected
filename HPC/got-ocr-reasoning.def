@@ -1,0 +1,352 @@
+Bootstrap: docker
+From: python:3.9-slim
+
+%labels
+    Author Ahmed
+    Version 3.0
+    Description "GOT-OCR 2.0 + SmolLM2 Reasoning Service Container"
+
+%files
+    # Fichiers principaux
+    main.py /app/main.py
+    config.py /app/config.py
+    globe.py /app/globe.py
+    render.py /app/render.py
+    requirements.txt /app/requirements.txt
+    
+    # Modules models
+    models/__init__.py /app/models/__init__.py
+    models/ocr_model.py /app/models/ocr_model.py
+    
+    # Modules services (avec SmolLM2)
+    services/__init__.py /app/services/__init__.py
+    services/ocr_service.py /app/services/ocr_service.py
+    services/pdf_service.py /app/services/pdf_service.py
+    services/reasoning_service.py /app/services/reasoning_service.py
+    services/enhanced_ocr_service.py /app/services/enhanced_ocr_service.py
+    
+    # Modules utils
+    utils/__init__.py /app/utils/__init__.py
+    utils/logger.py /app/utils/logger.py
+    utils/validators.py /app/utils/validators.py
+    
+    # Répertoires statiques
+    render_tools/ /app/
+    frontend/ /app/
+    static/ /app/
+
+%environment
+    export PYTHONPATH="/app:$PYTHONPATH"
+    
+    # === OPTIMISATIONS CPU/GPU ===
+    export OMP_NUM_THREADS=8
+    export MKL_NUM_THREADS=8
+    export NUMEXPR_NUM_THREADS=8
+    export TOKENIZERS_PARALLELISM=true
+    
+    # === VARIABLES CUDA ===
+    export NVIDIA_VISIBLE_DEVICES=all
+    export NVIDIA_DRIVER_CAPABILITIES=all
+    export CUDA_LAUNCH_BLOCKING=0
+    export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:256
+    
+    # === CONFIGURATION OCR ===
+    export UVICORN_TIMEOUT=1200
+    export PDF_CONVERSION_DPI=300
+    export PDF_MAX_PAGES=50
+    export MULTIPAGE_BATCH_SIZE=5
+    export PDF_CONVERSION_TIMEOUT=300
+    
+    # === CONFIGURATION SmolLM2 REASONING ===
+    export REASONING_ENABLED=true
+    export ENABLE_QUANTIZATION=true
+    export REASONING_TIMEOUT=180
+    export REASONING_BATCH_SIZE=2
+    export REASONING_MAX_CONTEXT=2000
+    
+    # === CONFIGURATION MÉMOIRE ===
+    export LOW_CPU_MEM_USAGE=true
+    export USE_GPU_IF_AVAILABLE=true
+
+%post
+    echo "[INFO] ===================="
+    echo "[INFO] GOT-OCR 2.0 + SmolLM2 Container Build"
+    echo "[INFO] ===================="
+    
+    # === INSTALLATION DÉPENDANCES SYSTÈME ===
+    echo "[INFO] Installation des dépendances système..."
+    apt-get update && apt-get install -y \
+        git \
+        curl \
+        wget \
+        libgl1 \
+        libglib2.0-0 \
+        libomp5 \
+        libgomp1 \
+        poppler-utils \
+        libpoppler-cpp-dev \
+        pkg-config \
+        build-essential \
+        && rm -rf /var/lib/apt/lists/*
+    
+    # === VÉRIFICATION CRITIQUE POPPLER ===
+    echo "[INFO] Vérification de poppler-utils..."
+    which pdftoppm || (echo "[ERROR] poppler-utils installation failed" && exit 1)
+    echo "[INFO] poppler-utils: OK"
+    
+    # === MISE À JOUR PIP ===
+    echo "[INFO] Mise à jour de pip..."
+    pip install --upgrade pip
+    
+    # === INSTALLATION REQUIREMENTS PYTHON ===
+    echo "[INFO] Installation des requirements Python..."
+    pip install --no-cache-dir -r /app/requirements.txt
+    
+    # === INSTALLATION DÉPENDANCES SmolLM2 ===
+    echo "[INFO] Installation des dépendances SmolLM2..."
+    pip install --no-cache-dir \
+        optimum \
+        bitsandbytes \
+        sentencepiece \
+        protobuf
+    
+    # === PRÉ-TÉLÉCHARGEMENT MODÈLES (OPTIONNEL POUR HPC) ===
+    echo "[INFO] Configuration des modèles..."
+    # Note: Sur cluster, les modèles seront téléchargés au premier lancement
+    # pour éviter les timeouts de build
+    
+    # === VÉRIFICATION FINALE ===
+    echo "[INFO] Vérification des installations..."
+    python -c "
+import sys
+print(f'Python version: {sys.version}')
+
+try:
+    import torch
+    print(f'PyTorch: {torch.__version__}')
+    print(f'CUDA available: {torch.cuda.is_available()}')
+except ImportError as e:
+    print(f'PyTorch import error: {e}')
+
+try:
+    import transformers
+    print(f'Transformers: {transformers.__version__}')
+except ImportError as e:
+    print(f'Transformers import error: {e}')
+
+try:
+    import fastapi
+    print(f'FastAPI: {fastapi.__version__}')
+except ImportError as e:
+    print(f'FastAPI import error: {e}')
+
+try:
+    import pdf2image
+    print('pdf2image: OK')
+except ImportError as e:
+    print(f'pdf2image import error: {e}')
+
+try:
+    import fitz
+    print('PyMuPDF: OK')
+except ImportError as e:
+    print(f'PyMuPDF import error: {e}')
+
+try:
+    import optimum
+    print('Optimum: OK')
+except ImportError as e:
+    print(f'Optimum import error: {e}')
+
+try:
+    import bitsandbytes
+    print('BitsAndBytes: OK')
+except ImportError as e:
+    print(f'BitsAndBytes import error: {e}')
+"
+    
+    echo "[INFO] Configuration terminée avec succès!"
+
+%runscript
+    cd /app
+    echo "[INFO] =========================================="
+    echo "[INFO] GOT-OCR 2.0 + SmolLM2 Reasoning Service"
+    echo "[INFO] =========================================="
+    
+    # === VÉRIFICATION DE LA STRUCTURE ===
+    echo "[INFO] Vérification de la structure des fichiers..."
+    
+    # Fichiers principaux
+    if [ ! -f "/app/main.py" ]; then
+        echo "[ERREUR] Fichier main.py manquant!"
+        exit 1
+    fi
+    
+    # Répertoires essentiels
+    for dir in "models" "services" "utils"; do
+        if [ ! -d "/app/$dir" ]; then
+            echo "[ERREUR] Répertoire $dir manquant!"
+            exit 1
+        fi
+    done
+    
+    # === VÉRIFICATION SPÉCIFIQUE SmolLM2 ===
+    echo "[INFO] Vérification des composants SmolLM2..."
+    
+    if [ ! -f "/app/services/reasoning_service.py" ]; then
+        echo "[ERREUR] Service de raisonnement SmolLM2 manquant!"
+        exit 1
+    fi
+    
+    if [ ! -f "/app/services/enhanced_ocr_service.py" ]; then
+        echo "[ERREUR] Service OCR amélioré manquant!"
+        exit 1
+    fi
+    
+    # === VÉRIFICATION PDF ===
+    if [ ! -f "/app/services/pdf_service.py" ]; then
+        echo "[ERREUR] Service PDF manquant!"
+        exit 1
+    fi
+    
+    echo "[INFO] Structure des fichiers validée ✓"
+    
+    # === INFORMATIONS SYSTÈME ===
+    echo "[INFO] ========== Informations système =========="
+    echo "[INFO] Python version: $(python --version)"
+    echo "[INFO] Working directory: $(pwd)"
+    echo "[INFO] PYTHONPATH: $PYTHONPATH"
+    echo "[INFO] Node: $(hostname)"
+    echo "[INFO] Date: $(date)"
+    
+    # === VÉRIFICATION ENVIRONNEMENT ===
+    echo "[INFO] ========== Variables d'environnement =========="
+    echo "[INFO] OMP_NUM_THREADS: $OMP_NUM_THREADS"
+    echo "[INFO] REASONING_ENABLED: $REASONING_ENABLED"
+    echo "[INFO] ENABLE_QUANTIZATION: $ENABLE_QUANTIZATION"
+    echo "[INFO] PDF_MAX_PAGES: $PDF_MAX_PAGES"
+    echo "[INFO] UVICORN_TIMEOUT: $UVICORN_TIMEOUT"
+    
+    # === VÉRIFICATION POPPLER ===
+    echo "[INFO] ========== Vérification PDF Support =========="
+    echo "[INFO] poppler-utils: $(which pdftoppm)"
+    echo "[INFO] PDF_CONVERSION_DPI: $PDF_CONVERSION_DPI"
+    
+    # === TEST D'IMPORT COMPLET ===
+    echo "[INFO] ========== Vérification des imports =========="
+    python -c "
+print('[INFO] Test des imports...')
+
+try:
+    # Imports de base
+    import torch
+    import transformers
+    import fastapi
+    import uvicorn
+    
+    # Imports PDF
+    import pdf2image
+    import fitz
+    
+    # Imports OCR
+    from models.ocr_model import OCRModelManager
+    from services.ocr_service import OCRService
+    from services.pdf_service import PDFService
+    from utils.validators import OCRRequestValidator
+    
+    # === IMPORTS SmolLM2 ===
+    from services.reasoning_service import SmolLM2ReasoningService, ExtractionType
+    from services.enhanced_ocr_service import EnhancedOCRService
+    
+    # Imports optimisation
+    import optimum
+    import bitsandbytes
+    
+    print('[INFO] ✓ Tous les imports sont OK')
+    
+except ImportError as e:
+    print(f'[ERREUR] Import failed: {e}')
+    import traceback
+    traceback.print_exc()
+    exit(1)
+"
+    
+    # === VÉRIFICATION GPU/CUDA ===
+    echo "[INFO] ========== Vérification GPU/CUDA =========="
+    python -c "
+import torch
+print(f'[INFO] CUDA disponible: {torch.cuda.is_available()}')
+print(f'[INFO] Nombre de GPUs: {torch.cuda.device_count()}')
+
+if torch.cuda.is_available():
+    for i in range(torch.cuda.device_count()):
+        props = torch.cuda.get_device_properties(i)
+        print(f'[INFO] GPU {i}: {torch.cuda.get_device_name(i)}')
+        print(f'[INFO]   - Mémoire: {props.total_memory / 1024**3:.1f} GB')
+        print(f'[INFO]   - Compute Capability: {props.major}.{props.minor}')
+else:
+    print('[INFO] Mode CPU activé (pas de GPU détecté)')
+"
+    
+    # === VÉRIFICATION CONFIGURATION SmolLM2 ===
+    echo "[INFO] ========== Configuration SmolLM2 =========="
+    python -c "
+from config import Config
+config = Config()
+
+print(f'[INFO] REASONING_ENABLED: {config.reasoning_enabled}')
+print(f'[INFO] Model name: {config.REASONING_MODEL_NAME}')
+print(f'[INFO] Quantization: {config.ENABLE_QUANTIZATION}')
+print(f'[INFO] Batch size: {config.REASONING_BATCH_SIZE}')
+print(f'[INFO] Max tokens: {config.REASONING_MAX_TOKENS}')
+print(f'[INFO] Device preference: {config.device_preference}')
+
+# Test de validation config
+warnings = config.validate_config()
+if warnings:
+    for warning in warnings:
+        print(f'[WARNING] {warning}')
+else:
+    print('[INFO] Configuration validée sans avertissement')
+"
+    
+    # === TÉLÉCHARGEMENT MODÈLES (SI NÉCESSAIRE) ===
+    echo "[INFO] ========== Préparation des modèles =========="
+    python -c "
+import os
+from pathlib import Path
+
+cache_dir = Path.home() / '.cache' / 'huggingface'
+print(f'[INFO] Cache directory: {cache_dir}')
+
+# Vérifier si les modèles sont déjà en cache
+got_ocr_cached = (cache_dir / 'transformers' / 'models--stepfun-ai--GOT-OCR-2.0-hf').exists()
+smollm2_cached = (cache_dir / 'transformers' / 'models--HuggingFaceTB--SmolLM2-1.7B-Instruct').exists()
+
+print(f'[INFO] GOT-OCR 2.0 en cache: {got_ocr_cached}')
+print(f'[INFO] SmolLM2 en cache: {smollm2_cached}')
+
+if not (got_ocr_cached and smollm2_cached):
+    print('[INFO] Certains modèles ne sont pas en cache')
+    print('[INFO] Ils seront téléchargés au premier lancement')
+else:
+    print('[INFO] Tous les modèles sont en cache')
+"
+    
+    # === DÉMARRAGE DU SERVICE ===
+    echo "[INFO] =========================================="
+    echo "[INFO] Démarrage du serveur GOT-OCR + SmolLM2"
+    echo "[INFO] =========================================="
+    echo "[INFO] URL du service: http://$(hostname):8000"
+    echo "[INFO] Interface web: http://$(hostname):8000/frontend/index.html"
+    echo "[INFO] Documentation API: http://$(hostname):8000/docs"
+    echo "[INFO] Health check: http://$(hostname):8000/health"
+    echo "[INFO] =========================================="
+    
+    # Démarrage avec gestion d'erreur
+    python main.py || {
+        echo "[ERREUR] Échec du démarrage du service"
+        echo "[INFO] Affichage des logs d'erreur..."
+        cat /tmp/*.log 2>/dev/null || echo "[INFO] Aucun log disponible"
+        exit 1
+    }
