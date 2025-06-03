@@ -24,7 +24,7 @@ class Config:
     
     LICENSE_INFO: Dict[str, str] = {
         "name": "Apache 2.0",
-        "url": "https://github.com/ahmed00078/GOT-OCR2.0/blob/main/LICENSE.txt"
+        "url": "https://github.com/ahmed00078/GOT-OCR-Rearchitected/blob/main/LICENSE.txt"
     }
     
     # CORS settings

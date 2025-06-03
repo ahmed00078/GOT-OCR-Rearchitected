@@ -18,7 +18,7 @@ from PIL import Image
 from models.ocr_model import OCRModelManager
 from config import Config
 from render import render_ocr_text
-from services.pdf_service import PDFService  # === NOUVEAU IMPORT ===
+from services.pdf_service import PDFService
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,6 @@ class OCRService:
     def __init__(self, model_manager: OCRModelManager, config: Config):
         self.model_manager = model_manager
         self.config = config
-        # === NOUVEAU SERVICE PDF ===
         self.pdf_service = PDFService(config)
     
     async def process_images(

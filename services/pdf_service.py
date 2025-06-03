@@ -10,7 +10,7 @@ import tempfile
 from typing import List, Tuple, Optional, Dict, Any
 from pathlib import Path
 
-import fitz  # PyMuPDF
+import fitz
 from pdf2image import convert_from_path
 from PIL import Image
 from fastapi import UploadFile
@@ -23,10 +23,9 @@ class PDFService:
     
     def __init__(self, config):
         self.config = config
-        # Paramètres de conversion par défaut
-        self.default_dpi = 300  # Qualité élevée pour l'OCR
-        self.max_pages = 50     # Limite de sécurité
-        self.output_format = "PNG"  # Format optimal pour l'OCR
+        self.default_dpi = 300
+        self.max_pages = 50
+        self.output_format = "PNG"
     
     async def convert_pdf_to_images(
         self, 
@@ -73,7 +72,7 @@ class PDFService:
                 fmt=self.output_format.lower(),
                 first_page=1,
                 last_page=min(pdf_info['pages'], max_pages),
-                thread_count=2  # Optimisation pour les gros PDFs
+                thread_count=2
             )
             
             # Sauvegarder les images converties

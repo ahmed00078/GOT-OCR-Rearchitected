@@ -14,7 +14,7 @@ from PIL import Image
 
 from models.ocr_model import OCRModelManager
 from services.reasoning_service import SmolLM2ReasoningService, ExtractionType, ExtractionResult
-from services.ocr_service import OCRService  # Service de base
+from services.ocr_service import OCRService
 from config import Config
 
 logger = logging.getLogger(__name__)

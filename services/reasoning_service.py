@@ -79,7 +79,7 @@ class SmolLM2ReasoningService:
             quantization_config = None
             if use_quantization and torch.cuda.is_available():
                 quantization_config = BitsAndBytesConfig(
-                    load_in_8bit=True,  # Quantization 8-bit pour économiser la mémoire
+                    load_in_8bit=True,
                     llm_int8_threshold=6.0,
                     llm_int8_enable_fp32_cpu_offload=False
                 )
@@ -89,7 +89,7 @@ class SmolLM2ReasoningService:
             self.tokenizer = AutoTokenizer.from_pretrained(
                 self.model_name,
                 trust_remote_code=True,
-                padding_side="left"  # Optimisation pour batch processing
+                padding_side="left"
             )
             
             # Ajouter token de padding si nécessaire
@@ -233,7 +233,7 @@ Répondez avec un JSON structuré contenant les informations demandées.
         text: str,
         extraction_type: Union[ExtractionType, str],
         custom_instructions: Optional[str] = None,
-        max_length: int = 2000  # Limite pour éviter les timeouts
+        max_length: int = 2000
     ) -> ExtractionResult:
         """
         Extraire des informations structurées du texte
@@ -272,7 +272,7 @@ Répondez avec un JSON structuré contenant les informations demandées.
                 return_tensors="pt",
                 padding=True,
                 truncation=True,
-                max_length=1024  # Limite pour le contexte
+                max_length=1024
             ).to(self.device)
             
             # Génération avec optimisations
@@ -280,7 +280,7 @@ Répondez avec un JSON structuré contenant les informations demandées.
                 outputs = self.model.generate(
                     **inputs,
                     generation_config=self.generation_config,
-                    use_cache=True,  # Optimisation
+                    use_cache=True,
                     do_sample=True
                 )
             

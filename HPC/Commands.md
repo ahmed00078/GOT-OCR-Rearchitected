@@ -4,10 +4,10 @@ Guide complet pour déployer et utiliser le système OCR + IA sur le cluster HPC
 
 ## 📋 Versions disponibles
 
-| Version | Description | Fichiers |
-|---------|-------------|----------|
-| **Optimized** | Version de base OCR | `got-ocr-optimized.sif` |
-| **Multi-page** | OCR + Support PDF | `got-ocr-multipage.sif` |
+| Version          | Description          | Fichiers                |
+| ---------------- | -------------------- | ----------------------- |
+| **Optimized**    | Version de base OCR  | `got-ocr-optimized.sif` |
+| **Multi-page**   | OCR + Support PDF    | `got-ocr-multipage.sif` |
 | **🧠 Reasoning** | **OCR + SmolLM2 IA** | `got-ocr-reasoning.sif` |
 
 ---
@@ -266,12 +266,12 @@ sbatch run_optimized_cluster.slurm
 
 ### Configuration cluster typique
 
-| Métrique | OCR Standard | OCR + SmolLM2 | Multi-page (5p) |
-|----------|--------------|---------------|-----------------|
-| Temps CPU | 8-15s | 45-90s | 3-8min |
-| Temps GPU | 3-8s | 12-25s | 1-3min |
-| Mémoire GPU | 2-4GB | 6-8GB | 8-12GB |
-| Confiance | 90-95% | 75-85% | 70-80% |
+| Métrique    | OCR Standard | OCR + SmolLM2 | Multi-page (5p) |
+| ----------- | ------------ | ------------- | --------------- |
+| Temps CPU   | 8-15s        | 45-90s        | 3-8min          |
+| Temps GPU   | 3-8s         | 12-25s        | 1-3min          |
+| Mémoire GPU | 2-4GB        | 6-8GB         | 8-12GB          |
+| Confiance   | 90-95%       | 75-85%        | 70-80%          |
 
 ### Limites recommandées
 
@@ -293,7 +293,7 @@ sbatch run_optimized_cluster.slurm
 
 ### Contacts et aide
 
-- **Issues GitHub**: [Créer une issue](https://github.com/ahmed00078/GOT-OCR2.0/issues)
+- **Issues GitHub**: [Créer une issue](https://github.com/ahmed00078/GOT-OCR-Rearchitected/issues)
 - **Email support**: ahmedsidimohammed78@gmail.com
 - **Documentation**: Voir `README.md` et `INSTALLATION_GUIDE.md`
 

@@ -16,8 +16,6 @@ echo "============================================================"
 
 # === INFORMATIONS SYSTÈME ===
 echo "=== System Information ==="
-echo "Hostname: $HOSTNAME"
-echo "SLURM Job ID: $SLURM_JOB_ID"
 echo "CPUs allocated: $SLURM_CPUS_PER_TASK"
 echo "Memory allocated: $SLURM_MEM_PER_NODE MB"
 echo "Partition: $SLURM_JOB_PARTITION"
@@ -73,9 +71,6 @@ echo "=== Environment Variables Set ==="
 echo "OMP_NUM_THREADS: $OMP_NUM_THREADS"
 echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
 echo "PYTORCH_CUDA_ALLOC_CONF: $PYTORCH_CUDA_ALLOC_CONF"
-echo "REASONING_ENABLED: $REASONING_ENABLED"
-echo "ENABLE_QUANTIZATION: $ENABLE_QUANTIZATION"
-echo "REASONING_BATCH_SIZE: $REASONING_BATCH_SIZE"
 echo "UVICORN_TIMEOUT: $UVICORN_TIMEOUT"
 echo "TRANSFORMERS_CACHE: $TRANSFORMERS_CACHE"
 
@@ -95,15 +90,10 @@ echo "=== Service Information ==="
 echo "Service URL: http://$HOSTNAME:8000"
 echo "Interface Web: http://$HOSTNAME:8000/frontend/index.html"
 echo "API Standard: http://$HOSTNAME:8000/docs"
-echo "Smart Extract: http://$HOSTNAME:8000/smart-extract"
 echo "Health Check: http://$HOSTNAME:8000/health"
-echo "Extraction Types: http://$HOSTNAME:8000/extraction-types"
 echo ""
 echo "SSH Tunnel pour accès externe:"
 echo "ssh -L 8000:$HOSTNAME:8000 asidimoh@10.11.8.2"
-echo ""
-echo "Test cURL depuis le cluster:"
-echo "curl http://$HOSTNAME:8000/health"
 
 # === FONCTION DE NETTOYAGE ===
 cleanup() {
@@ -122,11 +112,6 @@ trap cleanup EXIT
 echo "============================================================"
 echo "DÉMARRAGE GOT-OCR 2.0 + SmolLM2 REASONING SERVICE"
 echo "============================================================"
-
-# Démarrage avec Singularity
-echo "Commande de démarrage:"
-echo "singularity run --nv --bind /tmp:/tmp got-ocr-reasoning.sif"
-echo ""
 
 # Exécution avec gestion d'erreur
 set -e
