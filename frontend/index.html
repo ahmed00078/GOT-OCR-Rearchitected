@@ -1393,13 +1393,11 @@
 
                 // Update AI summary
                 const extractionResult = result.extraction_result;
-                const qualityMetrics = result.quality_metrics || {};
 
                 document.getElementById('confidence-score').textContent = (extractionResult.confidence * 100).toFixed(1) + '%';
                 document.getElementById('confidence-fill').style.width = (extractionResult.confidence * 100) + '%';
                 document.getElementById('fields-extracted').textContent = Object.keys(extractionResult.extracted_data || {}).length;
                 document.getElementById('processing-time').textContent = (extractionResult.processing_time || 0).toFixed(1) + 's';
-                document.getElementById('quality-grade').textContent = qualityMetrics.quality_grade || 'N/A';
 
                 // Display structured data
                 structuredResult.innerHTML = `<pre><code>${JSON.stringify(extractionResult.extracted_data, null, 2)}</code></pre>`;

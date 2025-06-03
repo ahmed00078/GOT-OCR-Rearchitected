@@ -408,36 +408,6 @@ Répondez avec un JSON structuré contenant les informations demandées.
         extract_values(extracted_data)
         return list(set(matches))  # Enlever les doublons
     
-    async def batch_extract(
-        self,
-        texts: List[str],
-        extraction_type: Union[ExtractionType, str],
-        custom_instructions: Optional[str] = None
-    ) -> List[ExtractionResult]:
-        """Traitement par batch pour efficacité"""
-        results = []
-        
-        # Traiter par petits batches pour éviter la surcharge mémoire
-        batch_size = 3  # Petit batch pour SmolLM2:1.7B
-        
-        for i in range(0, len(texts), batch_size):
-            batch = texts[i:i+batch_size]
-            batch_results = []
-            
-            for text in batch:
-                result = await self.extract_information(
-                    text, extraction_type, custom_instructions
-                )
-                batch_results.append(result)
-            
-            results.extend(batch_results)
-            
-            # Petit délai pour éviter la surchauffe
-            if len(texts) > batch_size:
-                await asyncio.sleep(0.1)
-        
-        return results
-    
     @property
     def is_loaded(self) -> bool:
         """Vérifier si le modèle est chargé"""
@@ -460,26 +430,3 @@ Répondez avec un JSON structuré contenant les informations demandées.
             
         self._is_loaded = False
         logger.info("Nettoyage SmolLM2 terminé")
-
-
-# === FONCTIONS UTILITAIRES ===
-
-def create_reasoning_service(config) -> SmolLM2ReasoningService:
-    """Factory function pour créer le service de raisonnement"""
-    return SmolLM2ReasoningService(config)
-
-async def quick_extract_carbon_data(reasoning_service, ocr_text: str) -> Dict[str, Any]:
-    """Fonction de convenance pour extraction rapide de données carbone"""
-    if not reasoning_service.is_loaded:
-        await reasoning_service.load_model()
-    
-    result = await reasoning_service.extract_information(
-        ocr_text, 
-        ExtractionType.CARBON_FOOTPRINT
-    )
-    
-    return {
-        "carbon_data": result.extracted_data,
-        "confidence": result.confidence,
-        "processing_time": result.processing_time
-    }

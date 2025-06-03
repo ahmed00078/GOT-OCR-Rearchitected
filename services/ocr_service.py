@@ -293,9 +293,7 @@ class OCRService:
         """
         if num_pages == 1:
             return [batch_result]
-        
-        # Stratégies de séparation (par ordre de priorité)
-        
+                
         # 1. Chercher des marqueurs de page naturels
         page_markers = ['\f', '\n\n\n', '---', '===']
         for marker in page_markers:
@@ -331,26 +329,6 @@ class OCRService:
         return pages
     
     # === MÉTHODES EXISTANTES MAINTENUES ===
-    
-    async def _save_uploaded_images(
-        self, 
-        images: List[UploadFile], 
-        temp_dir: str
-    ) -> List[str]:
-        """
-        Legacy method maintained for compatibility
-        Use _prepare_all_images for new multi-page functionality
-        """
-        image_paths = []
-        
-        for img in images:
-            if img.content_type.startswith("image/"):
-                img_path = await self._save_single_image(img, temp_dir)
-                image_paths.append(img_path)
-            else:
-                logger.warning(f"Skipping non-image file in legacy method: {img.filename}")
-        
-        return image_paths
     
     def _prepare_task_config(
         self,

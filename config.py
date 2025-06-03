@@ -1,8 +1,3 @@
-# File: config.py - Updated with SmolLM2 integration
-"""
-Configuration settings for GOT-OCR 2.0 API + SmolLM2 Reasoning
-"""
-
 import os
 from typing import List, Dict, Any
 from globe import title, description, tasks, ocr_types, ocr_colors
@@ -18,7 +13,7 @@ class Config:
     APP_VERSION: str = "2.2"
     
     CONTACT_INFO: Dict[str, str] = {
-        "name": "API Support",
+        "name": "Ahmed Sidi Mohammed",
         "email": "ahmedsidimohammed78@gmail.com"
     }
     
@@ -38,13 +33,12 @@ class Config:
     # === NOUVEAU: SMOLLM2 SETTINGS ===
     REASONING_MODEL_NAME: str = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
     REASONING_MAX_TOKENS: int = 512
-    REASONING_TEMPERATURE: float = 0.1  # Très déterministe
+    REASONING_TEMPERATURE: float = 0.1
     REASONING_BATCH_SIZE: int = 3       # Petit batch pour efficacité
     
     # Enable/disable reasoning features
     ENABLE_REASONING: bool = True
     ENABLE_QUANTIZATION: bool = True    # 8-bit quantization pour SmolLM2
-    REASONING_TIMEOUT: int = 30         # Timeout en secondes
     
     # Processing settings
     SUPPORTED_TASKS: List[str] = tasks
@@ -183,48 +177,9 @@ class Config:
             "temperature": self.REASONING_TEMPERATURE,
             "batch_size": self.REASONING_BATCH_SIZE,
             "enable_quantization": self.ENABLE_QUANTIZATION,
-            "timeout": self.REASONING_TIMEOUT,
             "config": self.REASONING_CONFIG
-        }
-    
-    def get_memory_settings(self) -> Dict[str, Any]:
-        """Get memory optimization settings"""
-        return {
-            "low_cpu_mem_usage": self.LOW_CPU_MEM_USAGE,
-            "enable_quantization": self.ENABLE_QUANTIZATION,
-            "use_gpu": self.USE_GPU_IF_AVAILABLE,
-            "pdf_memory_limit_mb": self.PDF_MEMORY_LIMIT_MB,
-            "reasoning_max_context": self.REASONING_CONFIG["max_context_length"]
         }
     
     def validate_extraction_type(self, extraction_type: str) -> bool:
         """Validate extraction type"""
         return extraction_type in self.SUPPORTED_EXTRACTION_TYPES
-    
-    def get_performance_config(self) -> Dict[str, Any]:
-        """Get performance configuration for both OCR and reasoning"""
-        return {
-            "ocr_config": {
-                "max_new_tokens": self.MAX_NEW_TOKENS,
-                "low_cpu_mem_usage": self.LOW_CPU_MEM_USAGE,
-                "multipage_batch_size": self.MULTIPAGE_BATCH_SIZE
-            },
-            "reasoning_config": {
-                "max_tokens": self.REASONING_MAX_TOKENS,
-                "temperature": self.REASONING_TEMPERATURE,
-                "batch_size": self.REASONING_BATCH_SIZE,
-                "enable_quantization": self.ENABLE_QUANTIZATION
-            },
-            "system_config": {
-                "omp_threads": self.OMP_NUM_THREADS,
-                "mkl_threads": self.MKL_NUM_THREADS,
-                "device": self.device_preference
-            }
-        }
-    
-    def get_enhanced_task_list(self) -> List[str]:
-        """Get task list including new AI-powered tasks"""
-        enhanced_tasks = self.SUPPORTED_TASKS.copy()
-        if self.reasoning_enabled:
-            enhanced_tasks.append("Smart Extract (OCR + AI)")
-        return enhanced_tasks

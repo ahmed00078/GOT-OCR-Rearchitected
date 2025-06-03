@@ -60,8 +60,6 @@ From: python:3.9-slim
     # === CONFIGURATION SmolLM2 REASONING ===
     export REASONING_ENABLED=true
     export ENABLE_QUANTIZATION=true
-    export REASONING_TIMEOUT=180
-    export REASONING_BATCH_SIZE=2
     export REASONING_MAX_CONTEXT=2000
     
     # === CONFIGURATION MÉMOIRE ===
@@ -297,7 +295,6 @@ config = Config()
 print(f'[INFO] REASONING_ENABLED: {config.reasoning_enabled}')
 print(f'[INFO] Model name: {config.REASONING_MODEL_NAME}')
 print(f'[INFO] Quantization: {config.ENABLE_QUANTIZATION}')
-print(f'[INFO] Batch size: {config.REASONING_BATCH_SIZE}')
 print(f'[INFO] Max tokens: {config.REASONING_MAX_TOKENS}')
 print(f'[INFO] Device preference: {config.device_preference}')
 

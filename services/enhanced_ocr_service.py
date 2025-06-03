@@ -169,12 +169,6 @@ class EnhancedOCRService(OCRService):
                 }
             }
             
-            # === ÉTAPE 5: POST-PROCESSING ===
-            # Enrichir avec des métriques de qualité
-            enhanced_result["quality_metrics"] = self._calculate_quality_metrics(
-                ocr_result, extraction_result
-            )
-            
             logger.info(f"Pipeline complet terminé en {total_time:.2f}s")
             return enhanced_result
             
@@ -254,42 +248,7 @@ class EnhancedOCRService(OCRService):
         
         logger.info(f"Batch terminé: {len(results)} résultats")
         return results
-    
-    def _calculate_quality_metrics(
-        self, 
-        ocr_result: Dict[str, Any], 
-        extraction_result: ExtractionResult
-    ) -> Dict[str, Any]:
-        """Calculer des métriques de qualité combinées"""
-        
-        ocr_text = ocr_result.get("text", "")
-        extracted_data = extraction_result.extracted_data
-        
-        # Métriques de base
-        text_length = len(ocr_text)
-        word_count = len(ocr_text.split())
-        
-        # Métriques d'extraction
-        extraction_completeness = extraction_result.confidence
-        matches_ratio = len(extraction_result.raw_matches) / max(word_count, 1)
-        
-        # Score de qualité composite
-        quality_score = (
-            min(text_length / 100, 1.0) * 0.2 +  # Longueur du texte
-            extraction_completeness * 0.6 +       # Complétude extraction
-            min(matches_ratio * 10, 1.0) * 0.2    # Ratio de correspondances
-        )
-        
-        return {
-            "text_length": text_length,
-            "word_count": word_count,
-            "extraction_confidence": extraction_completeness,
-            "matches_found": len(extraction_result.raw_matches),
-            "matches_ratio": matches_ratio,
-            "overall_quality_score": quality_score,
-            "quality_grade": self._get_quality_grade(quality_score)
-        }
-    
+
     def _get_quality_grade(self, score: float) -> str:
         """Convertir le score en note qualitative"""
         if score >= 0.9:

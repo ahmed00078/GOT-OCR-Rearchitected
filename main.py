@@ -53,7 +53,6 @@ class EnhancedOCRResponse(BaseModel):
     extraction_type: Optional[str] = None
     extraction_result: Optional[Dict[str, Any]] = None
     performance_metrics: Optional[Dict[str, Any]] = None
-    quality_metrics: Optional[Dict[str, Any]] = None
     models_used: Optional[Dict[str, str]] = None
 
 class HealthResponse(BaseModel):
@@ -183,21 +182,6 @@ class GOTOCREnhancedApp:
                 version=self.config.APP_VERSION
             )
         
-        @app.get("/extraction-types", response_model=ExtractionTypesResponse, 
-                summary="Get available extraction types")
-        async def get_extraction_types():
-            """Get list of available AI extraction types"""
-            if not self.enhanced_ocr_service:
-                raise HTTPException(500, detail="Service not initialized")
-            
-            extraction_types = await self.enhanced_ocr_service.get_supported_extractions()
-            reasoning_available = self.enhanced_ocr_service.is_reasoning_available
-            
-            return ExtractionTypesResponse(
-                extraction_types=extraction_types,
-                reasoning_available=reasoning_available
-            )
-        
         # === ENDPOINT OCR STANDARD (INCHANGÉ) ===
         @app.post("/process", response_model=OCRResponse, 
                  summary="Standard OCR processing",
@@ -305,7 +289,7 @@ class GOTOCREnhancedApp:
             if not self.enhanced_ocr_service:
                 raise HTTPException(500, detail="Enhanced OCR service not available")
             
-            if len(images) > 10:  # Limite pour éviter les timeouts
+            if len(images) > 10:
                 raise HTTPException(400, detail="Maximum 10 files for batch processing")
             
             try:
@@ -326,17 +310,6 @@ class GOTOCREnhancedApp:
             except Exception as e:
                 logger.error(f"Batch processing failed: {str(e)}")
                 raise HTTPException(500, detail=f"Batch processing error: {str(e)}")
-        
-        @app.get("/results/{result_id}", 
-                summary="Retrieve formatted OCR results",
-                response_description="HTML-rendered OCR output")
-        async def get_result(result_id: str):
-            """Retrieve HTML-rendered results by ID"""
-            # TODO: Implement result storage/retrieval logic
-            return JSONResponse(
-                content={"detail": "Result storage not implemented"}, 
-                status_code=501
-            )
         
         # === NOUVEAU: ENDPOINT DE DÉMONSTRATION ===
         @app.get("/demo", summary="🎯 Demo endpoints and capabilities")
