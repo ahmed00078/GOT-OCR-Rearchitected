@@ -1,339 +1,783 @@
 {
-  "test_dataset": [
-    {
-      "id": 1,
-      "type": "laptop_simple",
-      "text": "HP EliteBook 840 G9 Specifications\nPower Consumption: 45W typical, 2.1W sleep mode\nCarbon Footprint: 285 kg CO2 equivalent\nRecyclability: 85% by weight\nCertifications: ENERGY STAR 8.0, EPEAT Gold\nWeight: 1.36 kg\nDimensions: 321 x 213 x 19.9 mm",
-      "questions": [
-        {
-          "question": "What is the product name and model?",
-          "expected_answer": {
-            "product_name": "HP EliteBook 840 G9",
-            "brand": "HP",
-            "model": "EliteBook 840 G9"
-          }
-        },
-        {
-          "question": "What are the power consumption values?",
-          "expected_answer": {
-            "typical_consumption": {"value": 45, "unit": "W"},
-            "sleep_consumption": {"value": 2.1, "unit": "W"}
-          }
-        },
-        {
-          "question": "What is the carbon footprint and recyclability?",
-          "expected_answer": {
-            "carbon_footprint": {"value": 285, "unit": "kg CO2 equivalent"},
-            "recyclability": {"value": 85, "unit": "%"}
-          }
-        },
-        {
-          "question": "What certifications does this product have?",
-          "expected_answer": {
-            "certifications": ["ENERGY STAR 8.0", "EPEAT Gold"]
-          }
-        }
-      ]
+    "dataset_info": {
+        "name": "Environmental Technology Model Evaluation Dataset",
+        "version": "1.0",
+        "description": "Comprehensive dataset for testing AI models on environmental and technical data extraction",
+        "categories": [
+            "carbon_footprint",
+            "technical_specs",
+            "financial_data",
+            "complex_analysis",
+            "noisy_ocr"
+        ],
+        "difficulty_levels": [
+            "easy",
+            "medium",
+            "hard",
+            "expert"
+        ],
+        "total_documents": 7
     },
-    {
-      "id": 2,
-      "type": "monitor_technical",
-      "text": "Dell UltraSharp U2723QE 27\" Monitor\nEnergy Consumption\n- On Mode: 32W\n- Standby: <0.5W\n- Off Mode: <0.3W\nAnnual Energy Consumption: 47 kWh\nEnvironmental Impact:\n• Total CO2 emissions: 156 kg CO2eq\n• Packaging recyclability: 95%\n• Product recyclability: 78%\nCompliance: RoHS, WEEE, ENERGY STAR 8.0",
-      "questions": [
+    "documents": [
         {
-          "question": "Extract all energy consumption modes",
-          "expected_answer": {
-            "on_mode": {"value": 32, "unit": "W"},
-            "standby": {"value": 0.5, "unit": "W", "comparison": "<"},
-            "off_mode": {"value": 0.3, "unit": "W", "comparison": "<"},
-            "annual": {"value": 47, "unit": "kWh"}
-          }
+            "id": 1,
+            "category": "carbon_footprint",
+            "difficulty": "easy",
+            "title": "HP Laptop Environmental Sheet",
+            "text": "HP EliteBook 840 G9 Environmental Data\n\nProduct Information:\n- Model: HP EliteBook 840 G9\n- SKU: 6F6K8EA\n- Weight: 1.36 kg\n\nCarbon Footprint Analysis:\n- Total carbon footprint: 285 kg CO₂ equivalent\n- Manufacturing phase: 215 kg CO₂\n- Transportation: 15 kg CO₂\n- Use phase (4 years): 55 kg CO₂\n\nEnergy Specifications:\n- Typical power consumption: 45W\n- Sleep mode: 2.1W\n- Annual energy consumption: 65 kWh\n\nCertifications:\n- ENERGY STAR 8.0 certified\n- EPEAT Gold registered\n- RoHS compliant",
+            "questions": [
+                {
+                    "id": "q1_1",
+                    "question": "What is the total carbon footprint of this laptop?",
+                    "expected_answer": {
+                        "carbon_footprint": {
+                            "total": {
+                                "value": 285,
+                                "unit": "kg CO₂ equivalent"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q1_2",
+                    "question": "Break down the carbon footprint by lifecycle phases",
+                    "expected_answer": {
+                        "lifecycle_breakdown": {
+                            "manufacturing": {
+                                "value": 215,
+                                "unit": "kg CO₂"
+                            },
+                            "transportation": {
+                                "value": 15,
+                                "unit": "kg CO₂"
+                            },
+                            "use_phase": {
+                                "value": 55,
+                                "unit": "kg CO₂",
+                                "duration": "4 years"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q1_3",
+                    "question": "What are the power consumption values?",
+                    "expected_answer": {
+                        "power_consumption": {
+                            "typical": {
+                                "value": 45,
+                                "unit": "W"
+                            },
+                            "sleep": {
+                                "value": 2.1,
+                                "unit": "W"
+                            },
+                            "annual_energy": {
+                                "value": 65,
+                                "unit": "kWh"
+                            }
+                        }
+                    }
+                }
+            ]
         },
         {
-          "question": "What are the environmental metrics?",
-          "expected_answer": {
-            "co2_emissions": {"value": 156, "unit": "kg CO2eq"},
-            "packaging_recyclability": {"value": 95, "unit": "%"},
-            "product_recyclability": {"value": 78, "unit": "%"}
-          }
+            "id": 2,
+            "category": "technical_specs",
+            "difficulty": "medium",
+            "title": "Dell Monitor Technical Specifications",
+            "text": "Dell UltraSharp U2723QE 27\" 4K Monitor\nEnvironmental & Performance Specifications\n\n=== POWER CONSUMPTION TABLE ===\n| Mode          | Power (W) | Annual kWh | Cost/Year* |\n|---------------|-----------|------------|------------|\n| On (100%)     | 32.0      | 117.3      | $14.08     |\n| On (75%)      | 28.5      | 104.5      | $12.54     |\n| On (50%)      | 24.1      | 88.4       | $10.61     |\n| Standby       | 0.3       | 2.6        | $0.31      |\n| Off           | 0.1       | 0.9        | $0.11      |\n*Based on $0.12/kWh, 10h/day usage\n\n=== ENVIRONMENTAL IMPACT ===\nCarbon Footprint Assessment:\n→ Manufacturing: 156 kg CO₂eq\n→ Packaging: 12 kg CO₂eq  \n→ Distribution: 8 kg CO₂eq\n→ Use phase (5 years): 89 kg CO₂eq\n→ End-of-life: -5 kg CO₂eq (recycling credit)\n→ TOTAL LIFECYCLE: 260 kg CO₂eq\n\nRecyclability:\n• Monitor components: 78% by weight\n• Packaging materials: 95% recyclable\n• Plastic content: 25% post-consumer recycled\n\nCompliance & Certifications:\n✓ ENERGY STAR 8.0\n✓ EPEAT Gold\n✓ TCO Certified 9.0\n✓ RoHS, WEEE, REACH compliant",
+            "questions": [
+                {
+                    "id": "q2_1",
+                    "question": "Parse the power consumption table with all modes",
+                    "expected_answer": {
+                        "power_modes": {
+                            "on_100": {
+                                "power": 32.0,
+                                "annual_kwh": 117.3,
+                                "annual_cost": 14.08,
+                                "unit": "W"
+                            },
+                            "on_75": {
+                                "power": 28.5,
+                                "annual_kwh": 104.5,
+                                "annual_cost": 12.54,
+                                "unit": "W"
+                            },
+                            "on_50": {
+                                "power": 24.1,
+                                "annual_kwh": 88.4,
+                                "annual_cost": 10.61,
+                                "unit": "W"
+                            },
+                            "standby": {
+                                "power": 0.3,
+                                "annual_kwh": 2.6,
+                                "annual_cost": 0.31,
+                                "unit": "W"
+                            },
+                            "off": {
+                                "power": 0.1,
+                                "annual_kwh": 0.9,
+                                "annual_cost": 0.11,
+                                "unit": "W"
+                            }
+                        },
+                        "cost_basis": "$0.12/kWh, 10h/day usage"
+                    }
+                },
+                {
+                    "id": "q2_2",
+                    "question": "Extract the complete lifecycle carbon assessment",
+                    "expected_answer": {
+                        "lifecycle_carbon": {
+                            "manufacturing": {
+                                "value": 156,
+                                "unit": "kg CO₂eq"
+                            },
+                            "packaging": {
+                                "value": 12,
+                                "unit": "kg CO₂eq"
+                            },
+                            "distribution": {
+                                "value": 8,
+                                "unit": "kg CO₂eq"
+                            },
+                            "use_phase": {
+                                "value": 89,
+                                "unit": "kg CO₂eq",
+                                "duration": "5 years"
+                            },
+                            "end_of_life": {
+                                "value": -5,
+                                "unit": "kg CO₂eq",
+                                "note": "recycling credit"
+                            },
+                            "total": {
+                                "value": 260,
+                                "unit": "kg CO₂eq"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q2_3",
+                    "question": "What recyclability and sustainability metrics are provided?",
+                    "expected_answer": {
+                        "sustainability": {
+                            "monitor_recyclability": {
+                                "value": 78,
+                                "unit": "% by weight"
+                            },
+                            "packaging_recyclability": {
+                                "value": 95,
+                                "unit": "%"
+                            },
+                            "recycled_plastic_content": {
+                                "value": 25,
+                                "unit": "% post-consumer"
+                            },
+                            "certifications": [
+                                "ENERGY STAR 8.0",
+                                "EPEAT Gold",
+                                "TCO Certified 9.0",
+                                "RoHS",
+                                "WEEE",
+                                "REACH"
+                            ]
+                        }
+                    }
+                }
+            ]
         },
         {
-          "question": "What compliance standards are mentioned?",
-          "expected_answer": {
-            "standards": ["RoHS", "WEEE", "ENERGY STAR 8.0"]
-          }
+            "id": 3,
+            "category": "financial_data",
+            "difficulty": "medium",
+            "title": "Server Purchase Invoice with Carbon Data",
+            "text": "INVOICE #INV-2024-5847\nTechCorp Solutions Ltd.\nDate: March 15, 2024\n\n=== ORDER DETAILS ===\nDell PowerEdge R750 Server Configuration\nPart No: R750-CONFIG-001\nQuantity: 2 units\n\nCOST BREAKDOWN:\n┌─────────────────────────┬─────────────┬─────────────┐\n│ Component               │ Unit Price  │ Total       │\n├─────────────────────────┼─────────────┼─────────────┤\n│ Base Server (2U)        │ $3,299.00   │ $6,598.00   │\n│ Intel Xeon Gold 6338    │ $1,850.00   │ $3,700.00   │\n│ 128GB DDR4 ECC RAM      │ $945.00     │ $1,890.00   │\n│ 2TB NVMe SSD Storage    │ $489.00     │ $978.00     │\n│ Redundant PSU (800W)    │ $275.00     │ $550.00     │\n│ 3-Year ProSupport       │ $699.00     │ $1,398.00   │\n├─────────────────────────┼─────────────┼─────────────┤\n│ Subtotal                │             │ $15,114.00  │\n│ Tax (8.5%)              │             │ $1,284.69   │\n│ Carbon Offset Fee       │             │ $67.50      │\n│ TOTAL                   │             │ $16,466.19  │\n└─────────────────────────┴─────────────┴─────────────┘\n\nCARBON IMPACT INFORMATION:\n• Estimated carbon footprint per server: 1,350 kg CO₂\n• Carbon offset purchased: 2,700 kg CO₂ total\n• Offset cost: $0.025/kg CO₂\n• Servers qualify for 15% energy efficiency tax credit\n• Expected operational carbon: 890 kg CO₂/year per server\n\nPAYMENT TERMS:\nNet 30 days\nPayment method: Wire transfer\nCurrency: USD",
+            "questions": [
+                {
+                    "id": "q3_1",
+                    "question": "Extract all cost components and calculate totals",
+                    "expected_answer": {
+                        "cost_breakdown": {
+                            "base_server": {
+                                "unit_price": 3299.00,
+                                "quantity": 2,
+                                "total": 6598.00
+                            },
+                            "cpu": {
+                                "unit_price": 1850.00,
+                                "quantity": 2,
+                                "total": 3700.00
+                            },
+                            "ram": {
+                                "unit_price": 945.00,
+                                "quantity": 2,
+                                "total": 1890.00
+                            },
+                            "storage": {
+                                "unit_price": 489.00,
+                                "quantity": 2,
+                                "total": 978.00
+                            },
+                            "psu": {
+                                "unit_price": 275.00,
+                                "quantity": 2,
+                                "total": 550.00
+                            },
+                            "support": {
+                                "unit_price": 699.00,
+                                "quantity": 2,
+                                "total": 1398.00
+                            },
+                            "subtotal": 15114.00,
+                            "tax": {
+                                "rate": 8.5,
+                                "amount": 1284.69
+                            },
+                            "carbon_offset_fee": 67.50,
+                            "total": 16466.19,
+                            "currency": "USD"
+                        }
+                    }
+                },
+                {
+                    "id": "q3_2",
+                    "question": "What carbon impact data is provided?",
+                    "expected_answer": {
+                        "carbon_data": {
+                            "footprint_per_server": {
+                                "value": 1350,
+                                "unit": "kg CO₂"
+                            },
+                            "total_offset_purchased": {
+                                "value": 2700,
+                                "unit": "kg CO₂"
+                            },
+                            "offset_cost_per_kg": {
+                                "value": 0.025,
+                                "unit": "$/kg CO₂"
+                            },
+                            "operational_carbon_annual": {
+                                "value": 890,
+                                "unit": "kg CO₂/year per server"
+                            },
+                            "tax_credit": {
+                                "value": 15,
+                                "unit": "% energy efficiency"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "category": "complex_analysis",
+            "difficulty": "hard",
+            "title": "Smartphone Lifecycle Assessment Report",
+            "text": "COMPREHENSIVE LIFECYCLE ASSESSMENT\nApple iPhone 14 Pro Environmental Report\nStudy Period: 2023-2024 | Assessment Scope: Cradle-to-Grave\n\n=== EXECUTIVE SUMMARY ===\nThe iPhone 14 Pro demonstrates a 23% reduction in carbon intensity compared to the iPhone 13 Pro, primarily due to manufacturing process improvements and increased use of recycled materials.\n\n=== DETAILED CARBON ANALYSIS ===\n\nRAW MATERIALS & MANUFACTURING (72% of total impact):\n┌──────────────────────┬──────────┬────────────┬─────────────┐\n│ Component Category   │ Weight   │ CO₂ (kg)   │ % of Total  │\n├──────────────────────┼──────────┼────────────┼─────────────┤\n│ A16 Bionic Chip      │ 15.2g    │ 18.4       │ 26.3%       │\n│ Display Assembly     │ 42.8g    │ 12.7       │ 18.1%       │\n│ Battery (Li-ion)     │ 47.9g    │ 8.9        │ 12.7%       │\n│ Aluminum Frame       │ 89.1g    │ 6.2        │ 8.9%        │\n│ Camera System        │ 28.5g    │ 5.8        │ 8.3%        │\n│ Other Components     │ 34.8g    │ 4.3        │ 6.1%        │\n│ Packaging           │ 185.2g   │ 2.1        │ 3.0%        │\n├──────────────────────┼──────────┼────────────┼─────────────┤\n│ SUBTOTAL            │ 443.5g   │ 58.4       │ 83.4%       │\n└──────────────────────┴──────────┴────────────┴─────────────┘\n\nTRANSPORTATION & DISTRIBUTION (8% of total impact):\n• Air freight (factories → distribution): 4.2 kg CO₂\n• Ground transport (regional distribution): 1.4 kg CO₂\n• Last-mile delivery: 0.6 kg CO₂\n• SUBTOTAL: 6.2 kg CO₂\n\nUSE PHASE (15% of total impact) - Based on 3-year lifecycle:\n• Daily charging (average 1.2 cycles): 0.025 kWh/day\n• Annual electricity consumption: 9.1 kWh\n• Grid carbon intensity (global average): 0.519 kg CO₂/kWh\n• 3-year use phase total: 14.2 kg CO₂\n\nEND-OF-LIFE PROCESSING (5% of total impact):\n• Material recovery potential: 89% by value\n• Recycling energy requirements: 2.8 kg CO₂\n• Landfill avoidance credit: -1.2 kg CO₂\n• NET END-OF-LIFE: 1.6 kg CO₂\n\n=== TOTAL LIFECYCLE IMPACT ===\n🌍 TOTAL CARBON FOOTPRINT: 80.4 kg CO₂ equivalent\n\n=== SUSTAINABLE MATERIALS BREAKDOWN ===\n• Recycled rare earth elements in magnets: 100%\n• Recycled tungsten in Taptic Engine: 100%\n• Recycled aluminum in enclosure: 100%\n• Recycled gold in wire bonding: 100%\n• Recycled plastic in components: 35%\n• Overall recycled content by weight: 43%\n\n=== COMPARISON WITH PREVIOUS GENERATION ===\nCarbon footprint improvement vs iPhone 13 Pro:\n→ 2022 iPhone 13 Pro: 104.8 kg CO₂\n→ 2023 iPhone 14 Pro: 80.4 kg CO₂\n→ Absolute reduction: 24.4 kg CO₂ (-23.3%)\n→ Main improvement drivers:\n  * Manufacturing efficiency: -15.2 kg CO₂\n  * Increased recycled materials: -6.8 kg CO₂\n  * Supply chain optimization: -2.4 kg CO₂",
+            "questions": [
+                {
+                    "id": "q4_1",
+                    "question": "Parse the detailed component carbon analysis table",
+                    "expected_answer": {
+                        "component_analysis": {
+                            "a16_chip": {
+                                "weight": "15.2g",
+                                "co2": 18.4,
+                                "percentage": 26.3
+                            },
+                            "display": {
+                                "weight": "42.8g",
+                                "co2": 12.7,
+                                "percentage": 18.1
+                            },
+                            "battery": {
+                                "weight": "47.9g",
+                                "co2": 8.9,
+                                "percentage": 12.7
+                            },
+                            "aluminum_frame": {
+                                "weight": "89.1g",
+                                "co2": 6.2,
+                                "percentage": 8.9
+                            },
+                            "camera_system": {
+                                "weight": "28.5g",
+                                "co2": 5.8,
+                                "percentage": 8.3
+                            },
+                            "other_components": {
+                                "weight": "34.8g",
+                                "co2": 4.3,
+                                "percentage": 6.1
+                            },
+                            "packaging": {
+                                "weight": "185.2g",
+                                "co2": 2.1,
+                                "percentage": 3.0
+                            },
+                            "subtotal": {
+                                "weight": "443.5g",
+                                "co2": 58.4,
+                                "percentage": 83.4
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q4_2",
+                    "question": "Calculate the complete lifecycle carbon breakdown by phase",
+                    "expected_answer": {
+                        "lifecycle_breakdown": {
+                            "manufacturing": {
+                                "value": 58.4,
+                                "unit": "kg CO₂",
+                                "percentage": 72.6
+                            },
+                            "transportation": {
+                                "value": 6.2,
+                                "unit": "kg CO₂",
+                                "percentage": 7.7
+                            },
+                            "use_phase": {
+                                "value": 14.2,
+                                "unit": "kg CO₂",
+                                "percentage": 17.7,
+                                "duration": "3 years"
+                            },
+                            "end_of_life": {
+                                "value": 1.6,
+                                "unit": "kg CO₂",
+                                "percentage": 2.0
+                            },
+                            "total": {
+                                "value": 80.4,
+                                "unit": "kg CO₂ equivalent"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q4_3",
+                    "question": "What improvement was achieved compared to the previous generation?",
+                    "expected_answer": {
+                        "generation_comparison": {
+                            "iphone_13_pro": {
+                                "value": 104.8,
+                                "unit": "kg CO₂",
+                                "year": 2022
+                            },
+                            "iphone_14_pro": {
+                                "value": 80.4,
+                                "unit": "kg CO₂",
+                                "year": 2023
+                            },
+                            "improvement": {
+                                "absolute_reduction": {
+                                    "value": 24.4,
+                                    "unit": "kg CO₂"
+                                },
+                                "percentage_reduction": {
+                                    "value": 23.3,
+                                    "unit": "%"
+                                },
+                                "drivers": {
+                                    "manufacturing_efficiency": {
+                                        "value": -15.2,
+                                        "unit": "kg CO₂"
+                                    },
+                                    "recycled_materials": {
+                                        "value": -6.8,
+                                        "unit": "kg CO₂"
+                                    },
+                                    "supply_chain": {
+                                        "value": -2.4,
+                                        "unit": "kg CO₂"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q4_4",
+                    "question": "Extract recycled materials data and percentages",
+                    "expected_answer": {
+                        "recycled_materials": {
+                            "rare_earth_elements": {
+                                "value": 100,
+                                "unit": "%",
+                                "location": "magnets"
+                            },
+                            "tungsten": {
+                                "value": 100,
+                                "unit": "%",
+                                "location": "Taptic Engine"
+                            },
+                            "aluminum": {
+                                "value": 100,
+                                "unit": "%",
+                                "location": "enclosure"
+                            },
+                            "gold": {
+                                "value": 100,
+                                "unit": "%",
+                                "location": "wire bonding"
+                            },
+                            "plastic": {
+                                "value": 35,
+                                "unit": "%",
+                                "location": "components"
+                            },
+                            "overall_content": {
+                                "value": 43,
+                                "unit": "% by weight"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "category": "noisy_ocr",
+            "difficulty": "expert",
+            "title": "OCR Degraded Environmental Certificate",
+            "text": "ENVIR0NMENTAL C3RTIFICAT3\nEC0-LABEL REGIST3ATI0N N0. 2024-ENV-7891\n\nPr0duct: ACME 3leetr0nics L4pt0p M0del X-5000\nM4nuf4cturer: ACME C0rp0r4ti0n Ltd.\nCertific4ti0n D4te: 15/03/2024\n\n=== CARB0N F00TPRINT ANA7YSIS ===\nTot4l Lif3cycle C4rb0n: 247.8 kg C02 equivaIent\n\nBre4kd0wn by ph4se:\n• Raw m4teri4ls: 89.3 kg C02 (36.1%)\n• M4nuf4cturing: 71.2 kg C02 (28.8%)\n• Tr4nsp0rt4ti0n: 18.9 kg C02 (7.6%)\n• Us3 ph4se (5 ye4rs): 58.7 kg C02 (23.7%)\n• End-0f-lif3: 9.7 kg C02 (3.9%)\n\n=== EN3RGY SPECIFICA7IONS ===\nP0wer C0nsumpti0n:\n- N0rm4l 0per4ti0n: 65W ± 5W\n- Standby m0de: 2.8W\n- Sleep m0de: 0.9W\n\nBattery Specif1cati0ns:\n• C4p4city: 72 Wh (Li-i0n)\n• Charging p0wer: 90W m4x\n• Expected lifecycIe: 1000+ ch4rge cycIes\n\n=== SUST4INABILITY FEATURES ===\nRecycl3d M4terials:\n✓ PIastic h0using: 45% p0st-c0nsumer recycled\n✓ AIminum fr4me: 78% recycled c0ntent\n✓ Magnet rare e4rth: 23% recycled\n✓ Copper wiring: 67% recycled\n\nCertific4ti0ns 0btained:\n□ EN3RGY STAR 8.0 - Qu4lified\n□ 3PEAT G0ld - Registr4ti0n #EPA-3G-2024-0847\n□ TCO C3rtified 9.0 - Valid until 2027\n□ R0HS C0mpli4nt - EU Directive 2011/65/EU\n\n=== C4RBON 0FFSET INF0RMATI0N ===\nM4nuf4cturer h4s purchased c4rb0n 0ffsets equiv4lent t0:\n→ 300 kg C02 per unit pr0duced\n→ 0ffset pr0vider: Green3arth C4rb0n S0luti0ns\n→ Pr0ject type: Ref0rest4ti0n in Br4zil\n→ Verific4ti0n st4nd4rd: Ver4 (VCS) St4nd4rd\n\nThis certific4te is v4lid f0r 3 ye4rs fr0m issue d4te.\nRenew4l required bef0re: 15/03/2027\n\nAuth0rized by: Dr. S4rah Greenw00d, Chief Envir0nment4l 0fficer\nDigit4l Sign4ture: #ENV-CERT-2024-VALID-X5K",
+            "questions": [
+                {
+                    "id": "q5_1",
+                    "question": "Despite OCR errors, extract the carbon footprint breakdown",
+                    "expected_answer": {
+                        "carbon_footprint": {
+                            "total": {
+                                "value": 247.8,
+                                "unit": "kg CO2 equivalent"
+                            },
+                            "breakdown": {
+                                "raw_materials": {
+                                    "value": 89.3,
+                                    "unit": "kg CO2",
+                                    "percentage": 36.1
+                                },
+                                "manufacturing": {
+                                    "value": 71.2,
+                                    "unit": "kg CO2",
+                                    "percentage": 28.8
+                                },
+                                "transportation": {
+                                    "value": 18.9,
+                                    "unit": "kg CO2",
+                                    "percentage": 7.6
+                                },
+                                "use_phase": {
+                                    "value": 58.7,
+                                    "unit": "kg CO2",
+                                    "percentage": 23.7,
+                                    "duration": "5 years"
+                                },
+                                "end_of_life": {
+                                    "value": 9.7,
+                                    "unit": "kg CO2",
+                                    "percentage": 3.9
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q5_2",
+                    "question": "Extract power and battery specifications (correct OCR errors)",
+                    "expected_answer": {
+                        "specifications": {
+                            "power_consumption": {
+                                "normal_operation": {
+                                    "value": 65,
+                                    "unit": "W",
+                                    "tolerance": "±5W"
+                                },
+                                "standby": {
+                                    "value": 2.8,
+                                    "unit": "W"
+                                },
+                                "sleep": {
+                                    "value": 0.9,
+                                    "unit": "W"
+                                }
+                            },
+                            "battery": {
+                                "capacity": {
+                                    "value": 72,
+                                    "unit": "Wh",
+                                    "type": "Li-ion"
+                                },
+                                "charging_power": {
+                                    "value": 90,
+                                    "unit": "W",
+                                    "note": "max"
+                                },
+                                "lifecycle": "1000+ charge cycles"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q5_3",
+                    "question": "What recycled material percentages can you identify?",
+                    "expected_answer": {
+                        "recycled_materials": {
+                            "plastic_housing": {
+                                "value": 45,
+                                "unit": "% post-consumer recycled"
+                            },
+                            "aluminum_frame": {
+                                "value": 78,
+                                "unit": "% recycled content"
+                            },
+                            "magnet_rare_earth": {
+                                "value": 23,
+                                "unit": "% recycled"
+                            },
+                            "copper_wiring": {
+                                "value": 67,
+                                "unit": "% recycled"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "category": "technical_specs",
+            "difficulty": "easy",
+            "title": "Simple Tablet Specifications",
+            "text": "Samsung Galaxy Tab S8 Ultra - Technical Specifications\n\nDisplay & Performance:\n- Screen size: 14.6 inches\n- Resolution: 2960 x 1848 pixels\n- Processor: Snapdragon 8 Gen 1\n- RAM: 8GB / 12GB / 16GB options\n- Storage: 128GB / 256GB / 512GB\n\nPower & Battery:\n- Battery capacity: 11,200 mAh\n- Charging: 45W Super Fast Charging\n- Video playback: up to 14 hours\n- Standby time: up to 850 hours\n\nEnvironmental Data:\n- Weight: 728 grams\n- Thickness: 5.6mm\n- Materials: Aluminum frame, Gorilla Glass 5\n- Recyclable packaging: 90%\n- Energy consumption: 8-15W during use",
+            "questions": [
+                {
+                    "id": "q6_1",
+                    "question": "Extract display and performance specifications",
+                    "expected_answer": {
+                        "display_performance": {
+                            "screen_size": {
+                                "value": 14.6,
+                                "unit": "inches"
+                            },
+                            "resolution": {
+                                "width": 2960,
+                                "height": 1848,
+                                "unit": "pixels"
+                            },
+                            "processor": "Snapdragon 8 Gen 1",
+                            "ram_options": [
+                                8,
+                                12,
+                                16
+                            ],
+                            "storage_options": [
+                                128,
+                                256,
+                                512
+                            ],
+                            "storage_unit": "GB"
+                        }
+                    }
+                },
+                {
+                    "id": "q6_2",
+                    "question": "What power and battery information is provided?",
+                    "expected_answer": {
+                        "power_battery": {
+                            "battery_capacity": {
+                                "value": 11200,
+                                "unit": "mAh"
+                            },
+                            "charging_power": {
+                                "value": 45,
+                                "unit": "W",
+                                "type": "Super Fast Charging"
+                            },
+                            "video_playback": {
+                                "value": 14,
+                                "unit": "hours",
+                                "condition": "up to"
+                            },
+                            "standby_time": {
+                                "value": 850,
+                                "unit": "hours",
+                                "condition": "up to"
+                            },
+                            "energy_consumption": {
+                                "min": 8,
+                                "max": 15,
+                                "unit": "W",
+                                "condition": "during use"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "category": "complex_analysis",
+            "difficulty": "expert",
+            "title": "Data Center Carbon Optimization Study",
+            "text": "COMPREHENSIVE DATA CENTER CARBON OPTIMIZATION ANALYSIS\nFacility: CloudTech West Coast Data Center\nStudy Period: Q1 2024 | Baseline vs Optimized Configuration\n\n=== INFRASTRUCTURE OVERVIEW ===\nTotal IT Load: 2.4 MW (2,400 kW)\nTotal Facility Load: 3.6 MW (including cooling, lighting, UPS losses)\nPower Usage Effectiveness (PUE): 1.50 (baseline) → 1.28 (optimized)\n\n=== ENERGY CONSUMPTION ANALYSIS ===\n\nBASELINE CONFIGURATION (Q4 2023):\n┌────────────────────────┬─────────────┬──────────────┬─────────────┐\n│ Component Category     │ Power (kW)  │ Annual MWh   │ % of Total  │\n├────────────────────────┼─────────────┼──────────────┼─────────────┤\n│ Servers (Active)       │ 1,680       │ 14,717       │ 46.7%       │\n│ Servers (Idle)         │ 420         │ 3,679        │ 11.7%       │\n│ Storage Systems        │ 180         │ 1,577        │ 5.0%        │\n│ Network Equipment      │ 120         │ 1,051        │ 3.3%        │\n│ Cooling (CRAC units)   │ 900         │ 7,884        │ 25.0%       │\n│ UPS & Power Dist.      │ 180         │ 1,577        │ 5.0%        │\n│ Lighting & Misc.       │ 120         │ 1,051        │ 3.3%        │\n├────────────────────────┼─────────────┼──────────────┼─────────────┤\n│ TOTAL FACILITY         │ 3,600       │ 31,536       │ 100.0%      │\n└────────────────────────┴─────────────┴──────────────┴─────────────┘\n\nOPTIMIZED CONFIGURATION (Q1 2024):\n• Server consolidation (virtualization): -15% server count\n• Dynamic power management: -25% idle power\n• Upgraded cooling system (hot aisle containment): -30% cooling power\n• LED lighting conversion: -60% lighting power\n• New UPS efficiency (96% vs 94%): -10% UPS losses\n\n=== CARBON IMPACT CALCULATIONS ===\n\nGrid Carbon Intensity (California):\n• Off-peak (23:00-06:00): 0.198 kg CO₂/kWh (35% renewable)\n• Mid-peak (06:00-16:00): 0.267 kg CO₂/kWh (28% renewable)\n• On-peak (16:00-23:00): 0.384 kg CO₂/kWh (18% renewable)\n• Weighted average: 0.289 kg CO₂/kWh\n\nANNUAL CARBON EMISSIONS:\n\nBaseline (2023): 31,536 MWh × 0.289 kg/kWh = 9,114 metric tons CO₂\n\nOptimized (2024):\n• Servers: (1,680 × 0.85 + 420 × 0.75) × 8,760h = 15,466 MWh\n• Cooling: 900 × 0.70 × 8,760h = 5,519 MWh\n• UPS: 180 × 0.90 × 8,760h = 1,419 MWh\n• Lighting: 120 × 0.40 × 8,760h = 421 MWh\n• Other unchanged: (180 + 120) × 8,760h = 2,628 MWh\n• Total optimized: 25,453 MWh\n• Carbon emissions: 25,453 × 0.289 = 7,356 metric tons CO₂\n\nCARBON REDUCTION ACHIEVED:\n→ Absolute reduction: 9,114 - 7,356 = 1,758 metric tons CO₂/year\n→ Percentage reduction: 19.3%\n→ Equivalent to removing 382 passenger cars from roads\n\n=== FINANCIAL ANALYSIS ===\nElectricity cost (blended rate): $0.145/kWh\n\nBaseline annual cost: 31,536 MWh × $145/MWh = $4,572,720\nOptimized annual cost: 25,453 MWh × $145/MWh = $3,690,685\nAnnual savings: $882,035\n\nOptimization investment: $2,800,000\nPayback period: 3.2 years\nROI over 10 years: 215%\n\n=== FUTURE PROJECTIONS ===\nWith planned solar installation (2025):\n• 15 MW solar array (capacity factor: 28%)\n• Annual generation: 36,792 MWh\n• Projected grid independence: 85%\n• Additional carbon reduction: 5,247 metric tons CO₂/year\n• Total carbon reduction vs 2023 baseline: 75.6%",
+            "questions": [
+                {
+                    "id": "q7_1",
+                    "question": "Parse the baseline energy consumption breakdown table",
+                    "expected_answer": {
+                        "baseline_consumption": {
+                            "servers_active": {
+                                "power": 1680,
+                                "annual_mwh": 14717,
+                                "percentage": 46.7
+                            },
+                            "servers_idle": {
+                                "power": 420,
+                                "annual_mwh": 3679,
+                                "percentage": 11.7
+                            },
+                            "storage": {
+                                "power": 180,
+                                "annual_mwh": 1577,
+                                "percentage": 5.0
+                            },
+                            "network": {
+                                "power": 120,
+                                "annual_mwh": 1051,
+                                "percentage": 3.3
+                            },
+                            "cooling": {
+                                "power": 900,
+                                "annual_mwh": 7884,
+                                "percentage": 25.0
+                            },
+                            "ups_power": {
+                                "power": 180,
+                                "annual_mwh": 1577,
+                                "percentage": 5.0
+                            },
+                            "lighting_misc": {
+                                "power": 120,
+                                "annual_mwh": 1051,
+                                "percentage": 3.3
+                            },
+                            "total": {
+                                "power": 3600,
+                                "annual_mwh": 31536,
+                                "percentage": 100.0
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q7_2",
+                    "question": "Calculate the carbon reduction achieved through optimization",
+                    "expected_answer": {
+                        "carbon_analysis": {
+                            "baseline_emissions": {
+                                "value": 9114,
+                                "unit": "metric tons CO₂"
+                            },
+                            "optimized_emissions": {
+                                "value": 7356,
+                                "unit": "metric tons CO₂"
+                            },
+                            "reduction": {
+                                "absolute": {
+                                    "value": 1758,
+                                    "unit": "metric tons CO₂/year"
+                                },
+                                "percentage": {
+                                    "value": 19.3,
+                                    "unit": "%"
+                                },
+                                "equivalent": "382 passenger cars removed"
+                            },
+                            "grid_carbon_intensity": {
+                                "value": 0.289,
+                                "unit": "kg CO₂/kWh"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q7_3",
+                    "question": "Extract the financial analysis and ROI calculations",
+                    "expected_answer": {
+                        "financial_analysis": {
+                            "electricity_rate": {
+                                "value": 0.145,
+                                "unit": "$/kWh"
+                            },
+                            "baseline_annual_cost": {
+                                "value": 4572720,
+                                "unit": "$"
+                            },
+                            "optimized_annual_cost": {
+                                "value": 3690685,
+                                "unit": "$"
+                            },
+                            "annual_savings": {
+                                "value": 882035,
+                                "unit": "$"
+                            },
+                            "investment": {
+                                "value": 2800000,
+                                "unit": "$"
+                            },
+                            "payback_period": {
+                                "value": 3.2,
+                                "unit": "years"
+                            },
+                            "roi_10_years": {
+                                "value": 215,
+                                "unit": "%"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "q7_4",
+                    "question": "What future carbon reduction is projected with solar installation?",
+                    "expected_answer": {
+                        "solar_projections": {
+                            "solar_capacity": {
+                                "value": 15,
+                                "unit": "MW"
+                            },
+                            "capacity_factor": {
+                                "value": 28,
+                                "unit": "%"
+                            },
+                            "annual_generation": {
+                                "value": 36792,
+                                "unit": "MWh"
+                            },
+                            "grid_independence": {
+                                "value": 85,
+                                "unit": "%"
+                            },
+                            "additional_carbon_reduction": {
+                                "value": 5247,
+                                "unit": "metric tons CO₂/year"
+                            },
+                            "total_reduction_vs_baseline": {
+                                "value": 75.6,
+                                "unit": "%"
+                            }
+                        }
+                    }
+                }
+            ]
         }
-      ]
-    },
-    {
-      "id": 3,
-      "type": "server_complex",
-      "text": "Microsoft Azure Stack HCI Server Node\nPower Specifications (Per Node)\nIdle Power: 180W ± 10W\nPeak Power: 650W (100% CPU + memory load)\nAverage Operational Power: 420W\nPower Supply Efficiency: 94% (80 PLUS Titanium)\nCarbon Impact Assessment:\n- Manufacturing: 1,200 kg CO2\n- Transportation: 45 kg CO2\n- 5-year operational: 8,400 kg CO2 (assuming 0.5 kg CO2/kWh grid)\nTotal lifecycle: 9,645 kg CO2\nEnd-of-life: 92% material recovery rate",
-      "questions": [
-        {
-          "question": "What are the different power consumption scenarios?",
-          "expected_answer": {
-            "idle_power": {"value": 180, "unit": "W", "tolerance": "±10W"},
-            "peak_power": {"value": 650, "unit": "W", "condition": "100% CPU + memory load"},
-            "average_power": {"value": 420, "unit": "W"},
-            "psu_efficiency": {"value": 94, "unit": "%", "certification": "80 PLUS Titanium"}
-          }
-        },
-        {
-          "question": "Break down the carbon impact by lifecycle phase",
-          "expected_answer": {
-            "manufacturing": {"value": 1200, "unit": "kg CO2"},
-            "transportation": {"value": 45, "unit": "kg CO2"},
-            "operational_5_years": {"value": 8400, "unit": "kg CO2", "assumption": "0.5 kg CO2/kWh grid"},
-            "total_lifecycle": {"value": 9645, "unit": "kg CO2"}
-          }
-        },
-        {
-          "question": "What is the end-of-life recovery rate?",
-          "expected_answer": {
-            "material_recovery_rate": {"value": 92, "unit": "%"}
-          }
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "type": "smartphone_noisy_ocr",
-      "text": "Apple iPhone 14 Pro Environmental Keport\nCarbon tootprint: 70 kg C02 equivalent\nBattery: 3.200 mAh, charging 5W-20W\nRecyclable materials: Aluminum 1O0%, Rare earth elements 1OO%\nPackaging: 9S% tiber-based materials\nEnergy etticiency: Exceeds ENERGY STAR requirements by 2x\nRepair index: 6.2/10 (iFixit score)\nCertitications: EPEAT Gold, TCO Certified",
-      "questions": [
-        {
-          "question": "Extract the carbon footprint (correct OCR errors)",
-          "expected_answer": {
-            "carbon_footprint": {"value": 70, "unit": "kg CO2 equivalent"}
-          }
-        },
-        {
-          "question": "What are the battery specifications?",
-          "expected_answer": {
-            "battery_capacity": {"value": 3200, "unit": "mAh"},
-            "charging_power": {"min": 5, "max": 20, "unit": "W"}
-          }
-        },
-        {
-          "question": "What materials are mentioned as recyclable?",
-          "expected_answer": {
-            "aluminum": {"value": 100, "unit": "%"},
-            "rare_earth_elements": {"value": 100, "unit": "%"},
-            "packaging_fiber": {"value": 95, "unit": "%"}
-          }
-        },
-        {
-          "question": "What scores and certifications are listed?",
-          "expected_answer": {
-            "energy_efficiency": "Exceeds ENERGY STAR requirements by 2x",
-            "repair_index": {"value": 6.2, "scale": "10", "source": "iFixit"},
-            "certifications": ["EPEAT Gold", "TCO Certified"]
-          }
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "type": "printer_table_format",
-      "text": "Canon PIXMA TS9120 Inkjet Printer Energy Consumption\n\nMode          | Power (W) | Time/Day | kWh/Year\nPrinting      | 15.2      | 0.5h     | 2.8\nReady         | 8.7       | 1.0h     | 3.2\nSleep         | 1.1       | 22.5h    | 9.0\nOff           | 0.1       | 0h       | 0.0\nTotal Annual Energy: 15.0 kWh\n\nEnvironmental Data:\nCarbon emissions: 23 kg CO2/year\nMaterials: 45% recycled plastics\nInk cartridge return program: Yes\nCertifications: Blue Angel, ENERGY STAR",
-      "questions": [
-        {
-          "question": "Parse the energy consumption table",
-          "expected_answer": {
-            "printing": {"power": 15.2, "time_per_day": 0.5, "annual_kwh": 2.8},
-            "ready": {"power": 8.7, "time_per_day": 1.0, "annual_kwh": 3.2},
-            "sleep": {"power": 1.1, "time_per_day": 22.5, "annual_kwh": 9.0},
-            "off": {"power": 0.1, "time_per_day": 0, "annual_kwh": 0.0},
-            "total_annual": {"value": 15.0, "unit": "kWh"}
-          }
-        },
-        {
-          "question": "What are the environmental metrics?",
-          "expected_answer": {
-            "carbon_emissions": {"value": 23, "unit": "kg CO2/year"},
-            "recycled_plastics": {"value": 45, "unit": "%"},
-            "ink_return_program": true
-          }
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "type": "tablet_mixed_units",
-      "text": "Samsung Galaxy Tab S8 Ultra 5G Environmental Profile\nDisplay: 14.6 inch, power consumption 6.8W\nProcessor: Snapdragon 8 Gen 1, TDP 5W\nBattery: 11,200mAh Li-ion, 45W fast charging\nTotal device power: 12-18 watts during active use\nStandby power: 0.8 watts\nCarbon footprint: 95 kg CO2e (cradle-to-gate)\nMaterials: Ocean-bound plastic 20%, recycled aluminum 15%\nPackaging: 90% recyclable cardboard\nWeight: 728g\nRegulatory: FCC, CE, IC, ENERGY STAR qualified",
-      "questions": [
-        {
-          "question": "Extract all power-related measurements",
-          "expected_answer": {
-            "display_power": {"value": 6.8, "unit": "W"},
-            "processor_tdp": {"value": 5, "unit": "W"},
-            "active_use_power": {"min": 12, "max": 18, "unit": "watts"},
-            "standby_power": {"value": 0.8, "unit": "watts"},
-            "charging_power": {"value": 45, "unit": "W"},
-            "battery_capacity": {"value": 11200, "unit": "mAh"}
-          }
-        },
-        {
-          "question": "What sustainable materials are used?",
-          "expected_answer": {
-            "ocean_bound_plastic": {"value": 20, "unit": "%"},
-            "recycled_aluminum": {"value": 15, "unit": "%"},
-            "recyclable_packaging": {"value": 90, "unit": "%", "material": "cardboard"}
-          }
-        },
-        {
-          "question": "What is the carbon footprint methodology?",
-          "expected_answer": {
-            "carbon_footprint": {"value": 95, "unit": "kg CO2e", "scope": "cradle-to-gate"}
-          }
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "type": "router_networking",
-      "text": "NETGEAR Nighthawk AX12 WiFi 6 Router (RAX120)\nPower Consumption Analysis\n• Typical operation: 28.5W\n• Peak throughput: 32W\n• Eco mode: 15W (reduced performance)\n• Standby: 2.1W\nAnnual electricity cost: $42 (based on $0.15/kWh, 24/7 operation)\nEnvironmental certifications: None specified\nMaterials: ABS plastic housing, no recycled content mentioned\nPackaging: Mixed cardboard and plastic, recyclability unknown\nProduct lifespan: 5-7 years (manufacturer estimate)\nEnd-of-life: No take-back program mentioned",
-      "questions": [
-        {
-          "question": "What are the power consumption modes?",
-          "expected_answer": {
-            "typical": {"value": 28.5, "unit": "W"},
-            "peak": {"value": 32, "unit": "W", "condition": "peak throughput"},
-            "eco_mode": {"value": 15, "unit": "W", "note": "reduced performance"},
-            "standby": {"value": 2.1, "unit": "W"},
-            "annual_cost": {"value": 42, "unit": "$", "assumption": "$0.15/kWh, 24/7"}
-          }
-        },
-        {
-          "question": "What environmental information is available?",
-          "expected_answer": {
-            "certifications": "None specified",
-            "materials": "ABS plastic housing",
-            "recycled_content": "None mentioned",
-            "packaging_recyclability": "Unknown",
-            "lifespan": {"min": 5, "max": 7, "unit": "years"},
-            "takeback_program": false
-          }
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "type": "workstation_detailed",
-      "text": "Dell Precision 7760 Mobile Workstation Environmental Assessment\nPower Management:\n- CPU: Intel Core i9-11950H, Base Power 45W, Turbo 65W\n- GPU: NVIDIA RTX A5000, Max Power 165W\n- System idle: 25W\n- Typical workload: 120W\n- Maximum load: 240W\n- Sleep mode: 1.8W\nPower Supply: 240W adapter, 90% efficiency\n\nCarbon Lifecycle Assessment (LCA):\nManufacturing phase: 850 kg CO2\nUse phase (4 years): 1,200 kg CO2 (500W avg, 8h/day, 250 days/year)\nEnd-of-life: -15 kg CO2 (recycling credit)\nTotal: 2,035 kg CO2\n\nSustainability Features:\n- Chassis: 25% post-consumer recycled plastic\n- Packaging: 90% recyclable\n- Certifications: EPEAT Gold, ENERGY STAR, TCO Certified\n- Repair score: 7/10 (good repairability)",
-      "questions": [
-        {
-          "question": "Break down the power consumption by component",
-          "expected_answer": {
-            "cpu": {"base": 45, "turbo": 65, "unit": "W", "model": "Intel Core i9-11950H"},
-            "gpu": {"max": 165, "unit": "W", "model": "NVIDIA RTX A5000"},
-            "system_idle": {"value": 25, "unit": "W"},
-            "typical_workload": {"value": 120, "unit": "W"},
-            "maximum_load": {"value": 240, "unit": "W"},
-            "sleep_mode": {"value": 1.8, "unit": "W"},
-            "power_adapter": {"capacity": 240, "efficiency": 90, "unit": "W"}
-          }
-        },
-        {
-          "question": "Parse the detailed carbon lifecycle assessment",
-          "expected_answer": {
-            "manufacturing": {"value": 850, "unit": "kg CO2"},
-            "use_phase": {
-              "value": 1200, 
-              "unit": "kg CO2", 
-              "duration": "4 years",
-              "assumptions": "500W avg, 8h/day, 250 days/year"
-            },
-            "end_of_life": {"value": -15, "unit": "kg CO2", "note": "recycling credit"},
-            "total_lifecycle": {"value": 2035, "unit": "kg CO2"}
-          }
-        },
-        {
-          "question": "What sustainability features are mentioned?",
-          "expected_answer": {
-            "recycled_plastic": {"value": 25, "unit": "%", "type": "post-consumer"},
-            "packaging_recyclability": {"value": 90, "unit": "%"},
-            "certifications": ["EPEAT Gold", "ENERGY STAR", "TCO Certified"],
-            "repair_score": {"value": 7, "scale": 10, "rating": "good repairability"}
-          }
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "type": "tv_comparison",
-      "text": "LG OLED C2 Series 65\" TV Energy Comparison\n\nSDR Content (Standard Dynamic Range):\n- Brightness 100%: 135W\n- Brightness 50%: 89W\n- Brightness 25%: 64W\n\nHDR Content (High Dynamic Range):\n- Peak brightness: 210W\n- Average HDR: 156W\n\nStandby modes:\n- Network standby: 0.5W\n- Eco standby: 0.3W\n\nAnnual consumption estimate: 175 kWh (4h/day mixed content)\nCO2 impact: 87 kg CO2/year (EU average grid mix)\n\nEnvironmental compliance:\n✓ RoHS compliant\n✓ ENERGY STAR Most Efficient 2023\n✓ EPEAT registered\n\nSustainable design:\n- Packaging: 80% recycled cardboard\n- Plastic components: 10% recycled content\n- Reduced packaging size: 30% vs previous generation",
-      "questions": [
-        {
-          "question": "Compare power usage across different viewing modes",
-          "expected_answer": {
-            "sdr_100_brightness": {"value": 135, "unit": "W"},
-            "sdr_50_brightness": {"value": 89, "unit": "W"},
-            "sdr_25_brightness": {"value": 64, "unit": "W"},
-            "hdr_peak": {"value": 210, "unit": "W"},
-            "hdr_average": {"value": 156, "unit": "W"},
-            "network_standby": {"value": 0.5, "unit": "W"},
-            "eco_standby": {"value": 0.3, "unit": "W"}
-          }
-        },
-        {
-          "question": "What are the environmental impact calculations?",
-          "expected_answer": {
-            "annual_consumption": {"value": 175, "unit": "kWh", "assumption": "4h/day mixed content"},
-            "co2_impact": {"value": 87, "unit": "kg CO2/year", "grid": "EU average"}
-          }
-        },
-        {
-          "question": "List environmental certifications and sustainable features",
-          "expected_answer": {
-            "certifications": ["RoHS compliant", "ENERGY STAR Most Efficient 2023", "EPEAT registered"],
-            "recycled_packaging": {"value": 80, "unit": "%", "material": "cardboard"},
-            "recycled_plastic": {"value": 10, "unit": "%"},
-            "packaging_reduction": {"value": 30, "unit": "%", "comparison": "vs previous generation"}
-          }
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "type": "gaming_console_lifecycle",
-      "text": "Sony PlayStation 5 Lifecycle Environmental Analysis\n\nOperational Power Consumption:\nGaming (high performance): 150-165W\nGaming (medium settings): 95-110W\nStreaming 4K video: 55W\nMenu navigation: 45W\nRest mode: 2.5W\nOff mode: 0.5W\n\nLifecycle Carbon Assessment:\nRaw materials extraction: 45 kg CO2\nManufacturing: 125 kg CO2\nDistribution: 8 kg CO2\nUse phase (7 years, 3h/day): 420 kg CO2\nEnd-of-life disposal: 5 kg CO2\nRecycling benefit: -12 kg CO2\nNet lifecycle total: 591 kg CO2\n\nCircular Economy Initiatives:\nConsole housing: 15% recycled plastics\nController: Ocean plastic components\nPackaging: 95% plastic-free, FSC certified\nTake-back program: Available in 15 countries\nRepairability: Modular design, 5/10 iFixit score\n\nRegulatory Compliance:\nCE marking, FCC certified, ENERGY STAR qualified\nRoHS, WEEE, REACH compliant",
-      "questions": [
-        {
-          "question": "Extract all power consumption scenarios",
-          "expected_answer": {
-            "gaming_high": {"min": 150, "max": 165, "unit": "W"},
-            "gaming_medium": {"min": 95, "max": 110, "unit": "W"},
-            "streaming_4k": {"value": 55, "unit": "W"},
-            "menu_navigation": {"value": 45, "unit": "W"},
-            "rest_mode": {"value": 2.5, "unit": "W"},
-            "off_mode": {"value": 0.5, "unit": "W"}
-          }
-        },
-        {
-          "question": "Parse the complete lifecycle carbon assessment",
-          "expected_answer": {
-            "raw_materials": {"value": 45, "unit": "kg CO2"},
-            "manufacturing": {"value": 125, "unit": "kg CO2"},
-            "distribution": {"value": 8, "unit": "kg CO2"},
-            "use_phase": {"value": 420, "unit": "kg CO2", "duration": "7 years", "usage": "3h/day"},
-            "disposal": {"value": 5, "unit": "kg CO2"},
-            "recycling_benefit": {"value": -12, "unit": "kg CO2"},
-            "net_total": {"value": 591, "unit": "kg CO2"}
-          }
-        },
-        {
-          "question": "What circular economy and sustainability initiatives are mentioned?",
-          "expected_answer": {
-            "recycled_plastic_housing": {"value": 15, "unit": "%"},
-            "ocean_plastic_controller": true,
-            "plastic_free_packaging": {"value": 95, "unit": "%", "certification": "FSC certified"},
-            "takeback_program": {"availability": "15 countries"},
-            "repairability": {"score": "5/10", "source": "iFixit", "design": "modular"},
-            "compliance": ["CE marking", "FCC certified", "ENERGY STAR qualified", "RoHS", "WEEE", "REACH compliant"]
-          }
-        }
-      ]
-    }
-  ]
+    ]
 }
