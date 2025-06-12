@@ -1,8 +1,9 @@
 {
     "dataset_info": {
         "name": "Environmental Technology Model Evaluation Dataset",
-        "version": "1.0",
-        "description": "Comprehensive dataset for testing AI models on environmental and technical data extraction",
+        "version": "2.0",
+        "description": "Comprehensive dataset for testing AI models on environmental and technical data extraction using path-based references",
+        "evaluation_method": "path_references",
         "categories": [
             "carbon_footprint",
             "technical_specs",
@@ -18,6 +19,490 @@
         ],
         "total_documents": 7
     },
+    "global_schema": {
+        "carbon_footprint": {
+            "total": {
+                "value": null,
+                "unit": null
+            },
+            "lifecycle_breakdown": {
+                "raw_materials": {
+                    "value": null,
+                    "unit": null,
+                    "percentage": null
+                },
+                "manufacturing": {
+                    "value": null,
+                    "unit": null,
+                    "percentage": null
+                },
+                "packaging": {
+                    "value": null,
+                    "unit": null,
+                    "percentage": null
+                },
+                "transportation": {
+                    "value": null,
+                    "unit": null,
+                    "percentage": null
+                },
+                "distribution": {
+                    "value": null,
+                    "unit": null,
+                    "percentage": null
+                },
+                "use_phase": {
+                    "value": null,
+                    "unit": null,
+                    "percentage": null,
+                    "duration": null
+                },
+                "end_of_life": {
+                    "value": null,
+                    "unit": null,
+                    "percentage": null,
+                    "note": null
+                }
+            }
+        },
+        "power_consumption": {
+            "typical": {
+                "value": null,
+                "unit": null,
+                "tolerance": null
+            },
+            "sleep": {
+                "value": null,
+                "unit": null
+            },
+            "standby": {
+                "value": null,
+                "unit": null
+            },
+            "annual_energy": {
+                "value": null,
+                "unit": null
+            },
+            "modes": {
+                "on_100": {
+                    "power": null,
+                    "annual_kwh": null,
+                    "annual_cost": null,
+                    "unit": null
+                },
+                "on_75": {
+                    "power": null,
+                    "annual_kwh": null,
+                    "annual_cost": null,
+                    "unit": null
+                },
+                "on_50": {
+                    "power": null,
+                    "annual_kwh": null,
+                    "annual_cost": null,
+                    "unit": null
+                },
+                "standby": {
+                    "power": null,
+                    "annual_kwh": null,
+                    "annual_cost": null,
+                    "unit": null
+                },
+                "off": {
+                    "power": null,
+                    "annual_kwh": null,
+                    "annual_cost": null,
+                    "unit": null
+                }
+            },
+            "cost_basis": null
+        },
+        "technical_specifications": {
+            "display": {
+                "screen_size": {
+                    "value": null,
+                    "unit": null
+                },
+                "resolution": {
+                    "width": null,
+                    "height": null,
+                    "unit": null
+                }
+            },
+            "performance": {
+                "processor": null,
+                "ram_options": [],
+                "storage_options": [],
+                "storage_unit": null
+            },
+            "battery": {
+                "capacity": {
+                    "value": null,
+                    "unit": null,
+                    "type": null
+                },
+                "charging_power": {
+                    "value": null,
+                    "unit": null,
+                    "type": null,
+                    "note": null
+                },
+                "video_playback": {
+                    "value": null,
+                    "unit": null,
+                    "condition": null
+                },
+                "standby_time": {
+                    "value": null,
+                    "unit": null,
+                    "condition": null
+                },
+                "lifecycle": null
+            },
+            "energy_consumption": {
+                "min": null,
+                "max": null,
+                "unit": null,
+                "condition": null
+            },
+            "physical": {
+                "weight": {
+                    "value": null,
+                    "unit": null
+                },
+                "thickness": {
+                    "value": null,
+                    "unit": null
+                },
+                "materials": []
+            }
+        },
+        "cost_breakdown": {
+            "components": {
+                "base_server": {
+                    "unit_price": null,
+                    "quantity": null,
+                    "total": null
+                },
+                "cpu": {
+                    "unit_price": null,
+                    "quantity": null,
+                    "total": null
+                },
+                "ram": {
+                    "unit_price": null,
+                    "quantity": null,
+                    "total": null
+                },
+                "storage": {
+                    "unit_price": null,
+                    "quantity": null,
+                    "total": null
+                },
+                "psu": {
+                    "unit_price": null,
+                    "quantity": null,
+                    "total": null
+                },
+                "support": {
+                    "unit_price": null,
+                    "quantity": null,
+                    "total": null
+                }
+            },
+            "subtotal": null,
+            "tax": {
+                "rate": null,
+                "amount": null
+            },
+            "carbon_offset_fee": null,
+            "total": null,
+            "currency": null
+        },
+        "carbon_impact_data": {
+            "footprint_per_server": {
+                "value": null,
+                "unit": null
+            },
+            "total_offset_purchased": {
+                "value": null,
+                "unit": null
+            },
+            "offset_cost_per_kg": {
+                "value": null,
+                "unit": null
+            },
+            "operational_carbon_annual": {
+                "value": null,
+                "unit": null
+            },
+            "tax_credit": {
+                "value": null,
+                "unit": null
+            }
+        },
+        "component_analysis": {
+            "a16_chip": {
+                "weight": null,
+                "co2": null,
+                "percentage": null
+            },
+            "display": {
+                "weight": null,
+                "co2": null,
+                "percentage": null
+            },
+            "battery": {
+                "weight": null,
+                "co2": null,
+                "percentage": null
+            },
+            "aluminum_frame": {
+                "weight": null,
+                "co2": null,
+                "percentage": null
+            },
+            "camera_system": {
+                "weight": null,
+                "co2": null,
+                "percentage": null
+            },
+            "other_components": {
+                "weight": null,
+                "co2": null,
+                "percentage": null
+            },
+            "packaging": {
+                "weight": null,
+                "co2": null,
+                "percentage": null
+            },
+            "subtotal": {
+                "weight": null,
+                "co2": null,
+                "percentage": null
+            }
+        },
+        "sustainability": {
+            "recyclability": {
+                "monitor_components": {
+                    "value": null,
+                    "unit": null
+                },
+                "packaging_materials": {
+                    "value": null,
+                    "unit": null
+                }
+            },
+            "recycled_materials": {
+                "plastic_housing": {
+                    "value": null,
+                    "unit": null
+                },
+                "aluminum_frame": {
+                    "value": null,
+                    "unit": null
+                },
+                "rare_earth_elements": {
+                    "value": null,
+                    "unit": null,
+                    "location": null
+                },
+                "tungsten": {
+                    "value": null,
+                    "unit": null,
+                    "location": null
+                },
+                "aluminum": {
+                    "value": null,
+                    "unit": null,
+                    "location": null
+                },
+                "gold": {
+                    "value": null,
+                    "unit": null,
+                    "location": null
+                },
+                "plastic": {
+                    "value": null,
+                    "unit": null,
+                    "location": null
+                },
+                "copper_wiring": {
+                    "value": null,
+                    "unit": null
+                },
+                "magnet_rare_earth": {
+                    "value": null,
+                    "unit": null
+                },
+                "overall_content": {
+                    "value": null,
+                    "unit": null
+                }
+            },
+            "certifications": []
+        },
+        "generation_comparison": {
+            "previous_model": {
+                "value": null,
+                "unit": null,
+                "year": null
+            },
+            "current_model": {
+                "value": null,
+                "unit": null,
+                "year": null
+            },
+            "improvement": {
+                "absolute_reduction": {
+                    "value": null,
+                    "unit": null
+                },
+                "percentage_reduction": {
+                    "value": null,
+                    "unit": null
+                },
+                "drivers": {
+                    "manufacturing_efficiency": {
+                        "value": null,
+                        "unit": null
+                    },
+                    "recycled_materials": {
+                        "value": null,
+                        "unit": null
+                    },
+                    "supply_chain": {
+                        "value": null,
+                        "unit": null
+                    }
+                }
+            }
+        },
+        "financial_analysis": {
+            "electricity_rate": {
+                "value": null,
+                "unit": null
+            },
+            "baseline_annual_cost": {
+                "value": null,
+                "unit": null
+            },
+            "optimized_annual_cost": {
+                "value": null,
+                "unit": null
+            },
+            "annual_savings": {
+                "value": null,
+                "unit": null
+            },
+            "investment": {
+                "value": null,
+                "unit": null
+            },
+            "payback_period": {
+                "value": null,
+                "unit": null
+            },
+            "roi_10_years": {
+                "value": null,
+                "unit": null
+            }
+        },
+        "energy_baseline_consumption": {
+            "servers_active": {
+                "power": null,
+                "annual_mwh": null,
+                "percentage": null
+            },
+            "servers_idle": {
+                "power": null,
+                "annual_mwh": null,
+                "percentage": null
+            },
+            "storage": {
+                "power": null,
+                "annual_mwh": null,
+                "percentage": null
+            },
+            "network": {
+                "power": null,
+                "annual_mwh": null,
+                "percentage": null
+            },
+            "cooling": {
+                "power": null,
+                "annual_mwh": null,
+                "percentage": null
+            },
+            "ups_power": {
+                "power": null,
+                "annual_mwh": null,
+                "percentage": null
+            },
+            "lighting_misc": {
+                "power": null,
+                "annual_mwh": null,
+                "percentage": null
+            },
+            "total": {
+                "power": null,
+                "annual_mwh": null,
+                "percentage": null
+            }
+        },
+        "carbon_analysis": {
+            "baseline_emissions": {
+                "value": null,
+                "unit": null
+            },
+            "optimized_emissions": {
+                "value": null,
+                "unit": null
+            },
+            "reduction": {
+                "absolute": {
+                    "value": null,
+                    "unit": null
+                },
+                "percentage": {
+                    "value": null,
+                    "unit": null
+                },
+                "equivalent": null
+            },
+            "grid_carbon_intensity": {
+                "value": null,
+                "unit": null
+            }
+        },
+        "solar_projections": {
+            "solar_capacity": {
+                "value": null,
+                "unit": null
+            },
+            "capacity_factor": {
+                "value": null,
+                "unit": null
+            },
+            "annual_generation": {
+                "value": null,
+                "unit": null
+            },
+            "grid_independence": {
+                "value": null,
+                "unit": null
+            },
+            "additional_carbon_reduction": {
+                "value": null,
+                "unit": null
+            },
+            "total_reduction_vs_baseline": {
+                "value": null,
+                "unit": null
+            }
+        }
+    },
     "documents": [
         {
             "id": 1,
@@ -29,53 +514,60 @@
                 {
                     "id": "q1_1",
                     "question": "What is the total carbon footprint of this laptop?",
-                    "expected_answer": {
-                        "carbon_footprint": {
-                            "total": {
-                                "value": 285,
-                                "unit": "kg CO₂ equivalent"
-                            }
+                    "expected_fields": [
+                        "carbon_footprint.total"
+                    ],
+                    "expected_values": {
+                        "carbon_footprint.total": {
+                            "value": 285,
+                            "unit": "kg CO₂ equivalent"
                         }
                     }
                 },
                 {
                     "id": "q1_2",
                     "question": "Break down the carbon footprint by lifecycle phases",
-                    "expected_answer": {
-                        "lifecycle_breakdown": {
-                            "manufacturing": {
-                                "value": 215,
-                                "unit": "kg CO₂"
-                            },
-                            "transportation": {
-                                "value": 15,
-                                "unit": "kg CO₂"
-                            },
-                            "use_phase": {
-                                "value": 55,
-                                "unit": "kg CO₂",
-                                "duration": "4 years"
-                            }
+                    "expected_fields": [
+                        "carbon_footprint.lifecycle_breakdown.manufacturing",
+                        "carbon_footprint.lifecycle_breakdown.transportation",
+                        "carbon_footprint.lifecycle_breakdown.use_phase"
+                    ],
+                    "expected_values": {
+                        "carbon_footprint.lifecycle_breakdown.manufacturing": {
+                            "value": 215,
+                            "unit": "kg CO₂"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.transportation": {
+                            "value": 15,
+                            "unit": "kg CO₂"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.use_phase": {
+                            "value": 55,
+                            "unit": "kg CO₂",
+                            "duration": "4 years"
                         }
                     }
                 },
                 {
                     "id": "q1_3",
                     "question": "What are the power consumption values?",
-                    "expected_answer": {
-                        "power_consumption": {
-                            "typical": {
-                                "value": 45,
-                                "unit": "W"
-                            },
-                            "sleep": {
-                                "value": 2.1,
-                                "unit": "W"
-                            },
-                            "annual_energy": {
-                                "value": 65,
-                                "unit": "kWh"
-                            }
+                    "expected_fields": [
+                        "power_consumption.typical",
+                        "power_consumption.sleep",
+                        "power_consumption.annual_energy"
+                    ],
+                    "expected_values": {
+                        "power_consumption.typical": {
+                            "value": 45,
+                            "unit": "W"
+                        },
+                        "power_consumption.sleep": {
+                            "value": 2.1,
+                            "unit": "W"
+                        },
+                        "power_consumption.annual_energy": {
+                            "value": 65,
+                            "unit": "kWh"
                         }
                     }
                 }
@@ -91,102 +583,118 @@
                 {
                     "id": "q2_1",
                     "question": "Parse the power consumption table with all modes",
-                    "expected_answer": {
-                        "power_modes": {
-                            "on_100": {
-                                "power": 32.0,
-                                "annual_kwh": 117.3,
-                                "annual_cost": 14.08,
-                                "unit": "W"
-                            },
-                            "on_75": {
-                                "power": 28.5,
-                                "annual_kwh": 104.5,
-                                "annual_cost": 12.54,
-                                "unit": "W"
-                            },
-                            "on_50": {
-                                "power": 24.1,
-                                "annual_kwh": 88.4,
-                                "annual_cost": 10.61,
-                                "unit": "W"
-                            },
-                            "standby": {
-                                "power": 0.3,
-                                "annual_kwh": 2.6,
-                                "annual_cost": 0.31,
-                                "unit": "W"
-                            },
-                            "off": {
-                                "power": 0.1,
-                                "annual_kwh": 0.9,
-                                "annual_cost": 0.11,
-                                "unit": "W"
-                            }
+                    "expected_fields": [
+                        "power_consumption.modes.on_100",
+                        "power_consumption.modes.on_75",
+                        "power_consumption.modes.on_50",
+                        "power_consumption.modes.standby",
+                        "power_consumption.modes.off",
+                        "power_consumption.cost_basis"
+                    ],
+                    "expected_values": {
+                        "power_consumption.modes.on_100": {
+                            "power": 32.0,
+                            "annual_kwh": 117.3,
+                            "annual_cost": 14.08,
+                            "unit": "W"
                         },
-                        "cost_basis": "$0.12/kWh, 10h/day usage"
+                        "power_consumption.modes.on_75": {
+                            "power": 28.5,
+                            "annual_kwh": 104.5,
+                            "annual_cost": 12.54,
+                            "unit": "W"
+                        },
+                        "power_consumption.modes.on_50": {
+                            "power": 24.1,
+                            "annual_kwh": 88.4,
+                            "annual_cost": 10.61,
+                            "unit": "W"
+                        },
+                        "power_consumption.modes.standby": {
+                            "power": 0.3,
+                            "annual_kwh": 2.6,
+                            "annual_cost": 0.31,
+                            "unit": "W"
+                        },
+                        "power_consumption.modes.off": {
+                            "power": 0.1,
+                            "annual_kwh": 0.9,
+                            "annual_cost": 0.11,
+                            "unit": "W"
+                        },
+                        "power_consumption.cost_basis": "$0.12/kWh, 10h/day usage"
                     }
                 },
                 {
                     "id": "q2_2",
                     "question": "Extract the complete lifecycle carbon assessment",
-                    "expected_answer": {
-                        "lifecycle_carbon": {
-                            "manufacturing": {
-                                "value": 156,
-                                "unit": "kg CO₂eq"
-                            },
-                            "packaging": {
-                                "value": 12,
-                                "unit": "kg CO₂eq"
-                            },
-                            "distribution": {
-                                "value": 8,
-                                "unit": "kg CO₂eq"
-                            },
-                            "use_phase": {
-                                "value": 89,
-                                "unit": "kg CO₂eq",
-                                "duration": "5 years"
-                            },
-                            "end_of_life": {
-                                "value": -5,
-                                "unit": "kg CO₂eq",
-                                "note": "recycling credit"
-                            },
-                            "total": {
-                                "value": 260,
-                                "unit": "kg CO₂eq"
-                            }
+                    "expected_fields": [
+                        "carbon_footprint.lifecycle_breakdown.manufacturing",
+                        "carbon_footprint.lifecycle_breakdown.packaging",
+                        "carbon_footprint.lifecycle_breakdown.distribution",
+                        "carbon_footprint.lifecycle_breakdown.use_phase",
+                        "carbon_footprint.lifecycle_breakdown.end_of_life",
+                        "carbon_footprint.total"
+                    ],
+                    "expected_values": {
+                        "carbon_footprint.lifecycle_breakdown.manufacturing": {
+                            "value": 156,
+                            "unit": "kg CO₂eq"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.packaging": {
+                            "value": 12,
+                            "unit": "kg CO₂eq"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.distribution": {
+                            "value": 8,
+                            "unit": "kg CO₂eq"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.use_phase": {
+                            "value": 89,
+                            "unit": "kg CO₂eq",
+                            "duration": "5 years"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.end_of_life": {
+                            "value": -5,
+                            "unit": "kg CO₂eq",
+                            "note": "recycling credit"
+                        },
+                        "carbon_footprint.total": {
+                            "value": 260,
+                            "unit": "kg CO₂eq"
                         }
                     }
                 },
                 {
                     "id": "q2_3",
                     "question": "What recyclability and sustainability metrics are provided?",
-                    "expected_answer": {
-                        "sustainability": {
-                            "monitor_recyclability": {
-                                "value": 78,
-                                "unit": "% by weight"
-                            },
-                            "packaging_recyclability": {
-                                "value": 95,
-                                "unit": "%"
-                            },
-                            "recycled_plastic_content": {
-                                "value": 25,
-                                "unit": "% post-consumer"
-                            },
-                            "certifications": [
-                                "ENERGY STAR 8.0",
-                                "EPEAT Gold",
-                                "TCO Certified 9.0",
-                                "RoHS",
-                                "WEEE",
-                                "REACH"
-                            ]
-                        }
+                    "expected_fields": [
+                        "sustainability.recyclability.monitor_components",
+                        "sustainability.recyclability.packaging_materials",
+                        "sustainability.recycled_materials.plastic_housing",
+                        "sustainability.certifications"
+                    ],
+                    "expected_values": {
+                        "sustainability.recyclability.monitor_components": {
+                            "value": 78,
+                            "unit": "% by weight"
+                        },
+                        "sustainability.recyclability.packaging_materials": {
+                            "value": 95,
+                            "unit": "%"
+                        },
+                        "sustainability.recycled_materials.plastic_housing": {
+                            "value": 25,
+                            "unit": "% post-consumer"
+                        },
+                        "sustainability.certifications": [
+                            "ENERGY STAR 8.0",
+                            "EPEAT Gold",
+                            "TCO Certified 9.0",
+                            "RoHS",
+                            "WEEE",
+                            "REACH"
+                        ]
                     }
                 }
             ]
@@ -201,74 +709,90 @@
                 {
                     "id": "q3_1",
                     "question": "Extract all cost components and calculate totals",
-                    "expected_answer": {
-                        "cost_breakdown": {
-                            "base_server": {
-                                "unit_price": 3299.00,
-                                "quantity": 2,
-                                "total": 6598.00
-                            },
-                            "cpu": {
-                                "unit_price": 1850.00,
-                                "quantity": 2,
-                                "total": 3700.00
-                            },
-                            "ram": {
-                                "unit_price": 945.00,
-                                "quantity": 2,
-                                "total": 1890.00
-                            },
-                            "storage": {
-                                "unit_price": 489.00,
-                                "quantity": 2,
-                                "total": 978.00
-                            },
-                            "psu": {
-                                "unit_price": 275.00,
-                                "quantity": 2,
-                                "total": 550.00
-                            },
-                            "support": {
-                                "unit_price": 699.00,
-                                "quantity": 2,
-                                "total": 1398.00
-                            },
-                            "subtotal": 15114.00,
-                            "tax": {
-                                "rate": 8.5,
-                                "amount": 1284.69
-                            },
-                            "carbon_offset_fee": 67.50,
-                            "total": 16466.19,
-                            "currency": "USD"
-                        }
+                    "expected_fields": [
+                        "cost_breakdown.components.base_server",
+                        "cost_breakdown.components.cpu",
+                        "cost_breakdown.components.ram",
+                        "cost_breakdown.components.storage",
+                        "cost_breakdown.components.psu",
+                        "cost_breakdown.components.support",
+                        "cost_breakdown.subtotal",
+                        "cost_breakdown.tax",
+                        "cost_breakdown.carbon_offset_fee",
+                        "cost_breakdown.total",
+                        "cost_breakdown.currency"
+                    ],
+                    "expected_values": {
+                        "cost_breakdown.components.base_server": {
+                            "unit_price": 3299.00,
+                            "quantity": 2,
+                            "total": 6598.00
+                        },
+                        "cost_breakdown.components.cpu": {
+                            "unit_price": 1850.00,
+                            "quantity": 2,
+                            "total": 3700.00
+                        },
+                        "cost_breakdown.components.ram": {
+                            "unit_price": 945.00,
+                            "quantity": 2,
+                            "total": 1890.00
+                        },
+                        "cost_breakdown.components.storage": {
+                            "unit_price": 489.00,
+                            "quantity": 2,
+                            "total": 978.00
+                        },
+                        "cost_breakdown.components.psu": {
+                            "unit_price": 275.00,
+                            "quantity": 2,
+                            "total": 550.00
+                        },
+                        "cost_breakdown.components.support": {
+                            "unit_price": 699.00,
+                            "quantity": 2,
+                            "total": 1398.00
+                        },
+                        "cost_breakdown.subtotal": 15114.00,
+                        "cost_breakdown.tax": {
+                            "rate": 8.5,
+                            "amount": 1284.69
+                        },
+                        "cost_breakdown.carbon_offset_fee": 67.50,
+                        "cost_breakdown.total": 16466.19,
+                        "cost_breakdown.currency": "USD"
                     }
                 },
                 {
                     "id": "q3_2",
                     "question": "What carbon impact data is provided?",
-                    "expected_answer": {
-                        "carbon_data": {
-                            "footprint_per_server": {
-                                "value": 1350,
-                                "unit": "kg CO₂"
-                            },
-                            "total_offset_purchased": {
-                                "value": 2700,
-                                "unit": "kg CO₂"
-                            },
-                            "offset_cost_per_kg": {
-                                "value": 0.025,
-                                "unit": "$/kg CO₂"
-                            },
-                            "operational_carbon_annual": {
-                                "value": 890,
-                                "unit": "kg CO₂/year per server"
-                            },
-                            "tax_credit": {
-                                "value": 15,
-                                "unit": "% energy efficiency"
-                            }
+                    "expected_fields": [
+                        "carbon_impact_data.footprint_per_server",
+                        "carbon_impact_data.total_offset_purchased",
+                        "carbon_impact_data.offset_cost_per_kg",
+                        "carbon_impact_data.operational_carbon_annual",
+                        "carbon_impact_data.tax_credit"
+                    ],
+                    "expected_values": {
+                        "carbon_impact_data.footprint_per_server": {
+                            "value": 1350,
+                            "unit": "kg CO₂"
+                        },
+                        "carbon_impact_data.total_offset_purchased": {
+                            "value": 2700,
+                            "unit": "kg CO₂"
+                        },
+                        "carbon_impact_data.offset_cost_per_kg": {
+                            "value": 0.025,
+                            "unit": "$/kg CO₂"
+                        },
+                        "carbon_impact_data.operational_carbon_annual": {
+                            "value": 890,
+                            "unit": "kg CO₂/year per server"
+                        },
+                        "carbon_impact_data.tax_credit": {
+                            "value": 15,
+                            "unit": "% energy efficiency"
                         }
                     }
                 }
@@ -284,160 +808,182 @@
                 {
                     "id": "q4_1",
                     "question": "Parse the detailed component carbon analysis table",
-                    "expected_answer": {
-                        "component_analysis": {
-                            "a16_chip": {
-                                "weight": "15.2g",
-                                "co2": 18.4,
-                                "percentage": 26.3
-                            },
-                            "display": {
-                                "weight": "42.8g",
-                                "co2": 12.7,
-                                "percentage": 18.1
-                            },
-                            "battery": {
-                                "weight": "47.9g",
-                                "co2": 8.9,
-                                "percentage": 12.7
-                            },
-                            "aluminum_frame": {
-                                "weight": "89.1g",
-                                "co2": 6.2,
-                                "percentage": 8.9
-                            },
-                            "camera_system": {
-                                "weight": "28.5g",
-                                "co2": 5.8,
-                                "percentage": 8.3
-                            },
-                            "other_components": {
-                                "weight": "34.8g",
-                                "co2": 4.3,
-                                "percentage": 6.1
-                            },
-                            "packaging": {
-                                "weight": "185.2g",
-                                "co2": 2.1,
-                                "percentage": 3.0
-                            },
-                            "subtotal": {
-                                "weight": "443.5g",
-                                "co2": 58.4,
-                                "percentage": 83.4
-                            }
+                    "expected_fields": [
+                        "component_analysis.a16_chip",
+                        "component_analysis.display",
+                        "component_analysis.battery",
+                        "component_analysis.aluminum_frame",
+                        "component_analysis.camera_system",
+                        "component_analysis.other_components",
+                        "component_analysis.packaging",
+                        "component_analysis.subtotal"
+                    ],
+                    "expected_values": {
+                        "component_analysis.a16_chip": {
+                            "weight": "15.2g",
+                            "co2": 18.4,
+                            "percentage": 26.3
+                        },
+                        "component_analysis.display": {
+                            "weight": "42.8g",
+                            "co2": 12.7,
+                            "percentage": 18.1
+                        },
+                        "component_analysis.battery": {
+                            "weight": "47.9g",
+                            "co2": 8.9,
+                            "percentage": 12.7
+                        },
+                        "component_analysis.aluminum_frame": {
+                            "weight": "89.1g",
+                            "co2": 6.2,
+                            "percentage": 8.9
+                        },
+                        "component_analysis.camera_system": {
+                            "weight": "28.5g",
+                            "co2": 5.8,
+                            "percentage": 8.3
+                        },
+                        "component_analysis.other_components": {
+                            "weight": "34.8g",
+                            "co2": 4.3,
+                            "percentage": 6.1
+                        },
+                        "component_analysis.packaging": {
+                            "weight": "185.2g",
+                            "co2": 2.1,
+                            "percentage": 3.0
+                        },
+                        "component_analysis.subtotal": {
+                            "weight": "443.5g",
+                            "co2": 58.4,
+                            "percentage": 83.4
                         }
                     }
                 },
                 {
                     "id": "q4_2",
                     "question": "Calculate the complete lifecycle carbon breakdown by phase",
-                    "expected_answer": {
-                        "lifecycle_breakdown": {
-                            "manufacturing": {
-                                "value": 58.4,
-                                "unit": "kg CO₂",
-                                "percentage": 72.6
-                            },
-                            "transportation": {
-                                "value": 6.2,
-                                "unit": "kg CO₂",
-                                "percentage": 7.7
-                            },
-                            "use_phase": {
-                                "value": 14.2,
-                                "unit": "kg CO₂",
-                                "percentage": 17.7,
-                                "duration": "3 years"
-                            },
-                            "end_of_life": {
-                                "value": 1.6,
-                                "unit": "kg CO₂",
-                                "percentage": 2.0
-                            },
-                            "total": {
-                                "value": 80.4,
-                                "unit": "kg CO₂ equivalent"
-                            }
+                    "expected_fields": [
+                        "carbon_footprint.lifecycle_breakdown.manufacturing",
+                        "carbon_footprint.lifecycle_breakdown.transportation",
+                        "carbon_footprint.lifecycle_breakdown.use_phase",
+                        "carbon_footprint.lifecycle_breakdown.end_of_life",
+                        "carbon_footprint.total"
+                    ],
+                    "expected_values": {
+                        "carbon_footprint.lifecycle_breakdown.manufacturing": {
+                            "value": 58.4,
+                            "unit": "kg CO₂",
+                            "percentage": 72.6
+                        },
+                        "carbon_footprint.lifecycle_breakdown.transportation": {
+                            "value": 6.2,
+                            "unit": "kg CO₂",
+                            "percentage": 7.7
+                        },
+                        "carbon_footprint.lifecycle_breakdown.use_phase": {
+                            "value": 14.2,
+                            "unit": "kg CO₂",
+                            "percentage": 17.7,
+                            "duration": "3 years"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.end_of_life": {
+                            "value": 1.6,
+                            "unit": "kg CO₂",
+                            "percentage": 2.0
+                        },
+                        "carbon_footprint.total": {
+                            "value": 80.4,
+                            "unit": "kg CO₂ equivalent"
                         }
                     }
                 },
                 {
                     "id": "q4_3",
                     "question": "What improvement was achieved compared to the previous generation?",
-                    "expected_answer": {
-                        "generation_comparison": {
-                            "iphone_13_pro": {
-                                "value": 104.8,
-                                "unit": "kg CO₂",
-                                "year": 2022
-                            },
-                            "iphone_14_pro": {
-                                "value": 80.4,
-                                "unit": "kg CO₂",
-                                "year": 2023
-                            },
-                            "improvement": {
-                                "absolute_reduction": {
-                                    "value": 24.4,
-                                    "unit": "kg CO₂"
-                                },
-                                "percentage_reduction": {
-                                    "value": 23.3,
-                                    "unit": "%"
-                                },
-                                "drivers": {
-                                    "manufacturing_efficiency": {
-                                        "value": -15.2,
-                                        "unit": "kg CO₂"
-                                    },
-                                    "recycled_materials": {
-                                        "value": -6.8,
-                                        "unit": "kg CO₂"
-                                    },
-                                    "supply_chain": {
-                                        "value": -2.4,
-                                        "unit": "kg CO₂"
-                                    }
-                                }
-                            }
+                    "expected_fields": [
+                        "generation_comparison.previous_model",
+                        "generation_comparison.current_model",
+                        "generation_comparison.improvement.absolute_reduction",
+                        "generation_comparison.improvement.percentage_reduction",
+                        "generation_comparison.improvement.drivers.manufacturing_efficiency",
+                        "generation_comparison.improvement.drivers.recycled_materials",
+                        "generation_comparison.improvement.drivers.supply_chain"
+                    ],
+                    "expected_values": {
+                        "generation_comparison.previous_model": {
+                            "value": 104.8,
+                            "unit": "kg CO₂",
+                            "year": 2022
+                        },
+                        "generation_comparison.current_model": {
+                            "value": 80.4,
+                            "unit": "kg CO₂",
+                            "year": 2023
+                        },
+                        "generation_comparison.improvement.absolute_reduction": {
+                            "value": 24.4,
+                            "unit": "kg CO₂"
+                        },
+                        "generation_comparison.improvement.percentage_reduction": {
+                            "value": 23.3,
+                            "unit": "%"
+                        },
+                        "generation_comparison.improvement.drivers.manufacturing_efficiency": {
+                            "value": -15.2,
+                            "unit": "kg CO₂"
+                        },
+                        "generation_comparison.improvement.drivers.recycled_materials": {
+                            "value": -6.8,
+                            "unit": "kg CO₂"
+                        },
+                        "generation_comparison.improvement.drivers.supply_chain": {
+                            "value": -2.4,
+                            "unit": "kg CO₂"
                         }
                     }
                 },
                 {
                     "id": "q4_4",
                     "question": "Extract recycled materials data and percentages",
-                    "expected_answer": {
-                        "recycled_materials": {
-                            "rare_earth_elements": {
-                                "value": 100,
-                                "unit": "%",
-                                "location": "magnets"
-                            },
-                            "tungsten": {
-                                "value": 100,
-                                "unit": "%",
-                                "location": "Taptic Engine"
-                            },
-                            "aluminum": {
-                                "value": 100,
-                                "unit": "%",
-                                "location": "enclosure"
-                            },
-                            "gold": {
-                                "value": 100,
-                                "unit": "%",
-                                "location": "wire bonding"
-                            },
-                            "plastic": {
-                                "value": 35,
-                                "unit": "%",
-                                "location": "components"
-                            },
-                            "overall_content": {
-                                "value": 43,
-                                "unit": "% by weight"
-                            }
+                    "expected_fields": [
+                        "sustainability.recycled_materials.rare_earth_elements",
+                        "sustainability.recycled_materials.tungsten",
+                        "sustainability.recycled_materials.aluminum",
+                        "sustainability.recycled_materials.gold",
+                        "sustainability.recycled_materials.plastic",
+                        "sustainability.recycled_materials.overall_content"
+                    ],
+                    "expected_values": {
+                        "sustainability.recycled_materials.rare_earth_elements": {
+                            "value": 100,
+                            "unit": "%",
+                            "location": "magnets"
+                        },
+                        "sustainability.recycled_materials.tungsten": {
+                            "value": 100,
+                            "unit": "%",
+                            "location": "Taptic Engine"
+                        },
+                        "sustainability.recycled_materials.aluminum": {
+                            "value": 100,
+                            "unit": "%",
+                            "location": "enclosure"
+                        },
+                        "sustainability.recycled_materials.gold": {
+                            "value": 100,
+                            "unit": "%",
+                            "location": "wire bonding"
+                        },
+                        "sustainability.recycled_materials.plastic": {
+                            "value": 35,
+                            "unit": "%",
+                            "location": "components"
+                        },
+                        "sustainability.recycled_materials.overall_content": {
+                            "value": 43,
+                            "unit": "% by weight"
                         }
                     }
                 }
@@ -453,100 +999,110 @@
                 {
                     "id": "q5_1",
                     "question": "Despite OCR errors, extract the carbon footprint breakdown",
-                    "expected_answer": {
-                        "carbon_footprint": {
-                            "total": {
-                                "value": 247.8,
-                                "unit": "kg CO2 equivalent"
-                            },
-                            "breakdown": {
-                                "raw_materials": {
-                                    "value": 89.3,
-                                    "unit": "kg CO2",
-                                    "percentage": 36.1
-                                },
-                                "manufacturing": {
-                                    "value": 71.2,
-                                    "unit": "kg CO2",
-                                    "percentage": 28.8
-                                },
-                                "transportation": {
-                                    "value": 18.9,
-                                    "unit": "kg CO2",
-                                    "percentage": 7.6
-                                },
-                                "use_phase": {
-                                    "value": 58.7,
-                                    "unit": "kg CO2",
-                                    "percentage": 23.7,
-                                    "duration": "5 years"
-                                },
-                                "end_of_life": {
-                                    "value": 9.7,
-                                    "unit": "kg CO2",
-                                    "percentage": 3.9
-                                }
-                            }
+                    "expected_fields": [
+                        "carbon_footprint.total",
+                        "carbon_footprint.lifecycle_breakdown.raw_materials",
+                        "carbon_footprint.lifecycle_breakdown.manufacturing",
+                        "carbon_footprint.lifecycle_breakdown.transportation",
+                        "carbon_footprint.lifecycle_breakdown.use_phase",
+                        "carbon_footprint.lifecycle_breakdown.end_of_life"
+                    ],
+                    "expected_values": {
+                        "carbon_footprint.total": {
+                            "value": 247.8,
+                            "unit": "kg CO2 equivalent"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.raw_materials": {
+                            "value": 89.3,
+                            "unit": "kg CO2",
+                            "percentage": 36.1
+                        },
+                        "carbon_footprint.lifecycle_breakdown.manufacturing": {
+                            "value": 71.2,
+                            "unit": "kg CO2",
+                            "percentage": 28.8
+                        },
+                        "carbon_footprint.lifecycle_breakdown.transportation": {
+                            "value": 18.9,
+                            "unit": "kg CO2",
+                            "percentage": 7.6
+                        },
+                        "carbon_footprint.lifecycle_breakdown.use_phase": {
+                            "value": 58.7,
+                            "unit": "kg CO2",
+                            "percentage": 23.7,
+                            "duration": "5 years"
+                        },
+                        "carbon_footprint.lifecycle_breakdown.end_of_life": {
+                            "value": 9.7,
+                            "unit": "kg CO2",
+                            "percentage": 3.9
                         }
                     }
                 },
                 {
                     "id": "q5_2",
                     "question": "Extract power and battery specifications (correct OCR errors)",
-                    "expected_answer": {
-                        "specifications": {
-                            "power_consumption": {
-                                "normal_operation": {
-                                    "value": 65,
-                                    "unit": "W",
-                                    "tolerance": "±5W"
-                                },
-                                "standby": {
-                                    "value": 2.8,
-                                    "unit": "W"
-                                },
-                                "sleep": {
-                                    "value": 0.9,
-                                    "unit": "W"
-                                }
-                            },
-                            "battery": {
-                                "capacity": {
-                                    "value": 72,
-                                    "unit": "Wh",
-                                    "type": "Li-ion"
-                                },
-                                "charging_power": {
-                                    "value": 90,
-                                    "unit": "W",
-                                    "note": "max"
-                                },
-                                "lifecycle": "1000+ charge cycles"
-                            }
-                        }
+                    "expected_fields": [
+                        "power_consumption.typical",
+                        "power_consumption.standby",
+                        "power_consumption.sleep",
+                        "technical_specifications.battery.capacity",
+                        "technical_specifications.battery.charging_power",
+                        "technical_specifications.battery.lifecycle"
+                    ],
+                    "expected_values": {
+                        "power_consumption.typical": {
+                            "value": 65,
+                            "unit": "W",
+                            "tolerance": "±5W"
+                        },
+                        "power_consumption.standby": {
+                            "value": 2.8,
+                            "unit": "W"
+                        },
+                        "power_consumption.sleep": {
+                            "value": 0.9,
+                            "unit": "W"
+                        },
+                        "technical_specifications.battery.capacity": {
+                            "value": 72,
+                            "unit": "Wh",
+                            "type": "Li-ion"
+                        },
+                        "technical_specifications.battery.charging_power": {
+                            "value": 90,
+                            "unit": "W",
+                            "note": "max"
+                        },
+                        "technical_specifications.battery.lifecycle": "1000+ charge cycles"
                     }
                 },
                 {
                     "id": "q5_3",
                     "question": "What recycled material percentages can you identify?",
-                    "expected_answer": {
-                        "recycled_materials": {
-                            "plastic_housing": {
-                                "value": 45,
-                                "unit": "% post-consumer recycled"
-                            },
-                            "aluminum_frame": {
-                                "value": 78,
-                                "unit": "% recycled content"
-                            },
-                            "magnet_rare_earth": {
-                                "value": 23,
-                                "unit": "% recycled"
-                            },
-                            "copper_wiring": {
-                                "value": 67,
-                                "unit": "% recycled"
-                            }
+                    "expected_fields": [
+                        "sustainability.recycled_materials.plastic_housing",
+                        "sustainability.recycled_materials.aluminum_frame",
+                        "sustainability.recycled_materials.magnet_rare_earth",
+                        "sustainability.recycled_materials.copper_wiring"
+                    ],
+                    "expected_values": {
+                        "sustainability.recycled_materials.plastic_housing": {
+                            "value": 45,
+                            "unit": "% post-consumer recycled"
+                        },
+                        "sustainability.recycled_materials.aluminum_frame": {
+                            "value": 78,
+                            "unit": "% recycled content"
+                        },
+                        "sustainability.recycled_materials.magnet_rare_earth": {
+                            "value": 23,
+                            "unit": "% recycled"
+                        },
+                        "sustainability.recycled_materials.copper_wiring": {
+                            "value": 67,
+                            "unit": "% recycled"
                         }
                     }
                 }
@@ -562,62 +1118,73 @@
                 {
                     "id": "q6_1",
                     "question": "Extract display and performance specifications",
-                    "expected_answer": {
-                        "display_performance": {
-                            "screen_size": {
-                                "value": 14.6,
-                                "unit": "inches"
-                            },
-                            "resolution": {
-                                "width": 2960,
-                                "height": 1848,
-                                "unit": "pixels"
-                            },
-                            "processor": "Snapdragon 8 Gen 1",
-                            "ram_options": [
-                                8,
-                                12,
-                                16
-                            ],
-                            "storage_options": [
-                                128,
-                                256,
-                                512
-                            ],
-                            "storage_unit": "GB"
-                        }
+                    "expected_fields": [
+                        "technical_specifications.display.screen_size",
+                        "technical_specifications.display.resolution",
+                        "technical_specifications.performance.processor",
+                        "technical_specifications.performance.ram_options",
+                        "technical_specifications.performance.storage_options",
+                        "technical_specifications.performance.storage_unit"
+                    ],
+                    "expected_values": {
+                        "technical_specifications.display.screen_size": {
+                            "value": 14.6,
+                            "unit": "inches"
+                        },
+                        "technical_specifications.display.resolution": {
+                            "width": 2960,
+                            "height": 1848,
+                            "unit": "pixels"
+                        },
+                        "technical_specifications.performance.processor": "Snapdragon 8 Gen 1",
+                        "technical_specifications.performance.ram_options": [
+                            8,
+                            12,
+                            16
+                        ],
+                        "technical_specifications.performance.storage_options": [
+                            128,
+                            256,
+                            512
+                        ],
+                        "technical_specifications.performance.storage_unit": "GB"
                     }
                 },
                 {
                     "id": "q6_2",
                     "question": "What power and battery information is provided?",
-                    "expected_answer": {
-                        "power_battery": {
-                            "battery_capacity": {
-                                "value": 11200,
-                                "unit": "mAh"
-                            },
-                            "charging_power": {
-                                "value": 45,
-                                "unit": "W",
-                                "type": "Super Fast Charging"
-                            },
-                            "video_playback": {
-                                "value": 14,
-                                "unit": "hours",
-                                "condition": "up to"
-                            },
-                            "standby_time": {
-                                "value": 850,
-                                "unit": "hours",
-                                "condition": "up to"
-                            },
-                            "energy_consumption": {
-                                "min": 8,
-                                "max": 15,
-                                "unit": "W",
-                                "condition": "during use"
-                            }
+                    "expected_fields": [
+                        "technical_specifications.battery.capacity",
+                        "technical_specifications.battery.charging_power",
+                        "technical_specifications.battery.video_playback",
+                        "technical_specifications.battery.standby_time",
+                        "technical_specifications.energy_consumption"
+                    ],
+                    "expected_values": {
+                        "technical_specifications.battery.capacity": {
+                            "value": 11200,
+                            "unit": "mAh"
+                        },
+                        "technical_specifications.battery.charging_power": {
+                            "value": 45,
+                            "unit": "W",
+                            "type": "Super Fast Charging"
+                        },
+                        "technical_specifications.battery.video_playback": {
+                            "value": 14,
+                            "unit": "hours",
+                            "condition": "up to"
+                        },
+                        "technical_specifications.battery.standby_time": {
+                            "value": 850,
+                            "unit": "hours",
+                            "condition": "up to"
+                        },
+                        "technical_specifications.energy_consumption": {
+                            "min": 8,
+                            "max": 15,
+                            "unit": "W",
+                            "condition": "during use"
                         }
                     }
                 }
@@ -633,147 +1200,172 @@
                 {
                     "id": "q7_1",
                     "question": "Parse the baseline energy consumption breakdown table",
-                    "expected_answer": {
-                        "baseline_consumption": {
-                            "servers_active": {
-                                "power": 1680,
-                                "annual_mwh": 14717,
-                                "percentage": 46.7
-                            },
-                            "servers_idle": {
-                                "power": 420,
-                                "annual_mwh": 3679,
-                                "percentage": 11.7
-                            },
-                            "storage": {
-                                "power": 180,
-                                "annual_mwh": 1577,
-                                "percentage": 5.0
-                            },
-                            "network": {
-                                "power": 120,
-                                "annual_mwh": 1051,
-                                "percentage": 3.3
-                            },
-                            "cooling": {
-                                "power": 900,
-                                "annual_mwh": 7884,
-                                "percentage": 25.0
-                            },
-                            "ups_power": {
-                                "power": 180,
-                                "annual_mwh": 1577,
-                                "percentage": 5.0
-                            },
-                            "lighting_misc": {
-                                "power": 120,
-                                "annual_mwh": 1051,
-                                "percentage": 3.3
-                            },
-                            "total": {
-                                "power": 3600,
-                                "annual_mwh": 31536,
-                                "percentage": 100.0
-                            }
+                    "expected_fields": [
+                        "energy_baseline_consumption.servers_active",
+                        "energy_baseline_consumption.servers_idle",
+                        "energy_baseline_consumption.storage",
+                        "energy_baseline_consumption.network",
+                        "energy_baseline_consumption.cooling",
+                        "energy_baseline_consumption.ups_power",
+                        "energy_baseline_consumption.lighting_misc",
+                        "energy_baseline_consumption.total"
+                    ],
+                    "expected_values": {
+                        "energy_baseline_consumption.servers_active": {
+                            "power": 1680,
+                            "annual_mwh": 14717,
+                            "percentage": 46.7
+                        },
+                        "energy_baseline_consumption.servers_idle": {
+                            "power": 420,
+                            "annual_mwh": 3679,
+                            "percentage": 11.7
+                        },
+                        "energy_baseline_consumption.storage": {
+                            "power": 180,
+                            "annual_mwh": 1577,
+                            "percentage": 5.0
+                        },
+                        "energy_baseline_consumption.network": {
+                            "power": 120,
+                            "annual_mwh": 1051,
+                            "percentage": 3.3
+                        },
+                        "energy_baseline_consumption.cooling": {
+                            "power": 900,
+                            "annual_mwh": 7884,
+                            "percentage": 25.0
+                        },
+                        "energy_baseline_consumption.ups_power": {
+                            "power": 180,
+                            "annual_mwh": 1577,
+                            "percentage": 5.0
+                        },
+                        "energy_baseline_consumption.lighting_misc": {
+                            "power": 120,
+                            "annual_mwh": 1051,
+                            "percentage": 3.3
+                        },
+                        "energy_baseline_consumption.total": {
+                            "power": 3600,
+                            "annual_mwh": 31536,
+                            "percentage": 100.0
                         }
                     }
                 },
                 {
                     "id": "q7_2",
                     "question": "Calculate the carbon reduction achieved through optimization",
-                    "expected_answer": {
-                        "carbon_analysis": {
-                            "baseline_emissions": {
-                                "value": 9114,
-                                "unit": "metric tons CO₂"
-                            },
-                            "optimized_emissions": {
-                                "value": 7356,
-                                "unit": "metric tons CO₂"
-                            },
-                            "reduction": {
-                                "absolute": {
-                                    "value": 1758,
-                                    "unit": "metric tons CO₂/year"
-                                },
-                                "percentage": {
-                                    "value": 19.3,
-                                    "unit": "%"
-                                },
-                                "equivalent": "382 passenger cars removed"
-                            },
-                            "grid_carbon_intensity": {
-                                "value": 0.289,
-                                "unit": "kg CO₂/kWh"
-                            }
+                    "expected_fields": [
+                        "carbon_analysis.baseline_emissions",
+                        "carbon_analysis.optimized_emissions",
+                        "carbon_analysis.reduction.absolute",
+                        "carbon_analysis.reduction.percentage",
+                        "carbon_analysis.reduction.equivalent",
+                        "carbon_analysis.grid_carbon_intensity"
+                    ],
+                    "expected_values": {
+                        "carbon_analysis.baseline_emissions": {
+                            "value": 9114,
+                            "unit": "metric tons CO₂"
+                        },
+                        "carbon_analysis.optimized_emissions": {
+                            "value": 7356,
+                            "unit": "metric tons CO₂"
+                        },
+                        "carbon_analysis.reduction.absolute": {
+                            "value": 1758,
+                            "unit": "metric tons CO₂/year"
+                        },
+                        "carbon_analysis.reduction.percentage": {
+                            "value": 19.3,
+                            "unit": "%"
+                        },
+                        "carbon_analysis.reduction.equivalent": "382 passenger cars removed",
+                        "carbon_analysis.grid_carbon_intensity": {
+                            "value": 0.289,
+                            "unit": "kg CO₂/kWh"
                         }
                     }
                 },
                 {
                     "id": "q7_3",
                     "question": "Extract the financial analysis and ROI calculations",
-                    "expected_answer": {
-                        "financial_analysis": {
-                            "electricity_rate": {
-                                "value": 0.145,
-                                "unit": "$/kWh"
-                            },
-                            "baseline_annual_cost": {
-                                "value": 4572720,
-                                "unit": "$"
-                            },
-                            "optimized_annual_cost": {
-                                "value": 3690685,
-                                "unit": "$"
-                            },
-                            "annual_savings": {
-                                "value": 882035,
-                                "unit": "$"
-                            },
-                            "investment": {
-                                "value": 2800000,
-                                "unit": "$"
-                            },
-                            "payback_period": {
-                                "value": 3.2,
-                                "unit": "years"
-                            },
-                            "roi_10_years": {
-                                "value": 215,
-                                "unit": "%"
-                            }
+                    "expected_fields": [
+                        "financial_analysis.electricity_rate",
+                        "financial_analysis.baseline_annual_cost",
+                        "financial_analysis.optimized_annual_cost",
+                        "financial_analysis.annual_savings",
+                        "financial_analysis.investment",
+                        "financial_analysis.payback_period",
+                        "financial_analysis.roi_10_years"
+                    ],
+                    "expected_values": {
+                        "financial_analysis.electricity_rate": {
+                            "value": 0.145,
+                            "unit": "$/kWh"
+                        },
+                        "financial_analysis.baseline_annual_cost": {
+                            "value": 4572720,
+                            "unit": "$"
+                        },
+                        "financial_analysis.optimized_annual_cost": {
+                            "value": 3690685,
+                            "unit": "$"
+                        },
+                        "financial_analysis.annual_savings": {
+                            "value": 882035,
+                            "unit": "$"
+                        },
+                        "financial_analysis.investment": {
+                            "value": 2800000,
+                            "unit": "$"
+                        },
+                        "financial_analysis.payback_period": {
+                            "value": 3.2,
+                            "unit": "years"
+                        },
+                        "financial_analysis.roi_10_years": {
+                            "value": 215,
+                            "unit": "%"
                         }
                     }
                 },
                 {
                     "id": "q7_4",
                     "question": "What future carbon reduction is projected with solar installation?",
-                    "expected_answer": {
-                        "solar_projections": {
-                            "solar_capacity": {
-                                "value": 15,
-                                "unit": "MW"
-                            },
-                            "capacity_factor": {
-                                "value": 28,
-                                "unit": "%"
-                            },
-                            "annual_generation": {
-                                "value": 36792,
-                                "unit": "MWh"
-                            },
-                            "grid_independence": {
-                                "value": 85,
-                                "unit": "%"
-                            },
-                            "additional_carbon_reduction": {
-                                "value": 5247,
-                                "unit": "metric tons CO₂/year"
-                            },
-                            "total_reduction_vs_baseline": {
-                                "value": 75.6,
-                                "unit": "%"
-                            }
+                    "expected_fields": [
+                        "solar_projections.solar_capacity",
+                        "solar_projections.capacity_factor",
+                        "solar_projections.annual_generation",
+                        "solar_projections.grid_independence",
+                        "solar_projections.additional_carbon_reduction",
+                        "solar_projections.total_reduction_vs_baseline"
+                    ],
+                    "expected_values": {
+                        "solar_projections.solar_capacity": {
+                            "value": 15,
+                            "unit": "MW"
+                        },
+                        "solar_projections.capacity_factor": {
+                            "value": 28,
+                            "unit": "%"
+                        },
+                        "solar_projections.annual_generation": {
+                            "value": 36792,
+                            "unit": "MWh"
+                        },
+                        "solar_projections.grid_independence": {
+                            "value": 85,
+                            "unit": "%"
+                        },
+                        "solar_projections.additional_carbon_reduction": {
+                            "value": 5247,
+                            "unit": "metric tons CO₂/year"
+                        },
+                        "solar_projections.total_reduction_vs_baseline": {
+                            "value": 75.6,
+                            "unit": "%"
                         }
                     }
                 }

@@ -1,0 +1,653 @@
+{
+  "model_name": "ollama:smollm2:1.7b",
+  "timestamp": "2025-06-11T16:55:57.962938",
+  "total_questions": 21,
+  "successful": 20,
+  "average_score": 0.012878787878787878,
+  "evaluation_method": "path_based",
+  "responses": [
+    {
+      "document_id": 1,
+      "question_id": "q1_1",
+      "question": "What is the total carbon footprint of this laptop?",
+      "expected_fields": [
+        "carbon_footprint.total"
+      ],
+      "extracted_values": {
+        "carbon_footprint.total": 285
+      },
+      "field_scores": {
+        "carbon_footprint.total": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 1.2990126609802246,
+      "error": null
+    },
+    {
+      "document_id": 1,
+      "question_id": "q1_2",
+      "question": "Break down the carbon footprint by lifecycle phases",
+      "expected_fields": [
+        "carbon_footprint.lifecycle_breakdown.manufacturing",
+        "carbon_footprint.lifecycle_breakdown.transportation",
+        "carbon_footprint.lifecycle_breakdown.use_phase"
+      ],
+      "extracted_values": {
+        "carbon_footprint.lifecycle_breakdown.manufacturing": 215,
+        "carbon_footprint.lifecycle_breakdown.transportation": 15,
+        "carbon_footprint.lifecycle_breakdown.use_phase": 55
+      },
+      "field_scores": {
+        "carbon_footprint.lifecycle_breakdown.manufacturing": 0.0,
+        "carbon_footprint.lifecycle_breakdown.transportation": 0.0,
+        "carbon_footprint.lifecycle_breakdown.use_phase": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.48676228523254395,
+      "error": null
+    },
+    {
+      "document_id": 1,
+      "question_id": "q1_3",
+      "question": "What are the power consumption values?",
+      "expected_fields": [
+        "power_consumption.typical",
+        "power_consumption.sleep",
+        "power_consumption.annual_energy"
+      ],
+      "extracted_values": {
+        "power_consumption.typical": 45,
+        "power_consumption.sleep": 2.1,
+        "power_consumption.annual_energy": 65
+      },
+      "field_scores": {
+        "power_consumption.typical": 0.0,
+        "power_consumption.sleep": 0.0,
+        "power_consumption.annual_energy": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.3690767288208008,
+      "error": null
+    },
+    {
+      "document_id": 2,
+      "question_id": "q2_1",
+      "question": "Parse the power consumption table with all modes",
+      "expected_fields": [
+        "power_consumption.modes.on_100",
+        "power_consumption.modes.on_75",
+        "power_consumption.modes.on_50",
+        "power_consumption.modes.standby",
+        "power_consumption.modes.off",
+        "power_consumption.cost_basis"
+      ],
+      "extracted_values": {
+        "power_consumption.modes.on_100": 32.0,
+        "power_consumption.modes.on_75": 28.5,
+        "power_consumption.modes.on_50": 24.1,
+        "power_consumption.modes.standby": 0.3,
+        "power_consumption.modes.off": 0.1,
+        "power_consumption.cost_basis": "$14.08"
+      },
+      "field_scores": {
+        "power_consumption.modes.on_100": 0.0,
+        "power_consumption.modes.on_75": 0.0,
+        "power_consumption.modes.on_50": 0.0,
+        "power_consumption.modes.standby": 0.0,
+        "power_consumption.modes.off": 0.0,
+        "power_consumption.cost_basis": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.8949453830718994,
+      "error": null
+    },
+    {
+      "document_id": 2,
+      "question_id": "q2_2",
+      "question": "Extract the complete lifecycle carbon assessment",
+      "expected_fields": [
+        "carbon_footprint.lifecycle_breakdown.manufacturing",
+        "carbon_footprint.lifecycle_breakdown.packaging",
+        "carbon_footprint.lifecycle_breakdown.distribution",
+        "carbon_footprint.lifecycle_breakdown.use_phase",
+        "carbon_footprint.lifecycle_breakdown.end_of_life",
+        "carbon_footprint.total"
+      ],
+      "extracted_values": {
+        "carbon_footprint.lifecycle_breakdown.manufacturing": 156,
+        "carbon_footprint.lifecycle_breakdown.packaging": 12,
+        "carbon_footprint.lifecycle_breakdown.distribution": 8,
+        "carbon_footprint.lifecycle_breakdown.use_phase": 89,
+        "carbon_footprint.lifecycle_breakdown.end_of_life": -5
+      },
+      "field_scores": {
+        "carbon_footprint.lifecycle_breakdown.manufacturing": 0.0,
+        "carbon_footprint.lifecycle_breakdown.packaging": 0.0,
+        "carbon_footprint.lifecycle_breakdown.distribution": 0.0,
+        "carbon_footprint.lifecycle_breakdown.use_phase": 0.0,
+        "carbon_footprint.lifecycle_breakdown.end_of_life": 0.0,
+        "carbon_footprint.total": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.7123270034790039,
+      "error": null
+    },
+    {
+      "document_id": 2,
+      "question_id": "q2_3",
+      "question": "What recyclability and sustainability metrics are provided?",
+      "expected_fields": [
+        "sustainability.recyclability.monitor_components",
+        "sustainability.recyclability.packaging_materials",
+        "sustainability.recycled_materials.plastic_housing",
+        "sustainability.certifications"
+      ],
+      "extracted_values": {
+        "sustainability.recyclability.monitor_components": 78,
+        "sustainability.recyclability.packaging_materials": 95,
+        "sustainability.recycled_materials.plastic_housing": 25,
+        "sustainability.certifications": [
+          "ENERGY STAR 8.0",
+          "EPEAT Gold",
+          "TCO Certified 9.0",
+          "WEEE compliant",
+          "REACH compliant"
+        ]
+      },
+      "field_scores": {
+        "sustainability.recyclability.monitor_components": 0.0,
+        "sustainability.recyclability.packaging_materials": 0.0,
+        "sustainability.recycled_materials.plastic_housing": 0.0,
+        "sustainability.certifications": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.9308445453643799,
+      "error": null
+    },
+    {
+      "document_id": 3,
+      "question_id": "q3_1",
+      "question": "Extract all cost components and calculate totals",
+      "expected_fields": [
+        "cost_breakdown.components.base_server",
+        "cost_breakdown.components.cpu",
+        "cost_breakdown.components.ram",
+        "cost_breakdown.components.storage",
+        "cost_breakdown.components.psu",
+        "cost_breakdown.components.support",
+        "cost_breakdown.subtotal",
+        "cost_breakdown.tax",
+        "cost_breakdown.carbon_offset_fee",
+        "cost_breakdown.total",
+        "cost_breakdown.currency"
+      ],
+      "extracted_values": {
+        "cost_breakdown.components.base_server": "$3,299.00",
+        "cost_breakdown.components.cpu": "$1,850.00",
+        "cost_breakdown.components.ram": "$945.00",
+        "cost_breakdown.components.storage": "$2,700.00",
+        "cost_breakdown.components.psu": "$275.00",
+        "cost_breakdown.components.support": "$699.00",
+        "cost_breakdown.subtotal": "$15,114.00",
+        "cost_breakdown.tax": "$1,284.69",
+        "cost_breakdown.carbon_offset_fee": "$67.50",
+        "cost_breakdown.total": "$16,466.19",
+        "cost_breakdown.currency": "USD"
+      },
+      "field_scores": {
+        "cost_breakdown.components.base_server": 0.0,
+        "cost_breakdown.components.cpu": 0.0,
+        "cost_breakdown.components.ram": 0.0,
+        "cost_breakdown.components.storage": 0.0,
+        "cost_breakdown.components.psu": 0.0,
+        "cost_breakdown.components.support": 0.0,
+        "cost_breakdown.subtotal": 0.0,
+        "cost_breakdown.tax": 0.0,
+        "cost_breakdown.carbon_offset_fee": 0.0,
+        "cost_breakdown.total": 0.0,
+        "cost_breakdown.currency": 1.0
+      },
+      "global_score": 0.09090909090909091,
+      "processing_time": 1.600111961364746,
+      "error": null
+    },
+    {
+      "document_id": 3,
+      "question_id": "q3_2",
+      "question": "What carbon impact data is provided?",
+      "expected_fields": [
+        "carbon_impact_data.footprint_per_server",
+        "carbon_impact_data.total_offset_purchased",
+        "carbon_impact_data.offset_cost_per_kg",
+        "carbon_impact_data.operational_carbon_annual",
+        "carbon_impact_data.tax_credit"
+      ],
+      "extracted_values": {
+        "carbon_impact_data.footprint_per_server": 1350,
+        "carbon_impact_data.total_offset_purchased": 2700,
+        "carbon_impact_data.offset_cost_per_kg": 0.025,
+        "carbon_impact_data.operational_carbon_annual": 890
+      },
+      "field_scores": {
+        "carbon_impact_data.footprint_per_server": 0.0,
+        "carbon_impact_data.total_offset_purchased": 0.0,
+        "carbon_impact_data.offset_cost_per_kg": 0.0,
+        "carbon_impact_data.operational_carbon_annual": 0.0,
+        "carbon_impact_data.tax_credit": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.7516796588897705,
+      "error": null
+    },
+    {
+      "document_id": 4,
+      "question_id": "q4_1",
+      "question": "Parse the detailed component carbon analysis table",
+      "expected_fields": [
+        "component_analysis.a16_chip",
+        "component_analysis.display",
+        "component_analysis.battery",
+        "component_analysis.aluminum_frame",
+        "component_analysis.camera_system",
+        "component_analysis.other_components",
+        "component_analysis.packaging",
+        "component_analysis.subtotal"
+      ],
+      "extracted_values": {
+        "component_analysis.a16_chip": 18.4,
+        "component_analysis.display": 12.7,
+        "component_analysis.battery": 8.9,
+        "component_analysis.aluminum_frame": 6.2,
+        "component_analysis.camera_system": 5.8,
+        "component_analysis.other_components": 4.3,
+        "component_analysis.packaging": 2.1,
+        "component_analysis.subtotal": 58.4
+      },
+      "field_scores": {
+        "component_analysis.a16_chip": 0.0,
+        "component_analysis.display": 0.0,
+        "component_analysis.battery": 0.0,
+        "component_analysis.aluminum_frame": 0.0,
+        "component_analysis.camera_system": 0.0,
+        "component_analysis.other_components": 0.0,
+        "component_analysis.packaging": 0.0,
+        "component_analysis.subtotal": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 1.1534092426300049,
+      "error": null
+    },
+    {
+      "document_id": 4,
+      "question_id": "q4_2",
+      "question": "Calculate the complete lifecycle carbon breakdown by phase",
+      "expected_fields": [
+        "carbon_footprint.lifecycle_breakdown.manufacturing",
+        "carbon_footprint.lifecycle_breakdown.transportation",
+        "carbon_footprint.lifecycle_breakdown.use_phase",
+        "carbon_footprint.lifecycle_breakdown.end_of_life",
+        "carbon_footprint.total"
+      ],
+      "extracted_values": {
+        "carbon_footprint.lifecycle_breakdown.manufacturing": 58.4,
+        "carbon_footprint.lifecycle_breakdown.transportation": 6.2,
+        "carbon_footprint.lifecycle_breakdown.use_phase": 14.2,
+        "carbon_footprint.lifecycle_breakdown.end_of_life": 1.6,
+        "carbon_footprint.total": 80.4
+      },
+      "field_scores": {
+        "carbon_footprint.lifecycle_breakdown.manufacturing": 0.0,
+        "carbon_footprint.lifecycle_breakdown.transportation": 0.0,
+        "carbon_footprint.lifecycle_breakdown.use_phase": 0.0,
+        "carbon_footprint.lifecycle_breakdown.end_of_life": 0.0,
+        "carbon_footprint.total": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.7534403800964355,
+      "error": null
+    },
+    {
+      "document_id": 4,
+      "question_id": "q4_3",
+      "question": "What improvement was achieved compared to the previous generation?",
+      "expected_fields": [
+        "generation_comparison.previous_model",
+        "generation_comparison.current_model",
+        "generation_comparison.improvement.absolute_reduction",
+        "generation_comparison.improvement.percentage_reduction",
+        "generation_comparison.improvement.drivers.manufacturing_efficiency",
+        "generation_comparison.improvement.drivers.recycled_materials",
+        "generation_comparison.improvement.drivers.supply_chain"
+      ],
+      "extracted_values": {
+        "generation_comparison.previous_model": "iPhone 13 Pro",
+        "generation_comparison.current_model": "iPhone 14 Pro",
+        "generation_comparison.improvement.absolute_reduction": 24.4,
+        "generation_comparison.improvement.percentage_reduction": -23.3,
+        "generation_comparison.improvement.drivers.manufacturing_efficiency": "-15.2 kg CO₂",
+        "generation_comparison.improvement.drivers.recycled_materials": "-6.8 kg CO₂",
+        "generation_comparison.improvement.drivers.supply_chain": "-2.4 kg CO₂"
+      },
+      "field_scores": {
+        "generation_comparison.previous_model": 0.0,
+        "generation_comparison.current_model": 0.0,
+        "generation_comparison.improvement.absolute_reduction": 0.0,
+        "generation_comparison.improvement.percentage_reduction": 0.0,
+        "generation_comparison.improvement.drivers.manufacturing_efficiency": 0.0,
+        "generation_comparison.improvement.drivers.recycled_materials": 0.0,
+        "generation_comparison.improvement.drivers.supply_chain": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 1.1430704593658447,
+      "error": null
+    },
+    {
+      "document_id": 4,
+      "question_id": "q4_4",
+      "question": "Extract recycled materials data and percentages",
+      "expected_fields": [
+        "sustainability.recycled_materials.rare_earth_elements",
+        "sustainability.recycled_materials.tungsten",
+        "sustainability.recycled_materials.aluminum",
+        "sustainability.recycled_materials.gold",
+        "sustainability.recycled_materials.plastic",
+        "sustainability.recycled_materials.overall_content"
+      ],
+      "extracted_values": {
+        "sustainability.recycled_materials.rare_earth_elements": 100,
+        "sustainability.recycled_materials.tungsten": 100,
+        "sustainability.recycled_materials.aluminum": 100,
+        "sustainability.recycled_materials.gold": 100,
+        "sustainability.recycled_materials.plastic": 35,
+        "sustainability.recycled_materials.overall_content": 43
+      },
+      "field_scores": {
+        "sustainability.recycled_materials.rare_earth_elements": 0.0,
+        "sustainability.recycled_materials.tungsten": 0.0,
+        "sustainability.recycled_materials.aluminum": 0.0,
+        "sustainability.recycled_materials.gold": 0.0,
+        "sustainability.recycled_materials.plastic": 0.0,
+        "sustainability.recycled_materials.overall_content": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.7790322303771973,
+      "error": null
+    },
+    {
+      "document_id": 5,
+      "question_id": "q5_1",
+      "question": "Despite OCR errors, extract the carbon footprint breakdown",
+      "expected_fields": [
+        "carbon_footprint.total",
+        "carbon_footprint.lifecycle_breakdown.raw_materials",
+        "carbon_footprint.lifecycle_breakdown.manufacturing",
+        "carbon_footprint.lifecycle_breakdown.transportation",
+        "carbon_footprint.lifecycle_breakdown.use_phase",
+        "carbon_footprint.lifecycle_breakdown.end_of_life"
+      ],
+      "extracted_values": {
+        "carbon_footprint.total": 247.8,
+        "carbon_footprint.lifecycle_breakdown.raw_materials": 89.3,
+        "carbon_footprint.lifecycle_breakdown.manufacturing": 71.2,
+        "carbon_footprint.lifecycle_breakdown.transportation": 18.9,
+        "carbon_footprint.lifecycle_breakdown.use_phase": 58.7,
+        "carbon_footprint.lifecycle_breakdown.end_of_life": 9.7
+      },
+      "field_scores": {
+        "carbon_footprint.total": 0.0,
+        "carbon_footprint.lifecycle_breakdown.raw_materials": 0.0,
+        "carbon_footprint.lifecycle_breakdown.manufacturing": 0.0,
+        "carbon_footprint.lifecycle_breakdown.transportation": 0.0,
+        "carbon_footprint.lifecycle_breakdown.use_phase": 0.0,
+        "carbon_footprint.lifecycle_breakdown.end_of_life": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 1.0526976585388184,
+      "error": null
+    },
+    {
+      "document_id": 5,
+      "question_id": "q5_2",
+      "question": "Extract power and battery specifications (correct OCR errors)",
+      "expected_fields": [
+        "power_consumption.typical",
+        "power_consumption.standby",
+        "power_consumption.sleep",
+        "technical_specifications.battery.capacity",
+        "technical_specifications.battery.charging_power",
+        "technical_specifications.battery.lifecycle"
+      ],
+      "extracted_values": {
+        "power_consumption.typical": 65,
+        "power_consumption.standby": 2.8,
+        "power_consumption.sleep": 0.9,
+        "technical_specifications.battery.capacity": 72,
+        "technical_specifications.battery.charging_power": 90,
+        "technical_specifications.battery.lifecycle": 1000
+      },
+      "field_scores": {
+        "power_consumption.typical": 0.0,
+        "power_consumption.standby": 0.0,
+        "power_consumption.sleep": 0.0,
+        "technical_specifications.battery.capacity": 0.0,
+        "technical_specifications.battery.charging_power": 0.0,
+        "technical_specifications.battery.lifecycle": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.7880544662475586,
+      "error": null
+    },
+    {
+      "document_id": 5,
+      "question_id": "q5_3",
+      "question": "What recycled material percentages can you identify?",
+      "expected_fields": [
+        "sustainability.recycled_materials.plastic_housing",
+        "sustainability.recycled_materials.aluminum_frame",
+        "sustainability.recycled_materials.magnet_rare_earth",
+        "sustainability.recycled_materials.copper_wiring"
+      ],
+      "extracted_values": {
+        "sustainability.recycled_materials.plastic_housing": 45,
+        "sustainability.recycled_materials.aluminum_frame": 78,
+        "sustainability.recycled_materials.magnet_rare_earth": 23,
+        "sustainability.recycled_materials.copper_wiring": 67
+      },
+      "field_scores": {
+        "sustainability.recycled_materials.plastic_housing": 0.0,
+        "sustainability.recycled_materials.aluminum_frame": 0.0,
+        "sustainability.recycled_materials.magnet_rare_earth": 0.0,
+        "sustainability.recycled_materials.copper_wiring": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.6369049549102783,
+      "error": null
+    },
+    {
+      "document_id": 6,
+      "question_id": "q6_1",
+      "question": "Extract display and performance specifications",
+      "expected_fields": [
+        "technical_specifications.display.screen_size",
+        "technical_specifications.display.resolution",
+        "technical_specifications.performance.processor",
+        "technical_specifications.performance.ram_options",
+        "technical_specifications.performance.storage_options",
+        "technical_specifications.performance.storage_unit"
+      ],
+      "extracted_values": {
+        "technical_specifications.display.screen_size": 14.6,
+        "technical_specifications.display.resolution": "2960 x 1848",
+        "technical_specifications.performance.processor": "Snapdragon 8 Gen 1",
+        "technical_specifications.performance.ram_options": "8GB / 12GB / 16GB",
+        "technical_specifications.performance.storage_options": "128GB / 256GB / 512GB",
+        "technical_specifications.performance.storage_unit": "bytes"
+      },
+      "field_scores": {
+        "technical_specifications.display.screen_size": 0.0,
+        "technical_specifications.display.resolution": 0.0,
+        "technical_specifications.performance.processor": 1.0,
+        "technical_specifications.performance.ram_options": 0.0,
+        "technical_specifications.performance.storage_options": 0.0,
+        "technical_specifications.performance.storage_unit": 0.0
+      },
+      "global_score": 0.16666666666666666,
+      "processing_time": 1.0734422206878662,
+      "error": null
+    },
+    {
+      "document_id": 6,
+      "question_id": "q6_2",
+      "question": "What power and battery information is provided?",
+      "expected_fields": [
+        "technical_specifications.battery.capacity",
+        "technical_specifications.battery.charging_power",
+        "technical_specifications.battery.video_playback",
+        "technical_specifications.battery.standby_time",
+        "technical_specifications.energy_consumption"
+      ],
+      "extracted_values": {},
+      "field_scores": {},
+      "global_score": 0.0,
+      "processing_time": 0.6637108325958252,
+      "error": "JSON parsing error: Expecting ',' delimiter: line 8 column 30 (char 188)"
+    },
+    {
+      "document_id": 7,
+      "question_id": "q7_1",
+      "question": "Parse the baseline energy consumption breakdown table",
+      "expected_fields": [
+        "energy_baseline_consumption.servers_active",
+        "energy_baseline_consumption.servers_idle",
+        "energy_baseline_consumption.storage",
+        "energy_baseline_consumption.network",
+        "energy_baseline_consumption.cooling",
+        "energy_baseline_consumption.ups_power",
+        "energy_baseline_consumption.lighting_misc",
+        "energy_baseline_consumption.total"
+      ],
+      "extracted_values": {
+        "energy_baseline_consumption.servers_active": 14717,
+        "energy_baseline_consumption.servers_idle": 3679,
+        "energy_baseline_consumption.storage": 1577,
+        "energy_baseline_consumption.network": 1051,
+        "energy_baseline_consumption.cooling": 7884,
+        "energy_baseline_consumption.ups_power": 1577,
+        "energy_baseline_consumption.lighting_misc": 1051,
+        "energy_baseline_consumption.total": 3600
+      },
+      "field_scores": {
+        "energy_baseline_consumption.servers_active": 0.0,
+        "energy_baseline_consumption.servers_idle": 0.0,
+        "energy_baseline_consumption.storage": 0.0,
+        "energy_baseline_consumption.network": 0.0,
+        "energy_baseline_consumption.cooling": 0.0,
+        "energy_baseline_consumption.ups_power": 0.0,
+        "energy_baseline_consumption.lighting_misc": 0.0,
+        "energy_baseline_consumption.total": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 1.3213789463043213,
+      "error": null
+    },
+    {
+      "document_id": 7,
+      "question_id": "q7_2",
+      "question": "Calculate the carbon reduction achieved through optimization",
+      "expected_fields": [
+        "carbon_analysis.baseline_emissions",
+        "carbon_analysis.optimized_emissions",
+        "carbon_analysis.reduction.absolute",
+        "carbon_analysis.reduction.percentage",
+        "carbon_analysis.reduction.equivalent",
+        "carbon_analysis.grid_carbon_intensity"
+      ],
+      "extracted_values": {
+        "carbon_analysis.baseline_emissions": 9114,
+        "carbon_analysis.optimized_emissions": 7356,
+        "carbon_analysis.reduction.absolute": 1758,
+        "carbon_analysis.reduction.percentage": 19.3,
+        "carbon_analysis.reduction.equivalent": "382 passenger cars from roads",
+        "carbon_analysis.grid_carbon_intensity": 0.289
+      },
+      "field_scores": {
+        "carbon_analysis.baseline_emissions": 0.0,
+        "carbon_analysis.optimized_emissions": 0.0,
+        "carbon_analysis.reduction.absolute": 0.0,
+        "carbon_analysis.reduction.percentage": 0.0,
+        "carbon_analysis.reduction.equivalent": 0.0,
+        "carbon_analysis.grid_carbon_intensity": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.9047369956970215,
+      "error": null
+    },
+    {
+      "document_id": 7,
+      "question_id": "q7_3",
+      "question": "Extract the financial analysis and ROI calculations",
+      "expected_fields": [
+        "financial_analysis.electricity_rate",
+        "financial_analysis.baseline_annual_cost",
+        "financial_analysis.optimized_annual_cost",
+        "financial_analysis.annual_savings",
+        "financial_analysis.investment",
+        "financial_analysis.payback_period",
+        "financial_analysis.roi_10_years"
+      ],
+      "extracted_values": {
+        "financial_analysis.electricity_rate": 0.145,
+        "financial_analysis.baseline_annual_cost": 4572720,
+        "financial_analysis.optimized_annual_cost": 3690685,
+        "financial_analysis.annual_savings": 882035,
+        "financial_analysis.investment": 2800000,
+        "financial_analysis.payback_period": 3.2,
+        "financial_analysis.roi_10_years": 215
+      },
+      "field_scores": {
+        "financial_analysis.electricity_rate": 0.0,
+        "financial_analysis.baseline_annual_cost": 0.0,
+        "financial_analysis.optimized_annual_cost": 0.0,
+        "financial_analysis.annual_savings": 0.0,
+        "financial_analysis.investment": 0.0,
+        "financial_analysis.payback_period": 0.0,
+        "financial_analysis.roi_10_years": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 1.1032674312591553,
+      "error": null
+    },
+    {
+      "document_id": 7,
+      "question_id": "q7_4",
+      "question": "What future carbon reduction is projected with solar installation?",
+      "expected_fields": [
+        "solar_projections.solar_capacity",
+        "solar_projections.capacity_factor",
+        "solar_projections.annual_generation",
+        "solar_projections.grid_independence",
+        "solar_projections.additional_carbon_reduction",
+        "solar_projections.total_reduction_vs_baseline"
+      ],
+      "extracted_values": {
+        "solar_projections.solar_capacity": 15,
+        "solar_projections.capacity_factor": 0.289,
+        "solar_projections.annual_generation": 36792,
+        "solar_projections.grid_independence": true,
+        "solar_projections.additional_carbon_reduction": 5247,
+        "solar_projections.total_reduction_vs_baseline": 75.6
+      },
+      "field_scores": {
+        "solar_projections.solar_capacity": 0.0,
+        "solar_projections.capacity_factor": 0.0,
+        "solar_projections.annual_generation": 0.0,
+        "solar_projections.grid_independence": 0.0,
+        "solar_projections.additional_carbon_reduction": 0.0,
+        "solar_projections.total_reduction_vs_baseline": 0.0
+      },
+      "global_score": 0.0,
+      "processing_time": 0.8566699028015137,
+      "error": null
+    }
+  ]
+}

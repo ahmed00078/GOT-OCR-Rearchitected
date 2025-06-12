@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """
-Simplified AI Model Tester for Environmental Data
-Focus: Test models and save raw responses (no complex scoring)
+AI Model Tester for Environmental Data with Path References
+Updated for the new dataset format using path-based extraction
 
 Usage:
-    python simple_model_tester.py --model ollama:qwen3:8b --quick
-    python simple_model_tester.py --model transformers:microsoft/Phi-3.5-mini-instruct
-    python simple_model_tester.py --compare-responses
+    python model_evaluator.py --model ollama:qwen3:8b --quick
+    python model_evaluator.py --model transformers:microsoft/Phi-3.5-mini-instruct
+    python model_evaluator.py --compare-responses
 """
 
 import json
 import time
 import argparse
 import os
+import copy
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
@@ -25,14 +26,17 @@ import torch
 
 @dataclass
 class TestResult:
-    """Simple test result - just responses"""
+    """Test result with path-based evaluation"""
     document_id: int
     question_id: str
     model_name: str
     question: str
     predicted_answer: str
-    expected_answer: Dict
+    expected_fields: List[str]
+    expected_values: Dict
     processing_time: float
+    field_scores: Dict[str, float]
+    global_score: float
     error: Optional[str] = None
 
 class ModelInterface:
@@ -105,7 +109,7 @@ class OllamaInterface(ModelInterface):
                     "options": {
                         "temperature": 0.1,
                         "top_p": 0.9,
-                        "num_predict": 1024  # More tokens for complete responses
+                        "num_predict": 1024
                     }
                 },
                 timeout=120
@@ -170,7 +174,7 @@ class TransformersInterface(ModelInterface):
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
-                    max_new_tokens=1024,  # More tokens for complete responses
+                    max_new_tokens=1024,
                     temperature=0.1,
                     do_sample=True,
                     pad_token_id=self.tokenizer.eos_token_id
@@ -195,11 +199,12 @@ class TransformersInterface(ModelInterface):
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
-class SimpleModelTester:
-    """Simplified tester - just run models and save responses"""
+class PathBasedModelTester:
+    """Model tester using path-based references"""
     
     def __init__(self, dataset_path: str = "dataset.json"):
         self.dataset = self._load_dataset(dataset_path)
+        self.global_schema = self.dataset.get("global_schema", {})
         
     def _load_dataset(self, path: str) -> Dict:
         """Load the evaluation dataset"""
@@ -207,45 +212,7 @@ class SimpleModelTester:
             with open(path, 'r') as f:
                 return json.load(f)
         else:
-            # Use embedded dataset if file not found
-            print(f"⚠️  Dataset file {path} not found, using embedded dataset")
-            return self._get_embedded_dataset()
-    
-    def _get_embedded_dataset(self) -> Dict:
-        """Return embedded dataset (subset for testing)"""
-        return {
-            "dataset_info": {"name": "Embedded Test Dataset", "total_documents": 2},
-            "documents": [
-                {
-                    "id": 1,
-                    "category": "carbon_footprint",
-                    "difficulty": "easy",
-                    "title": "HP Laptop Environmental Sheet",
-                    "text": "HP EliteBook 840 G9 Environmental Data\n\nCarbon Footprint: 285 kg CO₂ equivalent\nPower consumption: 45W typical, 2.1W sleep\nCertifications: ENERGY STAR 8.0, EPEAT Gold",
-                    "questions": [
-                        {
-                            "id": "q1_1",
-                            "question": "What is the total carbon footprint?",
-                            "expected_answer": {"carbon_footprint": {"total": {"value": 285, "unit": "kg CO₂ equivalent"}}}
-                        }
-                    ]
-                },
-                {
-                    "id": 2,
-                    "category": "technical_specs",
-                    "difficulty": "medium",
-                    "title": "Dell Monitor Technical Specifications",
-                    "text": "Dell UltraSharp U2723QE 27\" Monitor\nPower consumption: 32W (100%), 24W (50%), 0.3W standby\nRecyclability: 78% by weight\nCertifications: ENERGY STAR 8.0, EPEAT Gold",
-                    "questions": [
-                        {
-                            "id": "q2_1",
-                            "question": "What are the power consumption modes?",
-                            "expected_answer": {"power_modes": {"on_100": 32, "on_50": 24, "standby": 0.3}}
-                        }
-                    ]
-                }
-            ]
-        }
+            raise FileNotFoundError(f"Dataset file {path} not found")
     
     def create_model_interface(self, model_spec: str) -> ModelInterface:
         """Create appropriate model interface based on specification"""
@@ -258,30 +225,179 @@ class SimpleModelTester:
         else:
             raise ValueError(f"Unknown model specification: {model_spec}")
     
-    def create_prompt(self, text: str, question: str) -> str:
-        """Create simple prompt for extraction"""
-        return f"""TASK: Extract ONLY the requested information from the electronics specification text.  /nothink and /no_think
-                TEXT:
-                {text}
-                
-                QUESTION: {question}
-                
-                Instructions:
-                - Return a single valid JSON object only, with NO markdown formatting (no ```json or language tags)
-                - Extract exact values with original units
-                - Do NOT perform any calculations
-                - Do NOT include information not specifically asked for
-                - Use "null" for missing information
-                - Numbers should be numeric values, units as separate strings
-                
-                FORMAT EXAMPLE:
-                {{
-                  "field_name": {{"value": 123, "unit": "W"}},
-                  "text_field": "exact text from source"
-                }}
-                
-                Response:
-                """
+    def get_nested_value(self, obj: Dict, path: str):
+        """Extract a value via path (ex: 'carbon_footprint.total.value')"""
+        parts = path.split('.')
+        current = obj
+        
+        for part in parts:
+            if isinstance(current, dict) and part in current:
+                current = current[part]
+            else:
+                return None
+        
+        return current
+    
+    def set_nested_value(self, obj: Dict, path: str, value):
+        """Set a value via path in nested dict"""
+        parts = path.split('.')
+        current = obj
+        
+        for part in parts[:-1]:
+            if part not in current:
+                current[part] = {}
+            current = current[part]
+        
+        current[parts[-1]] = value
+    
+    def create_minimal_schema(self, expected_fields: List[str]) -> Dict:
+        """Create a minimal schema with only the expected fields"""
+        minimal_schema = {}
+        
+        for field_path in expected_fields:
+            # Create the nested structure for this field only
+            parts = field_path.split('.')
+            current = minimal_schema
+            
+            for i, part in enumerate(parts):
+                if i == len(parts) - 1:
+                    # Last part - this is where we want the value
+                    current[part] = "<<EXTRACT_THIS>>"
+                else:
+                    # Intermediate part - create nested dict
+                    if part not in current:
+                        current[part] = {}
+                    current = current[part]
+        
+        return minimal_schema
+    
+    def create_prompt(self, document_text: str, question_data: Dict) -> str:
+        """Create prompt with minimal schema for specific question"""
+        expected_fields = question_data["expected_fields"]
+        question = question_data["question"]
+        
+        # Create minimal schema showing only expected fields
+        minimal_schema = self.create_minimal_schema(expected_fields)
+        
+        prompt = f"""TASK: Extract specific information from this electronics document.
+
+DOCUMENT:
+{document_text}
+
+QUESTION: {question}
+
+EXTRACT ONLY THESE FIELDS:
+{', '.join(expected_fields)}
+
+OUTPUT FORMAT (return only the minimal JSON structure below):
+{json.dumps(minimal_schema, indent=2)}
+
+RULES:
+- Extract exact values and units from the document
+- Replace "<<EXTRACT_THIS>>" with the actual values found
+- Use null if information is not available
+- Return ONLY valid JSON, no markdown formatting
+- Keep the exact structure shown above
+
+JSON Response:"""
+        
+        return prompt
+    
+    def calculate_field_score(self, extracted_value, expected_value) -> float:
+        """Calculate score for a single field"""
+        if extracted_value is None:
+            return 0.0
+        
+        if expected_value is None:
+            return 1.0 if extracted_value is not None else 0.0
+        
+        # Handle different value types
+        if isinstance(expected_value, dict):
+            if not isinstance(extracted_value, dict):
+                return 0.0
+            
+            # Compare each key in expected_value
+            total_keys = len(expected_value)
+            correct_keys = 0
+            
+            for key, exp_val in expected_value.items():
+                ext_val = extracted_value.get(key)
+                if self._values_match(ext_val, exp_val):
+                    correct_keys += 1
+            
+            return correct_keys / total_keys if total_keys > 0 else 0.0
+        
+        elif isinstance(expected_value, list):
+            if not isinstance(extracted_value, list):
+                return 0.0
+            return 1.0 if set(extracted_value) == set(expected_value) else 0.0
+        
+        else:
+            return 1.0 if self._values_match(extracted_value, expected_value) else 0.0
+    
+    def _values_match(self, extracted, expected) -> bool:
+        """Check if two values match (with some tolerance for numbers)"""
+        if extracted == expected:
+            return True
+        
+        # Numeric comparison with tolerance
+        if isinstance(expected, (int, float)) and isinstance(extracted, (int, float)):
+            return abs(extracted - expected) < 0.01
+        
+        # String comparison (case-insensitive)
+        if isinstance(expected, str) and isinstance(extracted, str):
+            return expected.lower().strip() == extracted.lower().strip()
+        
+        return False
+    
+    def _extract_field_values(self, predicted_answer: str, expected_fields: List[str]) -> Dict[str, Any]:
+        """Extract only the values for expected fields from model response"""
+        try:
+            # Clean response (remove markdown if present)
+            cleaned_response = predicted_answer.strip()
+            if cleaned_response.startswith("```"):
+                lines = cleaned_response.split('\n')
+                cleaned_response = '\n'.join(lines[1:-1])
+            
+            response_json = json.loads(cleaned_response)
+            
+            # Extract only the expected field values
+            extracted = {}
+            for field_path in expected_fields:
+                value = self.get_nested_value(response_json, field_path)
+                if value is not None:
+                    extracted[field_path] = value
+            
+            return extracted
+            
+        except (json.JSONDecodeError, Exception):
+            return {}
+    
+    def evaluate_response(self, response_json: Dict, question_data: Dict) -> Dict:
+        """Evaluate response using path matching"""
+        expected_fields = question_data["expected_fields"]
+        expected_values = question_data["expected_values"]
+        
+        field_scores = {}
+        
+        for field_path in expected_fields:
+            # Extract the value from response
+            extracted_value = self.get_nested_value(response_json, field_path)
+            expected_value = expected_values.get(field_path)
+            
+            # Calculate score for this field
+            field_score = self.calculate_field_score(extracted_value, expected_value)
+            field_scores[field_path] = field_score
+        
+        # Global score = average of field scores
+        global_score = sum(field_scores.values()) / len(field_scores) if field_scores else 0.0
+        
+        return {
+            "global_score": global_score,
+            "field_scores": field_scores,
+            "total_fields": len(expected_fields),
+            "extracted_fields": len([s for s in field_scores.values() if s > 0])
+        }
     
     def test_model(
         self, 
@@ -289,7 +405,7 @@ class SimpleModelTester:
         category_filter: Optional[str] = None,
         max_documents: Optional[int] = None
     ) -> List[TestResult]:
-        """Test a model and return raw responses"""
+        """Test a model and return results with path-based evaluation"""
         
         print(f"\n🧪 TESTING MODEL: {model_spec}")
         print("=" * 50)
@@ -320,31 +436,65 @@ class SimpleModelTester:
             for question_data in doc["questions"]:
                 question_id = question_data["id"]
                 question = question_data["question"]
-                expected = question_data["expected_answer"]
+                expected_fields = question_data["expected_fields"]
+                expected_values = question_data["expected_values"]
                 
                 print(f"   ❓ {question_id}: {question}")
+                print(f"      Expected fields: {len(expected_fields)}")
                 
                 # Generate prompt and get response
-                prompt = self.create_prompt(doc["text"], question)
+                prompt = self.create_prompt(doc["text"], question_data)
                 
                 start_time = time.time()
                 try:
                     predicted = model.generate_response(prompt)
                     processing_time = time.time() - start_time
                     
-                    result = TestResult(
-                        document_id=doc["id"],
-                        question_id=question_id,
-                        model_name=model_spec,
-                        question=question,
-                        predicted_answer=predicted,
-                        expected_answer=expected,
-                        processing_time=processing_time
-                    )
-                    
-                    print(f"      ⏱️  Time: {processing_time:.2f}s")
-                    print(f"      📝 Response preview: {predicted[:100]}...")
-                    
+                    # Parse JSON response
+                    try:
+                        # Clean response (remove markdown if present)
+                        cleaned_response = predicted.strip()
+                        if cleaned_response.startswith("```"):
+                            lines = cleaned_response.split('\n')
+                            cleaned_response = '\n'.join(lines[1:-1])
+                        
+                        response_json = json.loads(cleaned_response)
+                        
+                        # Evaluate response
+                        eval_result = self.evaluate_response(response_json, question_data)
+                        
+                        result = TestResult(
+                            document_id=doc["id"],
+                            question_id=question_id,
+                            model_name=model_spec,
+                            question=question,
+                            predicted_answer=predicted,
+                            expected_fields=expected_fields,
+                            expected_values=expected_values,
+                            processing_time=processing_time,
+                            field_scores=eval_result["field_scores"],
+                            global_score=eval_result["global_score"]
+                        )
+                        
+                        print(f"      ⏱️  Time: {processing_time:.2f}s")
+                        print(f"      📊 Score: {eval_result['global_score']:.2f} ({eval_result['extracted_fields']}/{eval_result['total_fields']} fields)")
+                        
+                    except json.JSONDecodeError as e:
+                        result = TestResult(
+                            document_id=doc["id"],
+                            question_id=question_id,
+                            model_name=model_spec,
+                            question=question,
+                            predicted_answer=predicted,
+                            expected_fields=expected_fields,
+                            expected_values=expected_values,
+                            processing_time=processing_time,
+                            field_scores={},
+                            global_score=0.0,
+                            error=f"JSON parsing error: {str(e)}"
+                        )
+                        print(f"      ❌ JSON Error: {e}")
+                
                 except Exception as e:
                     processing_time = time.time() - start_time
                     result = TestResult(
@@ -353,8 +503,11 @@ class SimpleModelTester:
                         model_name=model_spec,
                         question=question,
                         predicted_answer="",
-                        expected_answer=expected,
+                        expected_fields=expected_fields,
+                        expected_values=expected_values,
                         processing_time=processing_time,
+                        field_scores={},
+                        global_score=0.0,
                         error=str(e)
                     )
                     
@@ -365,15 +518,20 @@ class SimpleModelTester:
         # Cleanup model
         model.cleanup()
         
+        # Print summary
+        successful_results = [r for r in results if r.error is None]
+        avg_score = sum(r.global_score for r in successful_results) / len(successful_results) if successful_results else 0.0
+        
         print(f"\n📊 SUMMARY")
         print(f"   Total questions: {len(results)}")
-        print(f"   Successful: {len([r for r in results if r.error is None])}")
+        print(f"   Successful: {len(successful_results)}")
+        print(f"   Average score: {avg_score:.3f}")
         print(f"   Average time: {sum(r.processing_time for r in results) / len(results):.2f}s")
         
         return results
     
     def save_responses(self, results: List[TestResult], output_dir: str = "responses"):
-        """Save raw responses to file"""
+        """Save responses with path-based evaluation"""
         if not results:
             return
         
@@ -385,19 +543,27 @@ class SimpleModelTester:
         filename = f"{clean_name}_{timestamp}.json"
         filepath = os.path.join(output_dir, filename)
         
-        # Save in simple format
+        # Calculate aggregate statistics
+        successful_results = [r for r in results if r.error is None]
+        avg_score = sum(r.global_score for r in successful_results) / len(successful_results) if successful_results else 0.0
+        
+        # Save in compact format - only store extracted values, not full response
         data = {
             "model_name": model_name,
             "timestamp": datetime.now().isoformat(),
             "total_questions": len(results),
-            "successful": len([r for r in results if r.error is None]),
+            "successful": len(successful_results),
+            "average_score": avg_score,
+            "evaluation_method": "path_based",
             "responses": [
                 {
                     "document_id": r.document_id,
                     "question_id": r.question_id,
                     "question": r.question,
-                    "model_response": r.predicted_answer,
-                    "expected_structure": r.expected_answer,
+                    "expected_fields": r.expected_fields,
+                    "extracted_values": self._extract_field_values(r.predicted_answer, r.expected_fields) if not r.error else {},
+                    "field_scores": r.field_scores,
+                    "global_score": r.global_score,
                     "processing_time": r.processing_time,
                     "error": r.error
                 }
@@ -408,11 +574,11 @@ class SimpleModelTester:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
-        print(f"💾 Responses saved to: {filepath}")
+        print(f"💾 Results saved to: {filepath}")
         return filepath
     
     def compare_responses(self, response_dir: str = "responses"):
-        """Simple comparison of response files"""
+        """Compare response files with path-based scores"""
         if not os.path.exists(response_dir):
             print("❌ No responses directory found")
             return
@@ -422,8 +588,10 @@ class SimpleModelTester:
             print("❌ Need at least 2 response files for comparison")
             return
         
-        print(f"\n📊 RESPONSE COMPARISON")
-        print("=" * 40)
+        print(f"\n📊 MODEL COMPARISON")
+        print("=" * 50)
+        
+        models_data = []
         
         for filename in sorted(files):
             filepath = os.path.join(response_dir, filename)
@@ -434,22 +602,31 @@ class SimpleModelTester:
                 model_name = data.get('model_name', 'Unknown')
                 successful = data.get('successful', 0)
                 total = data.get('total_questions', 0)
+                avg_score = data.get('average_score', 0.0)
                 
-                print(f"📁 {filename}")
-                print(f"   Model: {model_name}")
-                print(f"   Success: {successful}/{total}")
-                
-                # Show first response as example
-                if data.get('responses'):
-                    first_response = data['responses'][0]
-                    print(f"   Sample: {first_response['model_response'][:80]}...")
-                print()
+                models_data.append({
+                    'name': model_name,
+                    'file': filename,
+                    'success_rate': successful / total if total > 0 else 0,
+                    'avg_score': avg_score,
+                    'successful': successful,
+                    'total': total
+                })
                 
             except Exception as e:
                 print(f"⚠️  Could not load {filename}: {e}")
+        
+        # Sort by average score
+        models_data.sort(key=lambda x: x['avg_score'], reverse=True)
+        
+        print(f"{'Rank':<4} {'Model':<30} {'Score':<8} {'Success':<10} {'File'}")
+        print("-" * 70)
+        
+        for i, model in enumerate(models_data, 1):
+            print(f"{i:<4} {model['name'][:29]:<30} {model['avg_score']:.3f}   {model['successful']}/{model['total']:<6} {model['file']}")
 
 def main():
-    parser = argparse.ArgumentParser(description="Simple AI Model Tester")
+    parser = argparse.ArgumentParser(description="Path-Based AI Model Tester")
     parser.add_argument("--model", type=str, help="Model specification (e.g., ollama:qwen3:8b)")
     parser.add_argument("--category", type=str, help="Filter by category")
     parser.add_argument("--quick", action="store_true", help="Quick test (2 documents)")
@@ -459,7 +636,7 @@ def main():
     
     args = parser.parse_args()
     
-    tester = SimpleModelTester(args.dataset)
+    tester = PathBasedModelTester(args.dataset)
     
     if args.compare_responses:
         tester.compare_responses(args.output_dir)
@@ -479,9 +656,9 @@ def main():
     else:
         print("❌ Please specify --model or --compare-responses")
         print("\nExample usage:")
-        print("  python simple_model_tester.py --model ollama:qwen3:8b --quick")
-        print("  python simple_model_tester.py --model transformers:microsoft/Phi-3.5-mini-instruct")
-        print("  python simple_model_tester.py --compare-responses")
+        print("  python model_evaluator.py --model ollama:qwen3:8b --quick")
+        print("  python model_evaluator.py --model transformers:microsoft/Phi-3.5-mini-instruct")
+        print("  python model_evaluator.py --compare-responses")
 
 if __name__ == "__main__":
     main()
