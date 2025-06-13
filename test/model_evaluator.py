@@ -255,7 +255,6 @@ class PathBasedModelTester:
         minimal_schema = {}
         
         for field_path in expected_fields:
-            # Create the nested structure for this field only
             parts = field_path.split('.')
             current = minimal_schema
             
@@ -301,7 +300,7 @@ class PathBasedModelTester:
 
             JSON Response:"""
 
-        print(f"   📝 Generated Prompt:\n{prompt}\n")
+        # print(f"   📝 Generated Prompt:\n{prompt}\n")
         
         return prompt
     
@@ -313,7 +312,6 @@ class PathBasedModelTester:
         if expected_value is None:
             return 1.0 if extracted_value is not None else 0.0
         
-        # Handle different value types
         if isinstance(expected_value, dict):
             if not isinstance(extracted_value, dict):
                 return 0.0
@@ -370,8 +368,16 @@ class PathBasedModelTester:
     def _extract_field_values(self, predicted_answer: str, expected_fields: List[str]) -> Dict[str, Any]:
         """Extract only the values for expected fields from model response"""
         try:
-            # Clean response (remove markdown if present)
+            # Clean response (remove markdown and thinking tags if present)
             cleaned_response = predicted_answer.strip()
+            
+            # Handle DeepSeek-R1 thinking tags
+            if "<think>" in cleaned_response and "</think>" in cleaned_response:
+                # Extract content after </think>
+                think_end = cleaned_response.find("</think>")
+                cleaned_response = cleaned_response[think_end + len("</think>"):].strip()
+            
+            # Handle markdown code blocks
             if cleaned_response.startswith("```"):
                 lines = cleaned_response.split('\n')
                 cleaned_response = '\n'.join(lines[1:-1])
@@ -467,12 +473,20 @@ class PathBasedModelTester:
                     predicted = model.generate_response(prompt)
                     processing_time = time.time() - start_time
 
-                    print(f"   🤖 Predicted response: {predicted}")
+                    # print(f"   🤖 Predicted response: {predicted}")
                     
                     # Parse JSON response
                     try:
-                        # Clean response (remove markdown if present)
+                        # Clean response (remove markdown and thinking tags if present)
                         cleaned_response = predicted.strip()
+                        
+                        # Handle DeepSeek-R1 thinking tags
+                        if "<think>" in cleaned_response and "</think>" in cleaned_response:
+                            # Extract content after </think>
+                            think_end = cleaned_response.find("</think>")
+                            cleaned_response = cleaned_response[think_end + len("</think>"):].strip()
+                        
+                        # Handle markdown code blocks
                         if cleaned_response.startswith("```"):
                             lines = cleaned_response.split('\n')
                             cleaned_response = '\n'.join(lines[1:-1])
@@ -565,6 +579,32 @@ class PathBasedModelTester:
         # Calculate aggregate statistics
         successful_results = [r for r in results if r.error is None]
         avg_score = sum(r.global_score for r in successful_results) / len(successful_results) if successful_results else 0.0
+        
+        # Show detailed scores for each question
+        print(f"\n📋 DETAILED QUESTION SCORES:")
+        question_scores = {}
+        for r in results:
+            key = f"doc_{r.document_id}_{r.question_id}"
+            question_scores[key] = {
+                "question": r.question,
+                "global_score": r.global_score,
+                "field_scores": r.field_scores,
+                "error": r.error,
+                "processing_time": r.processing_time
+            }
+        
+        # Print each question result
+        for key, data in question_scores.items():
+            status = "✅" if data["error"] is None else "❌"
+            print(f"   {status} {key}: {data['global_score']:.3f}")
+        
+        # Show calculation
+        successful_scores = [r.global_score for r in successful_results]
+        print(f"   📊 AVERAGE CALCULATION:")
+        print(f"   All successful scores: {successful_scores}")
+        print(f"   Sum of scores: {sum(successful_scores):.3f}")
+        print(f"   Number of successful responses: {len(successful_results)}")
+        print(f"   Average score = {sum(successful_scores):.3f} / {len(successful_results)} = {avg_score:.3f}")
         
         # Save in compact format - only store extracted values, not full response
         data = {
