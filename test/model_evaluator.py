@@ -281,25 +281,27 @@ class PathBasedModelTester:
         
         prompt = f"""TASK: Extract specific information from this electronics document.
 
-DOCUMENT:
-{document_text}
+            DOCUMENT:
+            {document_text}
 
-QUESTION: {question}
+            QUESTION: {question}
 
-EXTRACT ONLY THESE FIELDS:
-{', '.join(expected_fields)}
+            EXTRACT ONLY THESE FIELDS:
+            {', '.join(expected_fields)}
 
-OUTPUT FORMAT (return only the minimal JSON structure below):
-{json.dumps(minimal_schema, indent=2)}
+            OUTPUT FORMAT (return only the minimal JSON structure below):
+            {json.dumps(minimal_schema, indent=2)}
 
-RULES:
-- Extract exact values and units from the document
-- Replace "<<EXTRACT_THIS>>" with the actual values found
-- Use null if information is not available
-- Return ONLY valid JSON, no markdown formatting
-- Keep the exact structure shown above
+            RULES:
+            - Extract exact values and units from the document
+            - Replace "<<EXTRACT_THIS>>" with the actual values found
+            - Use null if information is not available
+            - Return ONLY valid JSON, no markdown formatting
+            - Keep the exact structure shown above
 
-JSON Response:"""
+            JSON Response:"""
+
+        print(f"   📝 Generated Prompt:\n{prompt}\n")
         
         return prompt
     
@@ -340,9 +342,24 @@ JSON Response:"""
         if extracted == expected:
             return True
         
-        # Numeric comparison with tolerance
-        if isinstance(expected, (int, float)) and isinstance(extracted, (int, float)):
-            return abs(extracted - expected) < 0.01
+        # Handle number-string conversions in both directions
+        def try_parse_number(value):
+            """Try to parse a value as number"""
+            if isinstance(value, (int, float)):
+                return value
+            if isinstance(value, str):
+                try:
+                    return float(value.strip()) if '.' in value else int(value.strip())
+                except (ValueError, TypeError):
+                    return None
+            return None
+        
+        # Try numeric comparison
+        expected_num = try_parse_number(expected)
+        extracted_num = try_parse_number(extracted)
+        
+        if expected_num is not None and extracted_num is not None:
+            return abs(extracted_num - expected_num) < 0.01
         
         # String comparison (case-insensitive)
         if isinstance(expected, str) and isinstance(extracted, str):
@@ -449,6 +466,8 @@ JSON Response:"""
                 try:
                     predicted = model.generate_response(prompt)
                     processing_time = time.time() - start_time
+
+                    print(f"   🤖 Predicted response: {predicted}")
                     
                     # Parse JSON response
                     try:
