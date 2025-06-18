@@ -109,10 +109,10 @@ class OllamaInterface(ModelInterface):
                     "options": {
                         "temperature": 0.1,
                         "top_p": 0.9,
-                        "num_predict": 1024
+                        "num_predict": 4096
                     }
                 },
-                timeout=120
+                timeout=300
             )
             
             if response.status_code == 200:
@@ -601,7 +601,8 @@ class PathBasedModelTester:
         # Show calculation
         successful_scores = [r.global_score for r in successful_results]
         print(f"   📊 AVERAGE CALCULATION:")
-        print(f"   All successful scores: {successful_scores}")
+        all_scores = [r.global_score for r in results]
+        print(f"   All scores (including failures): {[f'{score:.3f}' for score in all_scores]}")
         print(f"   Sum of scores: {sum(successful_scores):.3f}")
         print(f"   Number of successful responses: {len(successful_results)}")
         print(f"   Average score = {sum(successful_scores):.3f} / {len(successful_results)} = {avg_score:.3f}")
