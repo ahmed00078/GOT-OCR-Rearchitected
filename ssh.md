@@ -25,7 +25,7 @@
 ### **1. Connexion et accès**
 ```bash
 # Depuis ta machine locale (pc-eii210)
-ssh -X asidimoh@10.10.9.62  # -X pour le forwarding graphique
+ssh -X asidimoh@10.10.9.62
 ```
 
 ### **2. Configuration recommandée**
@@ -47,9 +47,6 @@ nvtop         # GPU en temps réel (plus joli)
 df -h         # Espace disque
 ```
 
-
----
----
 ---
 
 ## **Pour VS Code - PAS besoin de builder/transférer !**

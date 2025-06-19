@@ -129,103 +129,103 @@ class SmolLM2ReasoningService:
         """Initialiser les templates de prompts optimisés"""
         return {
             ExtractionType.CARBON_FOOTPRINT.value: """<|im_start|>system
-Vous êtes un expert en analyse de données environnementales. Extrayez les informations de bilan carbone à partir du texte fourni.
-Répondez UNIQUEMENT avec un JSON valide contenant les champs trouvés.
-<|im_end|>
-<|im_start|>user
-Texte à analyser:
-{text}
+                Vous êtes un expert en analyse de données environnementales. Extrayez les informations de bilan carbone à partir du texte fourni.
+                Répondez UNIQUEMENT avec un JSON valide contenant les champs trouvés.
+                <|im_end|>
+                <|im_start|>user
+                Texte à analyser:
+                {text}
 
-Extrayez les informations de bilan carbone (émissions CO2, consommation énergétique, etc.) sous format JSON:
-{{
-  "carbon_emissions": "valeur avec unité",
-  "energy_consumption": "valeur avec unité", 
-  "product_name": "nom du produit",
-  "manufacturer": "fabricant",
-  "certification": "certifications environnementales",
-  "additional_metrics": {{}}
-}}
-<|im_end|>
-<|im_start|>assistant""",
+                Extrayez les informations de bilan carbone (émissions CO2, consommation énergétique, etc.) sous format JSON:
+                {{
+                  "carbon_emissions": "valeur avec unité",
+                  "energy_consumption": "valeur avec unité", 
+                  "product_name": "nom du produit",
+                  "manufacturer": "fabricant",
+                  "certification": "certifications environnementales",
+                  "additional_metrics": {{}}
+                }}
+                <|im_end|>
+                <|im_start|>assistant""",
 
             ExtractionType.TECHNICAL_SPECS.value: """<|im_start|>system
-Vous êtes un expert en spécifications techniques. Extrayez les caractéristiques techniques à partir du texte.
-Répondez UNIQUEMENT avec un JSON valide.
-<|im_end|>
-<|im_start|>user
-Texte à analyser:
-{text}
+                Vous êtes un expert en spécifications techniques. Extrayez les caractéristiques techniques à partir du texte.
+                Répondez UNIQUEMENT avec un JSON valide.
+                <|im_end|>
+                <|im_start|>user
+                Texte à analyser:
+                {text}
 
-Extrayez les spécifications techniques sous format JSON:
-{{
-  "product_name": "nom",
-  "model": "modèle",
-  "dimensions": "dimensions",
-  "weight": "poids",
-  "power": "consommation électrique",
-  "performance": {{}},
-  "connectivity": [],
-  "additional_specs": {{}}
-}}
-<|im_end|>
-<|im_start|>assistant""",
+                Extrayez les spécifications techniques sous format JSON:
+                {{
+                  "product_name": "nom",
+                  "model": "modèle",
+                  "dimensions": "dimensions",
+                  "weight": "poids",
+                  "power": "consommation électrique",
+                  "performance": {{}},
+                  "connectivity": [],
+                  "additional_specs": {{}}
+                }}
+                <|im_end|>
+                <|im_start|>assistant""",
 
             ExtractionType.FINANCIAL_DATA.value: """<|im_start|>system
-Vous êtes un expert en analyse financière. Extrayez les données financières du texte.
-Répondez UNIQUEMENT avec un JSON valide.
-<|im_end|>
-<|im_start|>user
-Texte à analyser:
-{text}
+                Vous êtes un expert en analyse financière. Extrayez les données financières du texte.
+                Répondez UNIQUEMENT avec un JSON valide.
+                <|im_end|>
+                <|im_start|>user
+                Texte à analyser:
+                {text}
 
-Extrayez les données financières sous format JSON:
-{{
-  "prices": [],
-  "currencies": [],
-  "financial_metrics": {{}},
-  "costs": {{}},
-  "revenue": "revenus",
-  "expenses": "dépenses",
-  "additional_financial_info": {{}}
-}}
-<|im_end|>
-<|im_start|>assistant""",
+                Extrayez les données financières sous format JSON:
+                {{
+                  "prices": [],
+                  "currencies": [],
+                  "financial_metrics": {{}},
+                  "costs": {{}},
+                  "revenue": "revenus",
+                  "expenses": "dépenses",
+                  "additional_financial_info": {{}}
+                }}
+                <|im_end|>
+                <|im_start|>assistant""",
 
             ExtractionType.CONTACT_INFO.value: """<|im_start|>system
-Vous êtes un expert en extraction d'informations de contact. Trouvez tous les détails de contact.
-Répondez UNIQUEMENT avec un JSON valide.
-<|im_end|>
-<|im_start|>user
-Texte à analyser:
-{text}
+                Vous êtes un expert en extraction d'informations de contact. Trouvez tous les détails de contact.
+                Répondez UNIQUEMENT avec un JSON valide.
+                <|im_end|>
+                <|im_start|>user
+                Texte à analyser:
+                {text}
 
-Extrayez les informations de contact sous format JSON:
-{{
-  "names": [],
-  "emails": [],
-  "phones": [],
-  "addresses": [],
-  "companies": [],
-  "websites": [],
-  "social_media": {{}}
-}}
-<|im_end|>
-<|im_start|>assistant""",
+                Extrayez les informations de contact sous format JSON:
+                {{
+                  "names": [],
+                  "emails": [],
+                  "phones": [],
+                  "addresses": [],
+                  "companies": [],
+                  "websites": [],
+                  "social_media": {{}}
+                }}
+                <|im_end|>
+                <|im_start|>assistant""",
 
             ExtractionType.CUSTOM.value: """<|im_start|>system
-Vous êtes un assistant intelligent d'extraction de données. Analysez le texte selon les instructions.
-Répondez UNIQUEMENT avec un JSON valide.
-<|im_end|>
-<|im_start|>user
-Texte à analyser:
-{text}
-
-Instructions d'extraction:
-{custom_instructions}
-
-Répondez avec un JSON structuré contenant les informations demandées.
-<|im_end|>
-<|im_start|>assistant"""
+                Vous êtes un assistant intelligent d'extraction de données. Analysez le texte selon les instructions.
+                Répondez UNIQUEMENT avec un JSON valide.
+                <|im_end|>
+                <|im_start|>user
+                Texte à analyser:
+                {text}
+                
+                Instructions d'extraction:
+                {custom_instructions}
+                
+                Répondez avec un JSON structuré contenant les informations demandées.
+                <|im_end|>
+                <|im_start|>assistant"""
         }
     
     async def extract_information(
