@@ -14,6 +14,7 @@ from PIL import Image
 
 from models.ocr_model import OCRModelManager
 from services.reasoning_service import SmolLM2ReasoningService, ExtractionType, ExtractionResult
+from services.ollama_reasoning_service import OllamaReasoningService, ExtractionType, ExtractionResult
 from services.ocr_service import OCRService
 from config import Config
 
@@ -41,13 +42,13 @@ class EnhancedOCRService(OCRService):
         """Initialiser le service de raisonnement de manière asynchrone"""
         if self.reasoning_enabled and self.reasoning_service:
             try:
-                logger.info("Initialisation de SmolLM2...")
+                logger.info("Initialisation d'Ollama...")
                 await self.reasoning_service.load_model(
                     use_quantization=self.config.ENABLE_QUANTIZATION
                 )
-                logger.info("SmolLM2 initialisé avec succès")
+                logger.info("Ollama initialisé avec succès")
             except Exception as e:
-                logger.error(f"Erreur initialisation SmolLM2: {str(e)}")
+                logger.error(f"Erreur initialisation Ollama: {str(e)}")
                 self.reasoning_enabled = False
     
     async def process_with_reasoning(
@@ -106,14 +107,14 @@ class EnhancedOCRService(OCRService):
                 return ocr_result
             
             if not self.reasoning_service.is_loaded:
-                logger.warning("SmolLM2 non chargé, tentative d'initialisation...")
+                logger.warning("Ollama non chargé, tentative d'initialisation...")
                 await self.initialize_reasoning()
                 
                 if not self.reasoning_service.is_loaded:
-                    logger.error("Impossible de charger SmolLM2")
+                    logger.error("Impossible de charger Ollama")
                     ocr_result.update({
                         "reasoning_enabled": False,
-                        "extraction_error": "SmolLM2 loading failed",
+                        "extraction_error": "Ollama loading failed",
                         "total_processing_time": time.time() - start_time
                     })
                     return ocr_result
@@ -126,7 +127,7 @@ class EnhancedOCRService(OCRService):
             if not self.config.validate_extraction_type(extraction_type):
                 raise ValueError(f"Type d'extraction invalide: {extraction_type}")
             
-            # Extraction d'informations avec SmolLM2
+            # Extraction d'informations avec Ollama
             extraction_result = await self.reasoning_service.extract_information(
                 text=ocr_result["text"],
                 extraction_type=ExtractionType(extraction_type),
@@ -203,14 +204,14 @@ class EnhancedOCRService(OCRService):
     ) -> List[Dict[str, Any]]:
         """
         Traitement par batch pour plusieurs documents
-        Optimisé pour SmolLM2:1.7B
+        Optimisé pour Ollama
         """
         if len(files_batch) != len(extraction_configs):
             raise ValueError("Le nombre de batches doit correspondre au nombre de configs")
         
         logger.info(f"Traitement batch: {len(files_batch)} documents")
         
-        # Traitement séquentiel pour éviter la surcharge mémoire avec SmolLM2
+        # Traitement séquentiel pour éviter la surcharge avec Ollama
         results = []
         
         for i, (files, config) in enumerate(zip(files_batch, extraction_configs)):
@@ -265,35 +266,24 @@ class EnhancedOCRService(OCRService):
     async def get_supported_extractions(self) -> Dict[str, Dict[str, Any]]:
         """Obtenir la liste des types d'extraction supportés avec descriptions"""
         return {
-            "carbon_footprint": {
-                "name": "Bilan Carbone",
-                "description": "Extraction d'émissions CO2, consommation énergétique",
-                "typical_fields": ["carbon_emissions", "energy_consumption", "certification"],
-                "use_cases": ["Produits électroniques", "Rapports environnementaux"]
-            },
-            "technical_specs": {
-                "name": "Spécifications Techniques", 
-                "description": "Caractéristiques produit, dimensions, performance",
-                "typical_fields": ["product_name", "model", "dimensions", "power"],
-                "use_cases": ["Fiches techniques", "Catalogues produits"]
-            },
-            "financial_data": {
-                "name": "Données Financières",
-                "description": "Prix, coûts, métriques financières",
-                "typical_fields": ["prices", "costs", "revenue", "currencies"],
-                "use_cases": ["Factures", "Rapports financiers", "Devis"]
-            },
-            "contact_info": {
-                "name": "Informations de Contact",
-                "description": "Noms, emails, téléphones, adresses",
-                "typical_fields": ["names", "emails", "phones", "addresses"],
-                "use_cases": ["Cartes de visite", "Annuaires", "Documents RH"]
-            },
             "custom": {
-                "name": "Extraction Personnalisée",
-                "description": "Extraction selon vos instructions spécifiques",
-                "typical_fields": ["Variable selon instructions"],
-                "use_cases": ["Cas d'usage spécialisés", "Données métier spécifiques"]
+                "name": "Custom Extraction",
+                "description": "AI-powered data extraction with custom instructions",
+                "typical_fields": ["Variable based on instructions"],
+                "use_cases": [
+                    "Product specifications and prices",
+                    "Contact information extraction", 
+                    "Carbon footprint and environmental data",
+                    "Financial metrics and costs",
+                    "Technical specifications",
+                    "Any custom data extraction task"
+                ],
+                "examples": [
+                    "Extract all product names, prices, and warranty information",
+                    "Find contact information including emails, phones, and addresses",
+                    "Extract carbon footprint data and environmental certifications",
+                    "Get technical specifications, dimensions, and performance metrics"
+                ]
             }
         }
     

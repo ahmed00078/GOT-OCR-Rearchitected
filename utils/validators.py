@@ -245,11 +245,11 @@ class OCRRequestValidator:
         pdf_files = [f for f in files if f.content_type == "application/pdf"]
         image_files = [f for f in files if f.content_type.startswith("image/")]
         
-        if len(pdf_files) > 1:
-            return ValidationResult(
-                False,
-                "Multi-page OCR supports only one PDF file at a time"
-            )
+        # if len(pdf_files) > 1:
+        #     return ValidationResult(
+        #         False,
+        #         "Multi-page OCR supports only one PDF file at a time"
+        #     )
         
         if len(pdf_files) == 1 and len(image_files) > 0:
             logger.warning("Multi-page OCR: mixing PDF and images may produce unexpected results")

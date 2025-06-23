@@ -21,7 +21,7 @@ from pydantic import BaseModel
 from config import Config
 from models.ocr_model import OCRModelManager
 from services.enhanced_ocr_service import EnhancedOCRService
-from services.reasoning_service import ExtractionType
+from services.reasoning_service import SmolLM2ReasoningService
 from utils.validators import OCRRequestValidator
 from utils.logger import setup_logger
 
@@ -53,7 +53,7 @@ class EnhancedOCRResponse(BaseModel):
     extraction_type: Optional[str] = None
     extraction_result: Optional[Dict[str, Any]] = None
     performance_metrics: Optional[Dict[str, Any]] = None
-    models_used: Optional[Dict[str, str]] = None
+    models_used: Optional[Dict[str, Optional[str]]] = None
 
 class HealthResponse(BaseModel):
     """Health check response model"""
@@ -182,173 +182,120 @@ class GOTOCREnhancedApp:
                 version=self.config.APP_VERSION
             )
         
-        # === ENDPOINT OCR STANDARD (INCHANGÉ) ===
-        @app.post("/process", response_model=OCRResponse, 
-                 summary="Standard OCR processing",
-                 response_description="OCR processing results with text and optional HTML output")
-        async def process_ocr(
+        # === ENDPOINT UNIFIÉ POUR TOUT TRAITEMENT ===
+        @app.post("/process", response_model=EnhancedOCRResponse, 
+                 summary="Unified OCR Processing",
+                 response_description="Unified endpoint for OCR processing with optional AI reasoning")
+        async def process_unified(
             background_tasks: BackgroundTasks,
             task: str = Form(..., description=self.config.TASK_DESCRIPTIONS["task"]),
             ocr_type: Optional[str] = Form(None, description=self.config.TASK_DESCRIPTIONS["ocr_type"]),
             ocr_box: Optional[str] = Form(None, description=self.config.TASK_DESCRIPTIONS["ocr_box"]),
             ocr_color: Optional[str] = Form(None, description=self.config.TASK_DESCRIPTIONS["ocr_color"]),
+            enable_reasoning: bool = Form(False, description="Enable AI reasoning for data extraction"),
+            custom_instructions: Optional[str] = Form(None, description="Custom AI extraction instructions (only when reasoning enabled)"),
             images: List[UploadFile] = File(..., description=self.config.TASK_DESCRIPTIONS["images"])
         ):
-            """Standard OCR processing endpoint"""
+            """Unified OCR processing endpoint - handles both simple OCR and AI-enhanced processing"""
             
-            # Validate request
+            # Validate basic request
             validation_result = self.validator.validate_request(task, ocr_type, ocr_box, ocr_color, images)
             if not validation_result.is_valid:
                 raise HTTPException(400, detail=validation_result.error_message)
+            
+            # Validate AI reasoning parameters
+            if enable_reasoning:
+                if not self.enhanced_ocr_service:
+                    raise HTTPException(500, detail="Enhanced OCR service not available")
+                
+                if not self.config.reasoning_enabled:
+                    raise HTTPException(400, detail="AI reasoning is disabled in configuration")
+                
+                if not custom_instructions or len(custom_instructions.strip()) < 10:
+                    raise HTTPException(400, detail="Custom instructions required (minimum 10 characters) when reasoning is enabled")
             
             # Process request
             try:
-                result = await self.enhanced_ocr_service.process_images(
-                    task=task,
-                    images=images,
-                    ocr_type=ocr_type,
-                    ocr_box=ocr_box,
-                    ocr_color=ocr_color,
-                    background_tasks=background_tasks
-                )
-                
-                return OCRResponse(**result)
-                
-            except Exception as e:
-                logger.error(f"OCR processing failed: {str(e)}")
-                raise HTTPException(500, detail=f"Processing error: {str(e)}")
-        
-        # === NOUVEAU: ENDPOINT OCR + IA ===
-        @app.post("/smart-extract", response_model=EnhancedOCRResponse,
-                 summary="🧠 Smart OCR + AI Information Extraction",
-                 response_description="OCR + AI reasoning results with structured data extraction")
-        async def smart_extract(
-            background_tasks: BackgroundTasks,
-            task: str = Form("Multi-page OCR", description=self.config.TASK_DESCRIPTIONS["task"]),
-            extraction_type: str = Form(..., description=self.config.TASK_DESCRIPTIONS["extraction_type"]),
-            custom_instructions: Optional[str] = Form(None, description=self.config.TASK_DESCRIPTIONS["custom_instructions"]),
-            ocr_type: Optional[str] = Form("format", description=self.config.TASK_DESCRIPTIONS["ocr_type"]),
-            ocr_box: Optional[str] = Form(None, description=self.config.TASK_DESCRIPTIONS["ocr_box"]),
-            ocr_color: Optional[str] = Form(None, description=self.config.TASK_DESCRIPTIONS["ocr_color"]),
-            images: List[UploadFile] = File(..., description=self.config.TASK_DESCRIPTIONS["images"])
-        ):
-            """🧠 Smart extraction: OCR + AI reasoning for structured data extraction"""
-            
-            # Vérifications préliminaires
-            if not self.enhanced_ocr_service:
-                raise HTTPException(500, detail="Enhanced OCR service not available")
-            
-            if not self.config.reasoning_enabled:
-                raise HTTPException(400, detail="AI reasoning is disabled")
-            
-            if not self.config.validate_extraction_type(extraction_type):
-                raise HTTPException(400, detail=f"Invalid extraction type: {extraction_type}")
-            
-            # Validation standard
-            validation_result = self.validator.validate_request(task, ocr_type, ocr_box, ocr_color, images)
-            if not validation_result.is_valid:
-                raise HTTPException(400, detail=validation_result.error_message)
-            
-            # Validation pour custom extraction
-            if extraction_type == "custom" and not custom_instructions:
-                raise HTTPException(400, detail="Custom instructions required for custom extraction type")
-            
-            # Traitement avec raisonnement
-            try:
-                logger.info(f"Smart extraction: {task} → {extraction_type}")
-                
-                result = await self.enhanced_ocr_service.process_with_reasoning(
-                    task=task,
-                    images=images,
-                    background_tasks=background_tasks,
-                    extraction_type=extraction_type,
-                    custom_instructions=custom_instructions,
-                    ocr_type=ocr_type,
-                    ocr_box=ocr_box,
-                    ocr_color=ocr_color
-                )
+                if enable_reasoning:
+                    # OCR + AI processing
+                    logger.info(f"Processing with AI reasoning: {task}")
+                    result = await self.enhanced_ocr_service.process_with_reasoning(
+                        task=task,
+                        images=images,
+                        background_tasks=background_tasks,
+                        extraction_type="custom",  # Always use custom
+                        custom_instructions=custom_instructions,
+                        ocr_type=ocr_type,
+                        ocr_box=ocr_box,
+                        ocr_color=ocr_color
+                    )
+                else:
+                    # Standard OCR only
+                    logger.info(f"Processing standard OCR: {task}")
+                    result = await self.enhanced_ocr_service.process_images(
+                        task=task,
+                        images=images,
+                        ocr_type=ocr_type,
+                        ocr_box=ocr_box,
+                        ocr_color=ocr_color,
+                        background_tasks=background_tasks
+                    )
+                    
+                    # Add reasoning fields as None for consistent response
+                    result.update({
+                        "reasoning_enabled": False,
+                        "extraction_type": None,
+                        "extraction_result": None,
+                        "performance_metrics": {
+                            "total_time": result.get("processing_time", 0),
+                            "text_length": len(result.get("text", ""))
+                        },
+                        "models_used": {
+                            "ocr_model": self.model_manager.config.MODEL_NAME,
+                            "reasoning_model": None
+                        }
+                    })
                 
                 return EnhancedOCRResponse(**result)
                 
             except Exception as e:
-                logger.error(f"Smart extraction failed: {str(e)}")
-                raise HTTPException(500, detail=f"Smart extraction error: {str(e)}")
+                logger.error(f"Unified processing failed: {str(e)}")
+                raise HTTPException(500, detail=f"Processing error: {str(e)}")
         
-        # === NOUVEAU: ENDPOINT BATCH PROCESSING ===
-        @app.post("/batch-extract", 
-                 summary="🚀 Batch Smart Extraction",
-                 response_description="Batch processing for multiple documents")
-        async def batch_smart_extract(
-            # Note: Pour la simplicité, on utilise un endpoint simplifié
-            # En production, on pourrait utiliser un format plus complexe
-            extraction_type: str = Form(...),
-            images: List[UploadFile] = File(...)
-        ):
-            """Batch processing for multiple documents (simplified version)"""
-            
-            if not self.enhanced_ocr_service:
-                raise HTTPException(500, detail="Enhanced OCR service not available")
-            
-            if len(images) > 10:
-                raise HTTPException(400, detail="Maximum 10 files for batch processing")
-            
-            try:
-                # Créer des batches simples (un fichier par batch pour cette démo)
-                files_batch = [[img] for img in images]
-                configs = [{"extraction_type": extraction_type, "task": "Multi-page OCR"} for _ in images]
-                
-                results = await self.enhanced_ocr_service.batch_process_with_reasoning(
-                    files_batch, configs
-                )
-                
-                return {
-                    "batch_results": results,
-                    "total_processed": len(results),
-                    "successful": sum(1 for r in results if "error" not in r)
-                }
-                
-            except Exception as e:
-                logger.error(f"Batch processing failed: {str(e)}")
-                raise HTTPException(500, detail=f"Batch processing error: {str(e)}")
-        
-        # === NOUVEAU: ENDPOINT DE DÉMONSTRATION ===
-        @app.get("/demo", summary="🎯 Demo endpoints and capabilities")
+        # === ENDPOINT DE DÉMONSTRATION ===
+        @app.get("/demo", summary="🎯 Demo capabilities")
         async def demo_info():
             """Information about demo capabilities and example usage"""
             return {
-                "demo_endpoints": {
-                    "/process": "Standard OCR processing",
-                    "/smart-extract": "🧠 OCR + AI reasoning",
-                    "/batch-extract": "🚀 Batch processing",
-                    "/extraction-types": "Available extraction types"
-                },
-                "example_workflows": {
-                    "carbon_footprint": {
-                        "description": "Extract environmental data from product sheets",
-                        "endpoint": "/smart-extract",
-                        "extraction_type": "carbon_footprint",
-                        "example_output": {
-                            "carbon_emissions": "45g CO2 eq",
-                            "energy_consumption": "15W",
-                            "product_name": "Laptop Model X"
+                "unified_endpoint": "/process",
+                "usage_modes": {
+                    "ocr_only": {
+                        "description": "Standard OCR processing",
+                        "parameters": {
+                            "enable_reasoning": False,
+                            "task": "Plain text OCR / Format text OCR / Multi-page OCR",
+                            "ocr_type": "plain / format"
                         }
                     },
-                    "technical_specs": {
-                        "description": "Extract technical specifications",
-                        "endpoint": "/smart-extract", 
-                        "extraction_type": "technical_specs",
-                        "example_output": {
-                            "product_name": "Smartphone Pro",
-                            "dimensions": "150x75x8mm",
-                            "weight": "180g"
-                        }
+                    "ocr_with_ai": {
+                        "description": "OCR + AI custom extraction",
+                        "parameters": {
+                            "enable_reasoning": True,
+                            "custom_instructions": "Extract product specifications, prices, contact information, etc."
+                        },
+                        "example_instructions": [
+                            "Extract all product names, prices, and technical specifications",
+                            "Find contact information including emails, phones, and addresses",
+                            "Extract carbon footprint data and environmental certifications",
+                            "Get financial data including costs, revenues, and currencies"
+                        ]
                     }
                 },
                 "performance_tips": [
                     "Use 'Multi-page OCR' task for best results",
                     "Provide clear, high-resolution images",
-                    "Custom instructions should be specific",
-                    "Batch processing is optimized for up to 10 files"
+                    "Custom instructions should be specific (minimum 10 characters)",
+                    "Set enable_reasoning=true only when you need AI extraction"
                 ]
             }
 

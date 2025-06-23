@@ -1,6 +1,5 @@
 # File: services/reasoning_service.py
 """
-Service de raisonnement avec SmolLM2:1.7B
 Extraction d'informations structurées à partir du texte OCR
 """
 
@@ -24,11 +23,7 @@ logger = logging.getLogger(__name__)
 
 class ExtractionType(Enum):
     """Types d'extraction supportés"""
-    CARBON_FOOTPRINT = "carbon_footprint"  # Pour les données carbone
-    TECHNICAL_SPECS = "technical_specs"    # Spécifications techniques
-    FINANCIAL_DATA = "financial_data"      # Données financières
-    CONTACT_INFO = "contact_info"          # Informations de contact
-    CUSTOM = "custom"                      # Extraction personnalisée
+    CUSTOM = "custom"
 
 
 @dataclass
@@ -126,104 +121,25 @@ class SmolLM2ReasoningService:
             raise RuntimeError(f"Impossible de charger SmolLM2: {str(e)}")
     
     def _init_prompt_templates(self) -> Dict[str, str]:
-        """Initialiser les templates de prompts optimisés"""
+        """Initialiser le template de prompt custom optimisé"""
         return {
-            ExtractionType.CARBON_FOOTPRINT.value: """<|im_start|>system
-                Vous êtes un expert en analyse de données environnementales. Extrayez les informations de bilan carbone à partir du texte fourni.
-                Répondez UNIQUEMENT avec un JSON valide contenant les champs trouvés.
-                <|im_end|>
-                <|im_start|>user
-                Texte à analyser:
-                {text}
-
-                Extrayez les informations de bilan carbone (émissions CO2, consommation énergétique, etc.) sous format JSON:
-                {{
-                  "carbon_emissions": "valeur avec unité",
-                  "energy_consumption": "valeur avec unité", 
-                  "product_name": "nom du produit",
-                  "manufacturer": "fabricant",
-                  "certification": "certifications environnementales",
-                  "additional_metrics": {{}}
-                }}
-                <|im_end|>
-                <|im_start|>assistant""",
-
-            ExtractionType.TECHNICAL_SPECS.value: """<|im_start|>system
-                Vous êtes un expert en spécifications techniques. Extrayez les caractéristiques techniques à partir du texte.
-                Répondez UNIQUEMENT avec un JSON valide.
-                <|im_end|>
-                <|im_start|>user
-                Texte à analyser:
-                {text}
-
-                Extrayez les spécifications techniques sous format JSON:
-                {{
-                  "product_name": "nom",
-                  "model": "modèle",
-                  "dimensions": "dimensions",
-                  "weight": "poids",
-                  "power": "consommation électrique",
-                  "performance": {{}},
-                  "connectivity": [],
-                  "additional_specs": {{}}
-                }}
-                <|im_end|>
-                <|im_start|>assistant""",
-
-            ExtractionType.FINANCIAL_DATA.value: """<|im_start|>system
-                Vous êtes un expert en analyse financière. Extrayez les données financières du texte.
-                Répondez UNIQUEMENT avec un JSON valide.
-                <|im_end|>
-                <|im_start|>user
-                Texte à analyser:
-                {text}
-
-                Extrayez les données financières sous format JSON:
-                {{
-                  "prices": [],
-                  "currencies": [],
-                  "financial_metrics": {{}},
-                  "costs": {{}},
-                  "revenue": "revenus",
-                  "expenses": "dépenses",
-                  "additional_financial_info": {{}}
-                }}
-                <|im_end|>
-                <|im_start|>assistant""",
-
-            ExtractionType.CONTACT_INFO.value: """<|im_start|>system
-                Vous êtes un expert en extraction d'informations de contact. Trouvez tous les détails de contact.
-                Répondez UNIQUEMENT avec un JSON valide.
-                <|im_end|>
-                <|im_start|>user
-                Texte à analyser:
-                {text}
-
-                Extrayez les informations de contact sous format JSON:
-                {{
-                  "names": [],
-                  "emails": [],
-                  "phones": [],
-                  "addresses": [],
-                  "companies": [],
-                  "websites": [],
-                  "social_media": {{}}
-                }}
-                <|im_end|>
-                <|im_start|>assistant""",
-
             ExtractionType.CUSTOM.value: """<|im_start|>system
-                Vous êtes un assistant intelligent d'extraction de données. Analysez le texte selon les instructions.
-                Répondez UNIQUEMENT avec un JSON valide.
+                You are an intelligent data extraction assistant. Analyze the text according to the instructions.
+                Respond ONLY with valid JSON.
                 <|im_end|>
                 <|im_start|>user
-                Texte à analyser:
+                Text to analyze:
                 {text}
                 
-                Instructions d'extraction:
+                Extraction instructions:
                 {custom_instructions}
+
+                RULES:
+                    - Use null if information is not available
+                    - Return ONLY valid JSON, no markdown formatting
+                    - Do not include any additional text or explanations
                 
-                Répondez avec un JSON structuré contenant les informations demandées.
+                JSON Response:
                 <|im_end|>
                 <|im_start|>assistant"""
         }
@@ -233,7 +149,7 @@ class SmolLM2ReasoningService:
         text: str,
         extraction_type: Union[ExtractionType, str],
         custom_instructions: Optional[str] = None,
-        max_length: int = 2000
+        max_length: int = 4096
     ) -> ExtractionResult:
         """
         Extraire des informations structurées du texte
@@ -265,6 +181,8 @@ class SmolLM2ReasoningService:
             
             # Construire le prompt
             prompt = self._build_prompt(text, extraction_type, custom_instructions)
+
+            print(f"Prompt utilisé:\n{prompt}\n")
             
             # Tokenization
             inputs = self.tokenizer(
@@ -289,6 +207,8 @@ class SmolLM2ReasoningService:
                 outputs[0][inputs.input_ids.shape[1]:],
                 skip_special_tokens=True
             ).strip()
+
+            print(f"Réponse brute du modèle:\n{response}\n")
             
             # Parser la réponse JSON
             extracted_data, confidence = self._parse_response(response)
@@ -328,13 +248,15 @@ class SmolLM2ReasoningService:
         extraction_type: ExtractionType,
         custom_instructions: Optional[str] = None
     ) -> str:
-        """Construire le prompt optimisé"""
-        template = self.prompt_templates[extraction_type.value]
-        
-        if extraction_type == ExtractionType.CUSTOM and custom_instructions:
-            return template.format(text=text, custom_instructions=custom_instructions)
-        else:
-            return template.format(text=text)
+        """Construire le prompt optimisé pour extraction custom"""
+        if extraction_type != ExtractionType.CUSTOM:
+            raise ValueError("Only custom extraction type is supported")
+            
+        if not custom_instructions:
+            raise ValueError("Custom instructions are required")
+            
+        template = self.prompt_templates[ExtractionType.CUSTOM.value]
+        return template.format(text=text, custom_instructions=custom_instructions)
     
     def _parse_response(self, response: str) -> tuple[Dict[str, Any], float]:
         """Parser la réponse JSON du modèle"""

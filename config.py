@@ -1,15 +1,14 @@
 import os
 from typing import List, Dict, Any
-from globe import title, description, tasks, ocr_types, ocr_colors
+from globe import description, tasks, ocr_types, ocr_colors
 import torch
 
 
 class Config:
-    """Configuration class for GOT-OCR 2.0 + SmolLM2 API"""
+    """Configuration class for GOT-OCR 2.0 + AI Model API"""
     
-    # Application settings
-    APP_TITLE: str = "GOT-OCR 2.0 + SmolLM2 API"
-    APP_DESCRIPTION: str = description + "\n\n🧠 **Enhanced with SmolLM2:1.7B** for intelligent information extraction!"
+    APP_TITLE: str = "GOT-OCR 2.0 + AI Model API"
+    APP_DESCRIPTION: str = description + "\n\n🧠 **Enhanced with AI model** for intelligent information extraction!"
     APP_VERSION: str = "2.2"
     
     CONTACT_INFO: Dict[str, str] = {
@@ -30,27 +29,26 @@ class Config:
     MAX_NEW_TOKENS: int = 4096
     STOP_STRINGS: str = "<|im_end|>"
     
-    # === NOUVEAU: SMOLLM2 SETTINGS ===
-    REASONING_MODEL_NAME: str = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
-    REASONING_MAX_TOKENS: int = 512
+    # === NOUVEAU: AI Model SETTINGS ===
+    REASONING_MODEL_NAME: str = "HuggingFaceTB/SmolLM2-1.7B-Instruct"  # qwen3:8b for Ollama model name
+    REASONING_MAX_TOKENS: int = 4096
     REASONING_TEMPERATURE: float = 0.1
-    REASONING_BATCH_SIZE: int = 3       # Petit batch pour efficacité
+    REASONING_BATCH_SIZE: int = 3 
+    
+    # Ollama settings
+    OLLAMA_URL: str = "http://localhost:11434"
     
     # Enable/disable reasoning features
     ENABLE_REASONING: bool = True
-    ENABLE_QUANTIZATION: bool = True    # 8-bit quantization pour SmolLM2
+    ENABLE_QUANTIZATION: bool = True    # Not used with Ollama
     
     # Processing settings
     SUPPORTED_TASKS: List[str] = tasks
     SUPPORTED_OCR_TYPES: List[str] = ocr_types
     SUPPORTED_OCR_COLORS: List[str] = ocr_colors
     
-    # === NOUVEAUX TYPES D'EXTRACTION ===
+    # === TYPES D'EXTRACTION SIMPLIFIÉS ===
     SUPPORTED_EXTRACTION_TYPES: List[str] = [
-        "carbon_footprint",
-        "technical_specs", 
-        "financial_data",
-        "contact_info",
         "custom"
     ]
     
@@ -97,22 +95,15 @@ class Config:
             "- **Fine-grained OCR (Box)**: Extract text from specific regions using coordinates\n"
             "- **Fine-grained OCR (Color)**: Extract text from color-highlighted regions\n"
             "- **Multi-crop OCR**: Process multiple image regions automatically\n"
-            "- **Multi-page OCR**: 🆕 Process multi-page documents (PDFs or image sequences)\n"
-            "- **🧠 Smart Extract**: OCR + AI reasoning for structured data extraction"
-        ),
-        "extraction_type": (
-            "🧠 **AI-Powered Information Extraction** (requires SmolLM2):\n\n"
-            "- **carbon_footprint**: Extract environmental data (CO2, energy consumption)\n"
-            "- **technical_specs**: Extract product specifications and technical details\n"
-            "- **financial_data**: Extract prices, costs, financial metrics\n"
-            "- **contact_info**: Extract names, emails, phones, addresses\n"
-            "- **custom**: Custom extraction with your own instructions\n\n"
-            "💡 Combines OCR with intelligent reasoning for structured output!"
+            "- **Multi-page OCR**: Process multi-page documents (PDFs or image sequences)\n"
+            "- **Smart Extract**: OCR + AI reasoning for structured data extraction"
         ),
         "custom_instructions": (
-            "For 'custom' extraction type, provide specific instructions:\n\n"
-            "Example: 'Extract all product names, prices, and warranty information'\n"
-            "Be specific about what data you want and in what format."
+            "Provide specific AI extraction instructions:\n\n"
+            "Examples:\n"
+            "- 'Extract all product names, prices, and warranty information'\n"
+            "- 'Extract carbon footprint data and environmental certifications'\n"
+            "Be specific about what data you want and the desired output format."
         ),
         "ocr_type": (
             "Required for formatted outputs. Use 'format' to enable structured text output.\n\n"
@@ -147,12 +138,7 @@ class Config:
     
     # === PARAMÈTRES SPÉCIFIQUES RAISONNEMENT ===
     REASONING_CONFIG: Dict[str, Any] = {
-        "enable_caching": True,           # Cache des résultats pour performance
-        "max_context_length": 2000,      # Limite du contexte pour SmolLM2
-        "confidence_threshold": 0.5,     # Seuil de confiance minimum
-        "fallback_to_regex": True,       # Fallback regex si AI échoue
-        "parallel_processing": False,    # Désactivé pour SmolLM2:1.7B
-        "memory_optimization": True      # Optimisations mémoire
+        "max_context_length": 4096
     }
     
     @property
