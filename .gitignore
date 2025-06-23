@@ -18,11 +18,3 @@ server/__pycache__/
 utils/__pycache__/
 
 data/
-
-frontend/simple.html
-
-frontend/ultra-simple.html
-
-test_all_combinations.py
-
-services/ollama_reasoning_service.py
