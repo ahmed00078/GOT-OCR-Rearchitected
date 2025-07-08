@@ -11,6 +11,10 @@ from typing import List, Optional, Dict, Any, Union
 
 from fastapi import UploadFile, BackgroundTasks
 from PIL import Image
+import cv2
+import numpy as np
+from paddleocr import LayoutDetection
+import fitz
 
 from models.ocr_model import OCRModelManager
 from services.reasoning_service import SmolLM2ReasoningService, ExtractionType, ExtractionResult
@@ -35,6 +39,10 @@ class EnhancedOCRService(OCRService):
         self.reasoning_service: Optional[SmolLM2ReasoningService] = None
         self.reasoning_enabled = config.reasoning_enabled
         
+        # Ajouter la segmentation layout
+        self.layout_model: Optional[LayoutDetection] = None
+        self.layout_enabled = getattr(config, 'LAYOUT_ENABLED', True)
+        
         if self.reasoning_enabled:
             self.reasoning_service = SmolLM2ReasoningService(config)
     
@@ -50,6 +58,16 @@ class EnhancedOCRService(OCRService):
             except Exception as e:
                 logger.error(f"Erreur initialisation Ollama: {str(e)}")
                 self.reasoning_enabled = False
+        
+        # Initialiser le modèle de layout
+        if self.layout_enabled:
+            try:
+                logger.info("Initialisation PP-DocLayout...")
+                self.layout_model = LayoutDetection(model_name="PP-DocLayout_plus-L")
+                logger.info("PP-DocLayout initialisé avec succès")
+            except Exception as e:
+                logger.error(f"Erreur initialisation PP-DocLayout: {str(e)}")
+                self.layout_enabled = False
     
     async def process_with_reasoning(
         self,
@@ -80,11 +98,11 @@ class EnhancedOCRService(OCRService):
         start_time = time.time()
         
         try:
-            # === ÉTAPE 1: OCR STANDARD ===
-            logger.info("Phase 1: Extraction OCR...")
+            # === ÉTAPE 1: OCR AVEC SEGMENTATION ===
+            logger.info("Phase 1: Extraction OCR avec segmentation...")
             ocr_start = time.time()
             
-            ocr_result = await super().process_images(
+            ocr_result = await self._process_with_layout(
                 task=task,
                 images=images,
                 background_tasks=background_tasks,
@@ -287,9 +305,197 @@ class EnhancedOCRService(OCRService):
             }
         }
     
+    async def _process_with_layout(self, task: str, images: List[UploadFile], background_tasks: BackgroundTasks, ocr_type: Optional[str] = None, ocr_box: Optional[str] = None, ocr_color: Optional[str] = None) -> Dict[str, Any]:
+        """Traiter les images avec segmentation layout si activée"""
+        if not self.layout_enabled or not self.layout_model:
+            return await super().process_images(task, images, background_tasks, ocr_type, ocr_box, ocr_color)
+        
+        logger.info("Traitement avec segmentation PP-DocLayout")
+        
+        try:
+            # Charger images manuellement pour éviter les problèmes async
+            loaded_images = await self._load_images_for_segmentation(images)
+            all_results = []
+            
+            for i, (image, filename) in enumerate(loaded_images):
+                logger.info(f"Segmentation image {i+1}/{len(loaded_images)}: {filename}")
+                
+                # Convertir PIL vers OpenCV
+                cv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+                
+                # Analyse layout
+                output = self.layout_model.predict(cv_image, batch_size=1, layout_nms=True)
+                boxes = output[0]['boxes']
+                
+                logger.info(f"🔍 Zones détectées: {len(boxes)}")
+                print(f"🔍 Zones détectées: {len(boxes)}")  # Force l'affichage
+                
+                # Afficher le détail des zones détectées
+                if boxes:
+                    zone_types = {}
+                    for box in boxes:
+                        label = box['label']
+                        zone_types[label] = zone_types.get(label, 0) + 1
+                    
+                    zone_summary = ", ".join([f"{label}: {count}" for label, count in zone_types.items()])
+                    logger.info(f"📋 Types de zones: {zone_summary}")
+                    print(f"📋 Types de zones: {zone_summary}")  # Force l'affichage
+                
+                if not boxes:
+                    text = await self._extract_text_from_image(image, filename)
+                    all_results.append({"text": text, "images": [], "filename": filename})
+                    continue
+                
+                # Trier les zones par ordre de lecture
+                boxes_sorted = sorted(boxes, key=lambda box: (box['coordinate'][1], box['coordinate'][0]))
+                
+                # Traiter chaque zone
+                markdown_parts = []
+                images_found = []
+                
+                for j, box in enumerate(boxes_sorted):
+                    x1, y1, x2, y2 = map(int, box['coordinate'])
+                    label = box['label']
+                    score = box.get('score', 0.0)
+                    
+                    logger.info(f"  📍 Zone {j+1}: {label} (conf: {score:.2f}) - [{x1},{y1},{x2},{y2}]")
+                    print(f"  📍 Zone {j+1}: {label} (conf: {score:.2f}) - [{x1},{y1},{x2},{y2}]")  # Force l'affichage
+                    
+                    # Découper la zone
+                    cropped_cv = cv_image[y1:y2, x1:x2]
+                    cropped_pil = Image.fromarray(cv2.cvtColor(cropped_cv, cv2.COLOR_BGR2RGB))
+                    
+                    if label.lower() in ['figure', 'image', 'chart']:
+                        # Encoder l'image en base64
+                        import base64
+                        import io
+                        buffer = io.BytesIO()
+                        cropped_pil.save(buffer, format='PNG')
+                        img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+                        
+                        image_info = {
+                            "id": f"img-{i}-{j}",
+                            "top_left_x": x1,
+                            "top_left_y": y1,
+                            "bottom_right_x": x2,
+                            "bottom_right_y": y2,
+                            "image_base64": img_base64
+                        }
+                        images_found.append(image_info)
+                        markdown_parts.append(f"![{image_info['id']}]({image_info['id']})")
+                    else:
+                        # Extraire le texte de la zone
+                        text = await self._extract_text_from_image(cropped_pil, f"{filename}_zone_{j}")
+                        if text.strip():
+                            markdown_parts.append(text)
+                
+                all_results.append({
+                    "text": "\n\n".join(markdown_parts),
+                    "images": images_found,
+                    "filename": filename
+                })
+            
+            # Combiner tous les résultats
+            combined_text = "\n\n".join([r["text"] for r in all_results if r["text"]])
+            combined_images = []
+            for r in all_results:
+                combined_images.extend(r["images"])
+            
+            return {
+                "result_id": f"ocr_{int(time.time())}",
+                "text": combined_text,
+                "html_available": len(combined_text) > 0,
+                "html": f"<div class='ocr-result'><pre>{combined_text}</pre></div>" if combined_text else None,
+                "download_url": None,
+                "multipage_info": {
+                    "total_pages": len(all_results),
+                    "total_images": len(combined_images),
+                    "processing_method": "layout_segmentation"
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Erreur segmentation layout: {str(e)}, fallback vers OCR standard")
+            return await super().process_images(task, images, background_tasks, ocr_type, ocr_box, ocr_color)
+    
+    async def _load_images_for_segmentation(self, images: List[UploadFile]):
+        """Charger les images spécialement pour la segmentation"""
+        loaded_images = []
+        
+        for upload_file in images:
+            try:
+                # Lire le contenu du fichier
+                content = await upload_file.read()
+                await upload_file.seek(0)  # Reset pour les autres usages
+                
+                filename = upload_file.filename or "unknown"
+                
+                # Vérifier si c'est un PDF
+                if filename.lower().endswith('.pdf'):
+                    # Convertir PDF en images
+                    import fitz  # PyMuPDF
+                    import io
+                    
+                    pdf_doc = fitz.open(stream=content, filetype="pdf")
+                    for page_num in range(len(pdf_doc)):
+                        page = pdf_doc[page_num]
+                        # Convertir la page en image
+                        pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # 2x zoom pour meilleure qualité
+                        img_data = pix.tobytes("png")
+                        
+                        # Convertir en PIL Image
+                        pil_image = Image.open(io.BytesIO(img_data)).convert('RGB')
+                        loaded_images.append((pil_image, f"{filename}_page_{page_num+1}"))
+                    
+                    pdf_doc.close()
+                else:
+                    # C'est une image normale
+                    import io
+                    pil_image = Image.open(io.BytesIO(content)).convert('RGB')
+                    loaded_images.append((pil_image, filename))
+                    
+            except Exception as e:
+                logger.error(f"Erreur chargement {upload_file.filename}: {str(e)}")
+                continue
+                
+        return loaded_images
+    
+    async def _extract_text_from_image(self, pil_image: Image.Image, filename: str) -> str:
+        """Extraire le texte d'une image PIL avec GOT-OCR"""
+        try:
+            import torch
+            # Utiliser le modèle GOT-OCR directement
+            inputs = self.model_manager.processor(pil_image, return_tensors="pt")
+            inputs = {k: v.to(self.model_manager.device) for k, v in inputs.items()}
+            
+            with torch.no_grad():
+                generated_ids = self.model_manager.model.generate(
+                    **inputs,
+                    do_sample=False,
+                    max_new_tokens=1024,
+                    tokenizer=self.model_manager.processor.tokenizer,
+                    stop_strings="<|im_end|>",
+                )
+            
+            result = self.model_manager.processor.decode(
+                generated_ids[0, inputs["input_ids"].shape[1]:],
+                skip_special_tokens=True
+            )
+            
+            return result.strip()
+            
+        except Exception as e:
+            logger.error(f"Erreur extraction texte pour {filename}: {str(e)}")
+            return ""
+    
     async def cleanup(self):
         """Nettoyer toutes les ressources"""
         logger.info("Nettoyage Enhanced OCR Service...")
+        
+        # Nettoyer le modèle de layout
+        if self.layout_model:
+            self.layout_model = None
+            logger.info("Modèle layout nettoyé")
         
         # Nettoyer le service de raisonnement
         if self.reasoning_service:

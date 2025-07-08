@@ -230,15 +230,15 @@ class GOTOCREnhancedApp:
                         ocr_color=ocr_color
                     )
                 else:
-                    # Standard OCR only
-                    logger.info(f"Processing standard OCR: {task}")
-                    result = await self.enhanced_ocr_service.process_images(
+                    # Standard OCR with layout segmentation
+                    logger.info(f"Processing OCR with segmentation: {task}")
+                    result = await self.enhanced_ocr_service._process_with_layout(
                         task=task,
                         images=images,
+                        background_tasks=background_tasks,
                         ocr_type=ocr_type,
                         ocr_box=ocr_box,
-                        ocr_color=ocr_color,
-                        background_tasks=background_tasks
+                        ocr_color=ocr_color
                     )
                     
                     # Add reasoning fields as None for consistent response
@@ -314,7 +314,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
+        port=8008,
         log_config=log_config,
         access_log=True
     )

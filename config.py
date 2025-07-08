@@ -42,6 +42,10 @@ class Config:
     ENABLE_REASONING: bool = True
     ENABLE_QUANTIZATION: bool = True    # Not used with Ollama
     
+    # Layout segmentation settings
+    LAYOUT_ENABLED: bool = True
+    LAYOUT_MODEL_NAME: str = "PP-DocLayout_plus-L"
+    
     # Processing settings
     SUPPORTED_TASKS: List[str] = tasks
     SUPPORTED_OCR_TYPES: List[str] = ocr_types

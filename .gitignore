@@ -20,3 +20,5 @@ utils/__pycache__/
 data/
 
 new/
+
+.env
