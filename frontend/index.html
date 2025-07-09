@@ -837,7 +837,6 @@
                                     <option value="Format Text OCR">Format Text OCR</option>
                                     <option value="Fine-grained OCR (Box)">Fine-grained OCR (Box)</option>
                                     <option value="Fine-grained OCR (Color)">Fine-grained OCR (Color)</option>
-                                    <option value="Multi-crop OCR">Multi-crop OCR</option>
                                     <option value="Multi-page OCR">Multi-page OCR</option>
                                 </select>
                             </div>
@@ -1142,7 +1141,6 @@
             const selectedTask = this.value;
 
             if (selectedTask === 'Format Text OCR' ||
-                selectedTask === 'Multi-crop OCR' ||
                 selectedTask === 'Multi-page OCR') {
                 formatFields.style.display = 'block';
             }
@@ -1309,7 +1307,6 @@
             } else {
                 // Standard OCR fields
                 if (taskSelect.value === 'Format Text OCR' ||
-                    taskSelect.value === 'Multi-crop OCR' ||
                     taskSelect.value === 'Multi-page OCR') {
                     formData.append('ocr_type', document.getElementById('ocr_type').value);
                 }

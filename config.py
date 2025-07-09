@@ -98,7 +98,6 @@ class Config:
             "- **Format Text OCR**: Structured text output (LaTeX/Markdown)\n"
             "- **Fine-grained OCR (Box)**: Extract text from specific regions using coordinates\n"
             "- **Fine-grained OCR (Color)**: Extract text from color-highlighted regions\n"
-            "- **Multi-crop OCR**: Process multiple image regions automatically\n"
             "- **Multi-page OCR**: Process multi-page documents (PDFs or image sequences)\n"
             "- **Smart Extract**: OCR + AI reasoning for structured data extraction"
         ),
@@ -113,7 +112,6 @@ class Config:
             "Required for formatted outputs. Use 'format' to enable structured text output.\n\n"
             "Applies to:\n"
             "- Format Text OCR\n"
-            "- Multi-crop OCR\n"
             "- Multi-page OCR"
         ),
         "ocr_box": (

@@ -59,7 +59,6 @@ docker run -p 8000:8000 --gpus all got-ocr-service
 | `Format Text OCR`          | `ocr_type=format`          | Structured text output     |
 | `Fine-grained OCR (Box)`   | `ocr_box=[x1,y1,x2,y2]`    | Region-specific extraction |
 | `Fine-grained OCR (Color)` | `ocr_color=red/green/blue` | Color-based extraction     |
-| `Multi-crop OCR`           | None                       | Multiple region processing |
 | `Multi-page OCR`           | Multiple images            | Document processing        |
 
 ### API Endpoints
@@ -231,19 +230,7 @@ curl -X POST "http://localhost:8000/process" \
 
 ---
 
-### **5. Multi-crop OCR**
-
-Processes multiple cropped regions of an image.
-
-```bash
-curl -X POST "http://localhost:8000/process" \
-  -F "task=Multi-crop OCR" \
-  -F "images=@multi_crop_image.jpg"
-```
-
----
-
-### **6. Multi-page OCR**
+### **5. Multi-page OCR**
 
 Processes multiple pages of a document.
 
@@ -257,7 +244,7 @@ curl -X POST "http://localhost:8000/process" \
 
 ---
 
-### **7. Sheet Music OCR**
+### **6. Sheet Music OCR**
 
 Processes sheet music and generates formatted output.
 
@@ -270,7 +257,7 @@ curl -X POST "http://localhost:8000/process" \
 
 ---
 
-### **8. Math Formula OCR**
+### **7. Math Formula OCR**
 
 Extracts mathematical formulas from an image.
 
@@ -283,7 +270,7 @@ curl -X POST "http://localhost:8000/process" \
 
 ---
 
-### **9. Table and Chart OCR**
+### **8. Table and Chart OCR**
 
 Extracts structured data from tables and charts.
 
@@ -296,7 +283,7 @@ curl -X POST "http://localhost:8000/process" \
 
 ---
 
-### **10. Batch Processing**
+### **9. Batch Processing**
 
 Process multiple images in a single request.
 
@@ -310,7 +297,7 @@ curl -X POST "http://localhost:8000/process" \
 
 ---
 
-### **11. Retrieve HTML Results**
+### **10. Retrieve HTML Results**
 
 After processing, retrieve the HTML-rendered result using the `result_id`.
 
@@ -322,7 +309,7 @@ Replace `{result_id}` with the ID returned in the response from the `/process` e
 
 ---
 
-### **12. Error Handling Examples**
+### **11. Error Handling Examples**
 
 #### Missing Image
 

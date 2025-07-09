@@ -10,7 +10,6 @@ GOT-OCR 2.0 is a **state-of-the-art OCR model** designed to handle a wide variet
 - **Plain Text OCR**
 - **Formatted Text OCR**
 - **Fine-grained OCR**
-- **Multi-crop OCR**
 - **Multi-page OCR**
 ### Beyond Text
 GOT-OCR 2.0 has also been fine-tuned to work with non-textual data, such as:
@@ -26,7 +25,6 @@ tasks = [
     "Format Text OCR",
     "Fine-grained OCR (Box)",
     "Fine-grained OCR (Color)",
-    "Multi-crop OCR",
     "Multi-page OCR",
 ]
 

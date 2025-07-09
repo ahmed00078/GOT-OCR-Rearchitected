@@ -114,15 +114,6 @@ class OCRModelManager:
                 raise ValueError("Color required for Fine-grained OCR (Color)")
             inputs = self.processor(images, return_tensors="pt", color=color)
             
-        elif task == "Multi-crop OCR":
-            inputs = self.processor(
-                images,
-                return_tensors="pt",
-                format=True,
-                crop_to_patches=True,
-                max_patches=5
-            )
-            
         elif task == "Multi-page OCR":
             inputs = self.processor(
                 images,

@@ -104,7 +104,7 @@ class OCRRequestValidator:
                 return box_validation
         
         # Validate formatted tasks
-        if task in ["Format Text OCR", "Multi-crop OCR", "Multi-page OCR"]:
+        if task in ["Format Text OCR", "Multi-page OCR"]:
             if ocr_type and ocr_type not in self.config.SUPPORTED_OCR_TYPES:
                 return ValidationResult(
                     False,
