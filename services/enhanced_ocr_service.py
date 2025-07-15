@@ -17,8 +17,9 @@ from paddleocr import LayoutDetection
 import fitz
 
 from models.ocr_model import OCRModelManager
-from services.reasoning_service import SmolLM2ReasoningService, ExtractionType, ExtractionResult
-from services.ollama_reasoning_service import OllamaReasoningService, ExtractionType, ExtractionResult
+from services.reasoning_service import SmolLM2ReasoningService
+from services.reasoning_service import ExtractionType, ExtractionResult
+# from services.ollama_reasoning_service import OllamaReasoningService, ExtractionType, ExtractionResult
 from services.ocr_service import OCRService
 from config import Config
 
@@ -50,13 +51,13 @@ class EnhancedOCRService(OCRService):
         """Initialiser le service de raisonnement de manière asynchrone"""
         if self.reasoning_enabled and self.reasoning_service:
             try:
-                logger.info("Initialisation d'Ollama...")
+                logger.info("Initialisation SmolLM2...")
                 await self.reasoning_service.load_model(
                     use_quantization=self.config.ENABLE_QUANTIZATION
                 )
-                logger.info("Ollama initialisé avec succès")
+                logger.info("SmolLM2 initialisé avec succès")
             except Exception as e:
-                logger.error(f"Erreur initialisation Ollama: {str(e)}")
+                logger.error(f"Erreur initialisation SmolLM2: {str(e)}")
                 self.reasoning_enabled = False
         
         # Initialiser le modèle de layout
@@ -95,6 +96,7 @@ class EnhancedOCRService(OCRService):
             Résultat combiné OCR + raisonnement
         """
         logger.info(f"Démarrage pipeline OCR + Reasoning : {task} → {extraction_type}")
+        logger.info(f"Service de raisonnement utilisé: {type(self.reasoning_service).__name__}")
         start_time = time.time()
         
         try:

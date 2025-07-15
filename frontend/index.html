@@ -100,31 +100,13 @@
         }
 
         header {
-            background: linear-gradient(135deg, var(--primary), var(--accent), var(--ai-color));
+            background: var(--primary);
             color: white;
-            padding: var(--space-2xl) 0;
+            padding: var(--space-xl) 0;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
+            box-shadow: var(--box-shadow-sm);
         }
 
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjEiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYtMi42ODYgNi02cy0yLjY4Ni02LTYtNi02IDIuNjg2LTYgNiAyLjY4NiA2IDYgNnptMCA2YzMuMzE0IDAgNi0yLjY4NiA2LTZzLTIuNjg2LTYtNi02LTYgMi42ODYtNiA2IDIuNjg2IDYgNiA2em0xMiAwYzMuMzE0IDAgNi0yLjY4NiA2LTZzLTIuNjg2LTYtNi02LTYgMi42ODYtNiA2IDIuNjg2IDYgNiA2ek0xOCAxOGMzLjMxNCAwIDYtMi42ODYgNi02cy0yLjY4Ni02LTYtNi02IDIuNjg2LTYgNiAyLjY4NiA2IDYgNnoiLz48L2c+PC9nPjwvc3ZnPg==');
-            opacity: 0.3;
-            z-index: 0;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
 
         .subtitle {
             font-size: 1.1rem;
@@ -133,45 +115,29 @@
             font-weight: 400;
         }
 
-        /* === NOUVEAU: Badges de fonctionnalités === */
+        /* Simplified feature badges */
         .feature-badges {
             display: flex;
             justify-content: center;
             gap: var(--space-md);
-            margin-top: var(--space-lg);
+            margin-top: var(--space-md);
             flex-wrap: wrap;
         }
 
         .feature-badge {
             display: inline-flex;
             align-items: center;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.875rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--border-radius);
+            font-size: 0.85rem;
             font-weight: 500;
-            backdrop-filter: blur(10px);
         }
 
         .feature-badge .material-icons-round {
-            margin-right: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .ai-badge {
-            background: linear-gradient(135deg, var(--ai-color), var(--ai-color-light));
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from {
-                box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
-            }
-
-            to {
-                box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
-            }
+            margin-right: 0.4rem;
+            font-size: 1.1rem;
         }
 
         main {
@@ -230,18 +196,18 @@
             color: var(--ai-color);
         }
 
-        /* === NOUVEAU: Toggle de mode === */
+        /* Simplified mode toggle */
         .mode-toggle {
             display: flex;
             background: var(--light-gray);
-            border-radius: var(--border-radius-lg);
-            padding: 0.25rem;
-            margin-bottom: var(--space-lg);
+            border-radius: var(--border-radius);
+            padding: 0.2rem;
+            margin-bottom: var(--space-md);
         }
 
         .mode-option {
             flex: 1;
-            padding: var(--space-md);
+            padding: var(--space-sm) var(--space-md);
             text-align: center;
             background: transparent;
             border: none;
@@ -252,7 +218,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: var(--space-sm);
+            gap: var(--space-xs);
         }
 
         .mode-option:hover {
@@ -262,7 +228,6 @@
         .mode-option.active {
             background: var(--primary);
             color: white;
-            box-shadow: var(--box-shadow-sm);
         }
 
         .mode-option.ai-mode.active {
@@ -326,13 +291,13 @@
             min-height: 80px;
         }
 
-        /* === NOUVEAU: Champs d'extraction AI === */
+        /* Simplified AI extraction fields */
         .ai-extraction-fields {
             display: none;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.05));
-            border: 2px solid rgba(245, 158, 11, 0.2);
-            border-radius: var(--border-radius-lg);
-            padding: var(--space-lg);
+            background: rgba(245, 158, 11, 0.05);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--border-radius);
+            padding: var(--space-md);
             margin-top: var(--space-md);
         }
 
@@ -346,11 +311,12 @@
             margin-bottom: var(--space-md);
             color: var(--ai-color);
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .ai-field-header .material-icons-round {
             margin-right: var(--space-sm);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
 
         /* Upload zone */
@@ -440,7 +406,7 @@
             color: var(--secondary);
         }
 
-        /* Buttons */
+        /* Simplified buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -458,18 +424,12 @@
 
         .btn:hover {
             opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .btn:active {
-            transform: translateY(1px);
         }
 
         .btn:disabled {
             background-color: var(--mid-gray);
             color: var(--dark-gray);
             cursor: not-allowed;
-            transform: none;
             opacity: 0.7;
         }
 
@@ -488,35 +448,12 @@
         }
 
         .btn-ai {
-            background: linear-gradient(135deg, var(--ai-color), var(--ai-color-light));
+            background-color: var(--ai-color);
             color: white;
-            position: relative;
-            overflow: hidden;
         }
 
         .btn-ai:hover {
-            background: linear-gradient(135deg, var(--ai-color-light), var(--ai-color));
-        }
-
-        .btn-ai::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%) translateY(-100%) rotate(45deg);
-            }
-
-            100% {
-                transform: translateX(100%) translateY(100%) rotate(45deg);
-            }
+            background-color: var(--ai-color-light);
         }
 
         .btn-block {
@@ -524,18 +461,18 @@
             width: 100%;
         }
 
-        /* Conditional fields */
+        /* Simplified conditional fields */
         .conditional-fields {
             margin-top: var(--space-md);
-            padding: var(--space-lg);
+            padding: var(--space-md);
             background-color: var(--light-gray);
             border-radius: var(--border-radius);
-            border-left: 4px solid var(--primary);
+            border-left: 3px solid var(--primary);
         }
 
         .ai-mode .conditional-fields {
             border-left-color: var(--ai-color);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.05));
+            background: rgba(245, 158, 11, 0.05);
         }
 
         /* Alerts */
@@ -576,9 +513,9 @@
             border-left: 4px solid var(--info);
         }
 
-        /* === NOUVEAU: Alertes AI spécifiques === */
+        /* Simplified AI alerts */
         .alert-ai {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+            background: rgba(245, 158, 11, 0.1);
             color: var(--ai-color);
             border-left: 4px solid var(--ai-color);
         }
@@ -611,13 +548,13 @@
             display: none;
         }
 
-        /* === NOUVEAU: Section résultats AI === */
+        /* Simplified AI results */
         .ai-results {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.05));
-            border: 2px solid rgba(245, 158, 11, 0.2);
-            border-radius: var(--border-radius-lg);
-            padding: var(--space-lg);
-            margin-bottom: var(--space-lg);
+            background: rgba(245, 158, 11, 0.05);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--border-radius);
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
         }
 
         .extraction-summary {
@@ -659,7 +596,7 @@
 
         .confidence-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--error), var(--warning), var(--success));
+            background: var(--success);
             transition: width 1s ease;
         }
 
@@ -780,7 +717,7 @@
 
 <body>
     <header>
-        <div class="header-content container">
+        <div class="container">
             <h1>GOT-OCR 2.0 + SmolLM2</h1>
             <p class="subtitle">Advanced OCR Service with AI-Powered Information Extraction</p>
             <div class="feature-badges">
@@ -792,13 +729,9 @@
                     <span class="material-icons-round">picture_as_pdf</span>
                     PDF Support
                 </div>
-                <div class="feature-badge ai-badge">
+                <div class="feature-badge">
                     <span class="material-icons-round">psychology</span>
                     AI Reasoning
-                </div>
-                <div class="feature-badge">
-                    <span class="material-icons-round">analytics</span>
-                    Structured Data
                 </div>
             </div>
         </div>
@@ -816,7 +749,7 @@
                         </h2>
                     </div>
                     <div class="card-body">
-                        <!-- === NOUVEAU: Toggle de mode === -->
+                        <!-- Simplified mode toggle -->
                         <div class="mode-toggle">
                             <button class="mode-option active" data-mode="standard">
                                 <span class="material-icons-round">document_scanner</span>
@@ -824,7 +757,7 @@
                             </button>
                             <button class="mode-option ai-mode" data-mode="smart">
                                 <span class="material-icons-round">psychology</span>
-                                🧠 Smart Extract
+                                Smart Extract
                             </button>
                         </div>
 
@@ -841,7 +774,7 @@
                                 </select>
                             </div>
 
-                            <!-- === NOUVEAU: Champs d'extraction AI === -->
+                            <!-- Simplified AI extraction fields -->
                             <div class="ai-extraction-fields" id="ai-extraction-fields">
                                 <div class="ai-field-header">
                                     <span class="material-icons-round">psychology</span>
@@ -852,11 +785,11 @@
                                     <label for="extraction_type">Extraction Type</label>
                                     <select id="extraction_type" name="extraction_type">
                                         <option value="" disabled selected>Select extraction type</option>
-                                        <option value="carbon_footprint">🌱 Carbon Footprint Data</option>
-                                        <option value="technical_specs">⚙️ Technical Specifications</option>
-                                        <option value="financial_data">💰 Financial Information</option>
-                                        <option value="contact_info">📞 Contact Details</option>
-                                        <option value="custom">🎯 Custom Extraction</option>
+                                        <option value="carbon_footprint">Carbon Footprint Data</option>
+                                        <option value="technical_specs">Technical Specifications</option>
+                                        <option value="financial_data">Financial Information</option>
+                                        <option value="contact_info">Contact Details</option>
+                                        <option value="custom">Custom Extraction</option>
                                     </select>
                                 </div>
 
@@ -1051,7 +984,7 @@
         // API Configuration
         const API_URL = 'http://localhost:8008';
         const STANDARD_ENDPOINT = `${API_URL}/process`;
-        const SMART_ENDPOINT = `${API_URL}/smart-extract`;
+        const SMART_ENDPOINT = `${API_URL}/process`;
 
         // DOM Elements
         const modeToggle = document.querySelectorAll('.mode-option');
@@ -1121,7 +1054,7 @@
         function updateSubmitButtonForAI() {
             submitBtn.className = 'btn btn-ai btn-block';
             submitBtn.querySelector('.btn-icon').textContent = 'psychology';
-            submitBtn.querySelector('span:last-child').textContent = '🧠 Smart Extract';
+            submitBtn.querySelector('span:last-child').textContent = 'Smart Extract';
         }
 
         function updateSubmitButtonForStandard() {
@@ -1291,8 +1224,8 @@
                     return;
                 }
 
-                formData.append('extraction_type', extractionTypeSelect.value);
-
+                formData.append('enable_reasoning', 'true');
+                
                 if (extractionTypeSelect.value === 'custom') {
                     const instructions = customInstructionsTextarea.value.trim();
                     if (!instructions) {
@@ -1300,7 +1233,19 @@
                         return;
                     }
                     formData.append('custom_instructions', instructions);
+                } else {
+                    // Utiliser les instructions prédéfinies selon le type
+                    const predefinedInstructions = {
+                        'carbon_footprint': 'Extract carbon footprint data, environmental certifications, emissions data, and sustainability metrics',
+                        'technical_specs': 'Extract technical specifications, product details, dimensions, materials, and performance metrics',
+                        'financial_data': 'Extract financial information including prices, costs, revenues, budgets, and monetary values',
+                        'contact_info': 'Extract contact details including names, emails, phone numbers, addresses, and company information'
+                    };
+                    formData.append('custom_instructions', predefinedInstructions[extractionTypeSelect.value] || 'Extract relevant information from the document');
                 }
+                
+                // Toujours envoyer "custom" comme extraction_type au backend
+                formData.append('extraction_type', 'custom');
 
                 // Default to format for smart extraction
                 formData.append('ocr_type', 'format');
@@ -1334,11 +1279,11 @@
             submitBtn.disabled = true;
             const originalContent = submitBtn.innerHTML;
             const spinnerClass = currentMode === 'smart' ? 'spinner ai-spinner' : 'spinner';
-            const loadingText = currentMode === 'smart' ? '🧠 AI Processing...' : 'Processing...';
+            const loadingText = currentMode === 'smart' ? 'AI Processing...' : 'Processing...';
             submitBtn.innerHTML = `<div class="${spinnerClass}"></div> ${loadingText}`;
 
             try {
-                const endpoint = currentMode === 'smart' ? SMART_ENDPOINT : STANDARD_ENDPOINT;
+                const endpoint = STANDARD_ENDPOINT; // Toujours utiliser /process
                 const controller = new AbortController();
                 const timeoutDuration = currentMode === 'smart' ? 180000 : 300000; // 3 min for smart, 5 min for standard
                 const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
@@ -1400,7 +1345,7 @@
                 structuredResult.innerHTML = `<pre><code>${JSON.stringify(extractionResult.extracted_data, null, 2)}</code></pre>`;
 
                 // Show AI-specific alert
-                showAlert(`🧠 AI extraction completed with ${(extractionResult.confidence * 100).toFixed(1)}% confidence`, 'ai');
+                showAlert(`AI extraction completed with ${(extractionResult.confidence * 100).toFixed(1)}% confidence`, 'ai');
             } else {
                 aiResults.style.display = 'none';
                 document.querySelector('.tab[data-tab="structured"]').style.display = 'none';
@@ -1470,7 +1415,7 @@
 
             setTimeout(() => {
                 alert.remove();
-            }, type === 'ai' ? 8000 : 7000);
+            }, 5000);
         }
 
         // === NOUVEAU: Copy and download functions for structured data ===

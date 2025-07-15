@@ -256,6 +256,7 @@ class GOTOCREnhancedApp:
                         }
                     })
                 
+                logger.info(f"Résultat final à envoyer: {list(result.keys())}")
                 return EnhancedOCRResponse(**result)
                 
             except Exception as e:
