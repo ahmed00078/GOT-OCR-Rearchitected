@@ -38,11 +38,11 @@ class ExtractionResult:
 
 
 class SmolLM2ReasoningService:
-    """Service de raisonnement basé sur SmolLM2:1.7B optimisé"""
+    """Service de raisonnement basé sur les modèles Hugging Face"""
     
     def __init__(self, config):
         self.config = config
-        self.model_name = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
+        self.model_name = config.REASONING_MODEL_NAME  # ← Model from config
         self.model = None
         self.tokenizer = None
         self.device = None
@@ -53,8 +53,8 @@ class SmolLM2ReasoningService:
         
         # Configuration d'optimisation
         self.generation_config = GenerationConfig(
-            max_new_tokens=512,
-            temperature=0.1,  # Très déterministe pour l'extraction
+            max_new_tokens=config.REASONING_MAX_TOKENS,
+            temperature=config.REASONING_TEMPERATURE,
             top_p=0.9,
             do_sample=True,
             repetition_penalty=1.1,
@@ -62,9 +62,9 @@ class SmolLM2ReasoningService:
         )
     
     async def load_model(self, use_quantization: bool = True):
-        """Charger SmolLM2 avec optimisations"""
+        """Charger le modèle de raisonnement avec optimisations"""
         try:
-            logger.info(f"Chargement de SmolLM2: {self.model_name}")
+            logger.info(f"Chargement du modèle: {self.model_name}")
             
             # Device selection
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -108,7 +108,7 @@ class SmolLM2ReasoningService:
             self.model.eval()
             
             self._is_loaded = True
-            logger.info("SmolLM2 chargé avec succès")
+            logger.info(f"Modèle {self.model_name} chargé avec succès")
             
             # Afficher les stats mémoire
             if torch.cuda.is_available():
@@ -117,8 +117,8 @@ class SmolLM2ReasoningService:
                 logger.info(f"Mémoire GPU: {allocated:.2f}GB allouée, {cached:.2f}GB réservée")
                 
         except Exception as e:
-            logger.error(f"Erreur chargement SmolLM2: {str(e)}")
-            raise RuntimeError(f"Impossible de charger SmolLM2: {str(e)}")
+            logger.error(f"Erreur chargement {self.model_name}: {str(e)}")
+            raise RuntimeError(f"Impossible de charger {self.model_name}: {str(e)}")
     
     def _init_prompt_templates(self) -> Dict[str, str]:
         """Initialiser le template de prompt custom optimisé"""
@@ -164,7 +164,7 @@ class SmolLM2ReasoningService:
             ExtractionResult avec données structurées
         """
         if not self._is_loaded:
-            raise RuntimeError("SmolLM2 n'est pas chargé")
+            raise RuntimeError(f"Modèle {self.model_name} n'est pas chargé")
         
         import time
         start_time = time.time()
@@ -230,7 +230,7 @@ class SmolLM2ReasoningService:
             
         except Exception as e:
             processing_time = time.time() - start_time
-            logger.error(f"Erreur extraction SmolLM2: {str(e)}")
+            logger.error(f"Erreur extraction {self.model_name}: {str(e)}")
             
             # Retourner un résultat d'erreur
             return ExtractionResult(
@@ -273,7 +273,7 @@ class SmolLM2ReasoningService:
                     confidence = self._calculate_confidence(parsed_data)
                     return parsed_data, confidence
                 except json.JSONDecodeError:
-                    logger.warning("JSON invalide dans la réponse SmolLM2")
+                    logger.warning(f"JSON invalide dans la réponse {self.model_name}")
             
             # Fallback: essayer de parser directement
             try:
@@ -337,7 +337,7 @@ class SmolLM2ReasoningService:
     
     async def cleanup(self):
         """Nettoyer les ressources"""
-        logger.info("Nettoyage des ressources SmolLM2...")
+        logger.info(f"Nettoyage des ressources {self.model_name}...")
         
         if self.model is not None:
             del self.model
@@ -351,4 +351,4 @@ class SmolLM2ReasoningService:
             torch.cuda.empty_cache()
             
         self._is_loaded = False
-        logger.info("Nettoyage SmolLM2 terminé")
+        logger.info(f"Nettoyage {self.model_name} terminé")

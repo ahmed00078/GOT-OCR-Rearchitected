@@ -29,8 +29,8 @@ class Config:
     MAX_NEW_TOKENS: int = 4096
     STOP_STRINGS: str = "<|im_end|>"
     
-    # === NOUVEAU: AI Model SETTINGS ===
-    REASONING_MODEL_NAME: str = "HuggingFaceTB/SmolLM2-1.7B-Instruct"  # qwen3:8b for Ollama model name
+    # === AI MODEL SETTINGS - CHANGE MODEL HERE ===
+    REASONING_MODEL_NAME: str = "Qwen/Qwen2.5-7B-Instruct"  # ← Change model here
     REASONING_MAX_TOKENS: int = 4096
     REASONING_TEMPERATURE: float = 0.1
     REASONING_BATCH_SIZE: int = 3 

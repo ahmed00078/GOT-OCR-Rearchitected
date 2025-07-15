@@ -45,19 +45,19 @@ class EnhancedOCRService(OCRService):
         self.layout_enabled = getattr(config, 'LAYOUT_ENABLED', True)
         
         if self.reasoning_enabled:
-            self.reasoning_service = SmolLM2ReasoningService(config)
+            self.reasoning_service = SmolLM2ReasoningService(config)  # Uses config.REASONING_MODEL_NAME
     
     async def initialize_reasoning(self):
         """Initialiser le service de raisonnement de manière asynchrone"""
         if self.reasoning_enabled and self.reasoning_service:
             try:
-                logger.info("Initialisation SmolLM2...")
+                logger.info(f"Initialisation modèle raisonnement: {self.config.REASONING_MODEL_NAME}")
                 await self.reasoning_service.load_model(
                     use_quantization=self.config.ENABLE_QUANTIZATION
                 )
-                logger.info("SmolLM2 initialisé avec succès")
+                logger.info("Modèle de raisonnement initialisé avec succès")
             except Exception as e:
-                logger.error(f"Erreur initialisation SmolLM2: {str(e)}")
+                logger.error(f"Erreur initialisation modèle: {str(e)}")
                 self.reasoning_enabled = False
         
         # Initialiser le modèle de layout
@@ -127,14 +127,14 @@ class EnhancedOCRService(OCRService):
                 return ocr_result
             
             if not self.reasoning_service.is_loaded:
-                logger.warning("Ollama non chargé, tentative d'initialisation...")
+                logger.warning("Modèle de raisonnement non chargé, tentative d'initialisation...")
                 await self.initialize_reasoning()
                 
                 if not self.reasoning_service.is_loaded:
-                    logger.error("Impossible de charger Ollama")
+                    logger.error("Impossible de charger le modèle de raisonnement")
                     ocr_result.update({
                         "reasoning_enabled": False,
-                        "extraction_error": "Ollama loading failed",
+                        "extraction_error": "Model loading failed",
                         "total_processing_time": time.time() - start_time
                     })
                     return ocr_result
@@ -147,7 +147,7 @@ class EnhancedOCRService(OCRService):
             if not self.config.validate_extraction_type(extraction_type):
                 raise ValueError(f"Type d'extraction invalide: {extraction_type}")
             
-            # Extraction d'informations avec Ollama
+            # Extraction d'informations avec le modèle de raisonnement
             extraction_result = await self.reasoning_service.extract_information(
                 text=ocr_result["text"],
                 extraction_type=ExtractionType(extraction_type),
@@ -224,14 +224,14 @@ class EnhancedOCRService(OCRService):
     ) -> List[Dict[str, Any]]:
         """
         Traitement par batch pour plusieurs documents
-        Optimisé pour Ollama
+        Optimisé pour les modèles de raisonnement
         """
         if len(files_batch) != len(extraction_configs):
             raise ValueError("Le nombre de batches doit correspondre au nombre de configs")
         
         logger.info(f"Traitement batch: {len(files_batch)} documents")
         
-        # Traitement séquentiel pour éviter la surcharge avec Ollama
+        # Traitement séquentiel pour éviter la surcharge
         results = []
         
         for i, (files, config) in enumerate(zip(files_batch, extraction_configs)):
