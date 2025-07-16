@@ -33,11 +33,7 @@ class Config:
     REASONING_MODEL_NAME: str = "Qwen/Qwen2.5-7B-Instruct"  # ← Change model here
     REASONING_MAX_TOKENS: int = 4096
     REASONING_TEMPERATURE: float = 0.1
-    REASONING_BATCH_SIZE: int = 3 
-    
-    # Ollama settings
-    OLLAMA_URL: str = "http://localhost:11434"
-    
+
     # Enable/disable reasoning features
     ENABLE_REASONING: bool = True
     ENABLE_QUANTIZATION: bool = True    # Not used with Ollama
@@ -68,7 +64,6 @@ class Config:
     
     PDF_CONVERSION_DPI: int = 300
     PDF_MAX_PAGES: int = 50
-    PDF_OUTPUT_FORMAT: str = "PNG"
     PDF_MEMORY_LIMIT_MB: int = 500
     
     # Multi-page specific settings
@@ -83,13 +78,7 @@ class Config:
     # Timeout settings
     UVICORN_TIMEOUT: int = int(os.getenv("UVICORN_TIMEOUT", "600"))
     PDF_CONVERSION_TIMEOUT: int = 300
-    
-    # Environment optimization
-    OMP_NUM_THREADS: int = int(os.getenv("OMP_NUM_THREADS", "4"))
-    MKL_NUM_THREADS: int = int(os.getenv("MKL_NUM_THREADS", "4"))
-    NUMEXPR_NUM_THREADS: int = int(os.getenv("NUMEXPR_NUM_THREADS", "4"))
-    TOKENIZERS_PARALLELISM: bool = os.getenv("TOKENIZERS_PARALLELISM", "true").lower() == "true"
-    
+        
     # === NOUVELLES DESCRIPTIONS POUR L'API ===
     TASK_DESCRIPTIONS: Dict[str, str] = {
         "task": (
@@ -155,19 +144,7 @@ class Config:
         """Check if reasoning features are enabled"""
         return self.ENABLE_REASONING
     
-    # === NOUVELLES MÉTHODES UTILITAIRES ===
-    
-    def get_reasoning_settings(self) -> Dict[str, Any]:
-        """Get all reasoning-related settings"""
-        return {
-            "model_name": self.REASONING_MODEL_NAME,
-            "max_tokens": self.REASONING_MAX_TOKENS,
-            "temperature": self.REASONING_TEMPERATURE,
-            "batch_size": self.REASONING_BATCH_SIZE,
-            "enable_quantization": self.ENABLE_QUANTIZATION,
-            "config": self.REASONING_CONFIG
-        }
-    
+    # === NOUVELLES MÉTHODES UTILITAIRES ===    
     def validate_extraction_type(self, extraction_type: str) -> bool:
         """Validate extraction type"""
         return extraction_type in self.SUPPORTED_EXTRACTION_TYPES

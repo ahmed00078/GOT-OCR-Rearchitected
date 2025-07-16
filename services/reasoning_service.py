@@ -208,7 +208,7 @@ class SmolLM2ReasoningService:
                 skip_special_tokens=True
             ).strip()
 
-            print(f"Réponse brute du modèle:\n{response}\n")
+            print(f"Réponse brute du modèle: \n======================== \n{response}\n========================\n")
             
             # Parser la réponse JSON
             extracted_data, confidence = self._parse_response(response)
