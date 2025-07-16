@@ -782,21 +782,14 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="extraction_type">Extraction Type</label>
-                                    <select id="extraction_type" name="extraction_type">
-                                        <option value="" disabled selected>Select extraction type</option>
-                                        <option value="carbon_footprint">Carbon Footprint Data</option>
-                                        <option value="technical_specs">Technical Specifications</option>
-                                        <option value="financial_data">Financial Information</option>
-                                        <option value="contact_info">Contact Details</option>
-                                        <option value="custom">Custom Extraction</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group" id="custom-instructions-group" style="display: none;">
-                                    <label for="custom_instructions">Custom Instructions</label>
+                                    <label for="custom_instructions">AI Extraction Instructions</label>
                                     <textarea id="custom_instructions" name="custom_instructions"
-                                        placeholder="Describe what specific information you want to extract..."></textarea>
+                                        placeholder="Describe what specific information you want to extract...
+Examples:
+- Find contact information including emails, phones, and addresses
+- Extract carbon footprint data and environmental certifications
+- Get technical specifications, dimensions, and performance metrics"
+                                        required></textarea>
                                 </div>
                             </div>
 
@@ -990,8 +983,6 @@
         const modeToggle = document.querySelectorAll('.mode-option');
         const form = document.getElementById('ocr-form');
         const taskSelect = document.getElementById('task');
-        const extractionTypeSelect = document.getElementById('extraction_type');
-        const customInstructionsGroup = document.getElementById('custom-instructions-group');
         const customInstructionsTextarea = document.getElementById('custom_instructions');
         const aiExtractionFields = document.getElementById('ai-extraction-fields');
         const formatFields = document.getElementById('format-fields');
@@ -1039,17 +1030,7 @@
             });
         });
 
-        // === NOUVEAU: Extraction type change handler ===
-        extractionTypeSelect.addEventListener('change', function () {
-            if (this.value === 'custom') {
-                customInstructionsGroup.style.display = 'block';
-                customInstructionsTextarea.required = true;
-            } else {
-                customInstructionsGroup.style.display = 'none';
-                customInstructionsTextarea.required = false;
-            }
-            updateSubmitButton();
-        });
+        // Custom instructions are always required when AI mode is enabled
 
         function updateSubmitButtonForAI() {
             submitBtn.className = 'btn btn-ai btn-block';
@@ -1198,10 +1179,9 @@
         function updateSubmitButton() {
             const hasFiles = selectedFiles.length > 0;
             const hasTask = taskSelect.value;
-            const hasExtractionType = currentMode === 'standard' || extractionTypeSelect.value;
-            const hasCustomInstructions = extractionTypeSelect.value !== 'custom' || customInstructionsTextarea.value.trim();
+            const hasCustomInstructions = currentMode === 'standard' || customInstructionsTextarea.value.trim();
 
-            submitBtn.disabled = !(hasFiles && hasTask && hasExtractionType && hasCustomInstructions);
+            submitBtn.disabled = !(hasFiles && hasTask && hasCustomInstructions);
         }
 
         // === NOUVEAU: Form submission with mode detection ===
@@ -1219,35 +1199,15 @@
 
             // Add mode-specific fields
             if (currentMode === 'smart') {
-                if (!extractionTypeSelect.value) {
-                    showAlert('Please select an extraction type for Smart Extract', 'warning');
+                const instructions = customInstructionsTextarea.value.trim();
+                if (!instructions) {
+                    showAlert('Please provide AI extraction instructions', 'warning');
                     return;
                 }
 
                 formData.append('enable_reasoning', 'true');
-                
-                if (extractionTypeSelect.value === 'custom') {
-                    const instructions = customInstructionsTextarea.value.trim();
-                    if (!instructions) {
-                        showAlert('Please provide custom instructions', 'warning');
-                        return;
-                    }
-                    formData.append('custom_instructions', instructions);
-                } else {
-                    // Utiliser les instructions prédéfinies selon le type
-                    const predefinedInstructions = {
-                        'carbon_footprint': 'Extract carbon footprint data, environmental certifications, emissions data, and sustainability metrics',
-                        'technical_specs': 'Extract technical specifications, product details, dimensions, materials, and performance metrics',
-                        'financial_data': 'Extract financial information including prices, costs, revenues, budgets, and monetary values',
-                        'contact_info': 'Extract contact details including names, emails, phone numbers, addresses, and company information'
-                    };
-                    formData.append('custom_instructions', predefinedInstructions[extractionTypeSelect.value] || 'Extract relevant information from the document');
-                }
-                
-                // Toujours envoyer "custom" comme extraction_type au backend
+                formData.append('custom_instructions', instructions);
                 formData.append('extraction_type', 'custom');
-
-                // Default to format for smart extraction
                 formData.append('ocr_type', 'format');
             } else {
                 // Standard OCR fields

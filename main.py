@@ -212,7 +212,7 @@ class GOTOCREnhancedApp:
                     raise HTTPException(400, detail="AI reasoning is disabled in configuration")
                 
                 if not custom_instructions or len(custom_instructions.strip()) < 10:
-                    raise HTTPException(400, detail="Custom instructions required (minimum 10 characters) when reasoning is enabled")
+                    raise HTTPException(400, detail="AI extraction instructions required (minimum 10 characters) when reasoning is enabled")
             
             # Process request
             try:

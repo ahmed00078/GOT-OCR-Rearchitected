@@ -94,7 +94,9 @@ class Config:
             "Provide specific AI extraction instructions:\n\n"
             "Examples:\n"
             "- 'Extract all product names, prices, and warranty information'\n"
+            "- 'Find contact information including emails, phones, and addresses'\n"
             "- 'Extract carbon footprint data and environmental certifications'\n"
+            "- 'Get technical specifications, dimensions, and performance metrics'\n"
             "Be specific about what data you want and the desired output format."
         ),
         "ocr_type": (
