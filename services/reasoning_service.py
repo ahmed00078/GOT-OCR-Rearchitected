@@ -124,24 +124,34 @@ class SmolLM2ReasoningService:
         """Initialiser le template de prompt custom optimisé"""
         return {
             ExtractionType.CUSTOM.value: """<|im_start|>system
-                You are an intelligent data extraction assistant. Analyze the text according to the instructions.
-                Respond ONLY with valid JSON.
-                <|im_end|>
-                <|im_start|>user
-                Text to analyze:
-                {text}
-                
-                Extraction instructions:
-                {custom_instructions}
+You are a precise data extraction assistant. Your task is to analyze the provided text and extract specific information according to the given instructions.
 
-                RULES:
-                    - Use null if information is not available
-                    - Return ONLY valid JSON, no markdown formatting
-                    - Do not include any additional text or explanations
-                
-                JSON Response:
-                <|im_end|>
-                <|im_start|>assistant"""
+CRITICAL REQUIREMENTS:
+1. You MUST respond with ONLY valid JSON - no other text
+2. If information is not found, use null as the value
+3. Do not add explanations, comments, or markdown formatting
+4. Follow the extraction instructions exactly
+
+Your response must be a valid JSON object with the extracted information.
+<|im_end|>
+<|im_start|>user
+Document text:
+{text}
+
+Extraction task:
+{custom_instructions}
+
+IMPORTANT: Respond with ONLY a JSON object containing the extracted information. Example format:
+{{
+    "field1": "extracted_value",
+    "field2": "another_value",
+    "field3": null
+}}
+
+JSON Response:
+<|im_end|>
+<|im_start|>assistant
+"""
         }
     
     async def extract_information(
