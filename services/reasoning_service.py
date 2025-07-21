@@ -124,34 +124,24 @@ class SmolLM2ReasoningService:
         """Initialiser le template de prompt custom optimisé"""
         return {
             ExtractionType.CUSTOM.value: """<|im_start|>system
-You are a precise data extraction assistant. Your task is to analyze the provided text and extract specific information according to the given instructions.
+                You are an intelligent data extraction assistant. Analyze the text according to the instructions.
+                Respond ONLY with valid JSON.
+                <|im_end|>
+                <|im_start|>user
+                Text to analyze:
+                {text}
+                
+                Extraction instructions:
+                {custom_instructions}
 
-CRITICAL REQUIREMENTS:
-1. You MUST respond with ONLY valid JSON - no other text
-2. If information is not found, use null as the value
-3. Do not add explanations, comments, or markdown formatting
-4. Follow the extraction instructions exactly
-
-Your response must be a valid JSON object with the extracted information.
-<|im_end|>
-<|im_start|>user
-Document text:
-{text}
-
-Extraction task:
-{custom_instructions}
-
-IMPORTANT: Respond with ONLY a JSON object containing the extracted information. Example format:
-{{
-    "field1": "extracted_value",
-    "field2": "another_value",
-    "field3": null
-}}
-
-JSON Response:
-<|im_end|>
-<|im_start|>assistant
-"""
+                RULES:
+                    - Use null if information is not available
+                    - Return ONLY valid JSON, no markdown formatting
+                    - Do not include any additional text or explanations
+                
+                JSON Response:
+                <|im_end|>
+                <|im_start|>assistant"""
         }
     
     async def extract_information(
@@ -280,7 +270,7 @@ JSON Response:
                 json_str = json_match.group()
                 try:
                     parsed_data = json.loads(json_str)
-                    confidence = self._calculate_confidence(parsed_data)
+                    confidence = 1.0
                     return parsed_data, confidence
                 except json.JSONDecodeError:
                     logger.warning(f"JSON invalide dans la réponse {self.model_name}")
@@ -299,27 +289,6 @@ JSON Response:
             logger.error(f"Erreur parsing réponse: {str(e)}")
             return {"error": "Parsing failed", "raw_response": response}, 0.0
     
-    def _calculate_confidence(self, data: Dict[str, Any]) -> float:
-        """Calculer un score de confiance basé sur la complétude des données"""
-        if not data or "error" in data:
-            return 0.0
-        
-        # Compter les champs non vides
-        filled_fields = 0
-        total_fields = 0
-        
-        for key, value in data.items():
-            total_fields += 1
-            if value and value != "" and value != [] and value != {}:
-                filled_fields += 1
-        
-        base_confidence = filled_fields / max(total_fields, 1) if total_fields > 0 else 0
-        
-        # Bonus pour les champs spécifiques importants
-        important_fields = ["product_name", "model", "carbon_emissions", "price"]
-        bonus = sum(0.1 for field in important_fields if field in data and data[field])
-        
-        return min(base_confidence + bonus, 1.0)
     
     def _find_raw_matches(self, text: str, extracted_data: Dict[str, Any]) -> List[str]:
         """Trouver les correspondances brutes dans le texte original"""

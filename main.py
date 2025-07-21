@@ -247,8 +247,7 @@ class GOTOCREnhancedApp:
                         "extraction_type": None,
                         "extraction_result": None,
                         "performance_metrics": {
-                            "total_time": result.get("processing_time", 0),
-                            "text_length": len(result.get("text", ""))
+                            "total_time": result.get("processing_time", 0)
                         },
                         "models_used": {
                             "ocr_model": self.model_manager.config.MODEL_NAME,

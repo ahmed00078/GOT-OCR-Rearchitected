@@ -178,9 +178,7 @@ class EnhancedOCRService(OCRService):
                 "performance_metrics": {
                     "ocr_time": ocr_time,
                     "reasoning_time": reasoning_time,
-                    "total_time": total_time,
-                    "text_length": len(ocr_result["text"]),
-                    "confidence_score": extraction_result.confidence
+                    "total_time": total_time
                 },
                 
                 # Métadonnées du modèle
@@ -270,18 +268,6 @@ class EnhancedOCRService(OCRService):
         logger.info(f"Batch terminé: {len(results)} résultats")
         return results
 
-    def _get_quality_grade(self, score: float) -> str:
-        """Convertir le score en note qualitative"""
-        if score >= 0.9:
-            return "Excellent"
-        elif score >= 0.7:
-            return "Bon"
-        elif score >= 0.5:
-            return "Correct"
-        elif score >= 0.3:
-            return "Faible"
-        else:
-            return "Très faible"
     
     async def get_supported_extractions(self) -> Dict[str, Dict[str, Any]]:
         """Obtenir la liste des types d'extraction supportés avec descriptions"""

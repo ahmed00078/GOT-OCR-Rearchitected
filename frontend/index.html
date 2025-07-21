@@ -870,29 +870,9 @@ Examples:
                     <div class="card-body">
                         <!-- === NOUVEAU: Résultats AI === -->
                         <div class="ai-results" id="ai-results" style="display: none;">
-                            <h4>🧠 AI Extraction Results</h4>
-
-                            <div class="extraction-summary">
-                                <div class="summary-item">
-                                    <span class="summary-value" id="confidence-score">-</span>
-                                    <span class="summary-label">Confidence</span>
-                                    <div class="confidence-bar">
-                                        <div class="confidence-fill" id="confidence-fill" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                                <div class="summary-item">
-                                    <span class="summary-value" id="fields-extracted">-</span>
-                                    <span class="summary-label">Fields Found</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span class="summary-value" id="processing-time">-</span>
-                                    <span class="summary-label">Processing Time</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span class="summary-value" id="quality-grade">-</span>
-                                    <span class="summary-label">Quality Grade</span>
-                                </div>
-                            </div>
+                            <small style="color: #666; margin-bottom: 4px; display: block;">
+                                Processing Time: <span id="processing-time" style="font-weight: 500;">-</span>
+                            </small>
                         </div>
 
                         <div class="tabs">
@@ -1296,16 +1276,13 @@ Examples:
                 // Update AI summary
                 const extractionResult = result.extraction_result;
 
-                document.getElementById('confidence-score').textContent = (extractionResult.confidence * 100).toFixed(1) + '%';
-                document.getElementById('confidence-fill').style.width = (extractionResult.confidence * 100) + '%';
-                document.getElementById('fields-extracted').textContent = Object.keys(extractionResult.extracted_data || {}).length;
                 document.getElementById('processing-time').textContent = (extractionResult.processing_time || 0).toFixed(1) + 's';
 
                 // Display structured data
                 structuredResult.innerHTML = `<pre><code>${JSON.stringify(extractionResult.extracted_data, null, 2)}</code></pre>`;
 
                 // Show AI-specific alert
-                showAlert(`AI extraction completed with ${(extractionResult.confidence * 100).toFixed(1)}% confidence`, 'ai');
+                showAlert(`AI extraction completed successfully`, 'ai');
             } else {
                 aiResults.style.display = 'none';
                 document.querySelector('.tab[data-tab="structured"]').style.display = 'none';
