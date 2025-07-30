@@ -17,8 +17,10 @@ server/__pycache__/
 
 utils/__pycache__/
 
-data/
+/data/
 
 new/
 
 .env
+
+# application
