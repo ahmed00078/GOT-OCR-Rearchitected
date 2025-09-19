@@ -30,7 +30,7 @@ class Config:
     STOP_STRINGS: str = "<|im_end|>"
     
     # === AI MODEL SETTINGS - CHANGE MODEL HERE ===
-    REASONING_MODEL_NAME: str = "Qwen/Qwen2.5-7B-Instruct"  # ← Change model here
+    REASONING_MODEL_NAME: str = "Qwen/Qwen3-8B"  # ← Change model here -- Qwen/Qwen2.5-7B-Instruct -- microsoft/Phi-3.5-mini-instruct -- Qwen/Qwen3-14B -- mistralai/Mistral-7B-v0.3 -- google/gemma-3-12b-it -- microsoft/phi-4 -- mistralai/Mistral-Small-3.2-24B-Instruct-2506 -- mistralai/Mistral-Small-24B-Instruct-2501 -- Qwen/Qwen3-8B -- deepseek-ai/DeepSeek-R1-Distill-Qwen-14B -- Qwen/Qwen3-8B-FP8
     REASONING_MAX_TOKENS: int = 4096
     REASONING_TEMPERATURE: float = 0.1
 
